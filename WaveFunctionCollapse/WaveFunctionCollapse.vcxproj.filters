@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source\MapGenerator">
+      <UniqueIdentifier>{c6c8d7f2-238f-4ca6-b8d9-0301fc6d0562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine">
+      <UniqueIdentifier>{0452eb7f-f03d-4fc0-84dc-da0a6be082d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries">
+      <UniqueIdentifier>{0cf1f308-7e8d-46d0-bb91-fa0e1d2b7977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries\mmgr">
+      <UniqueIdentifier>{926cbed8-179d-4031-93c1-4593c4d1fbe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Modules">
+      <UniqueIdentifier>{c66b108c-20d0-49c8-8ac5-9784c6abdc3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries\SDL2">
+      <UniqueIdentifier>{11c36b62-b3cd-43f0-a481-100295ce2acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries\SDL2_image">
+      <UniqueIdentifier>{16942a34-9bde-4f15-9dff-4f6fc6734e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Utils">
+      <UniqueIdentifier>{dc255ef5-117c-4d5b-8dbd-2547246479b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries\PCG">
+      <UniqueIdentifier>{6e484a01-d85c-41e9-9710-cde1f3456328}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Timer.h">
+      <Filter>Source\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Module.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleInput.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleRenderer.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleResources.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleScene.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleWindow.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="mmgr\mmgr.h">
+      <Filter>Source\Engine\External Libraries\mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="mmgr\nommgr.h">
+      <Filter>Source\Engine\External Libraries\mmgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MapGenerator.h">
+      <Filter>Source\MapGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\begin_code.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\close_code.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_assert.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_atomic.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_audio.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_bits.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_blendmode.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_clipboard.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_config.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_cpuinfo.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_egl.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_endian.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_error.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_events.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_filesystem.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_gamecontroller.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_gesture.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_guid.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_haptic.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_hidapi.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_hints.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_joystick.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_keyboard.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_keycode.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_loadso.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_locale.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_log.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_main.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_messagebox.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_metal.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_misc.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_mouse.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_mutex.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_name.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengl.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengl_glext.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengles.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengles2.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengles2_gl2.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengles2_gl2ext.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengles2_gl2platform.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_opengles2_khrplatform.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_pixels.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_platform.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_power.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_quit.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_rect.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_render.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_revision.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_rwops.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_scancode.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_sensor.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_shape.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_stdinc.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_surface.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_system.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_syswm.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_assert.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_common.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_compare.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_crc32.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_font.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_fuzzer.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_harness.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_images.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_log.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_md5.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_memory.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_test_random.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_thread.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_timer.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_touch.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_types.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_version.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_video.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2\include\SDL_vulkan.h">
+      <Filter>Source\Engine\External Libraries\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL2_image\include\SDL_image.h">
+      <Filter>Source\Engine\External Libraries\SDL2_image</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Source\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PCG\pcg_extras.hpp">
+      <Filter>Source\Engine\External Libraries\PCG</Filter>
+    </ClInclude>
+    <ClInclude Include="PCG\pcg_random.hpp">
+      <Filter>Source\Engine\External Libraries\PCG</Filter>
+    </ClInclude>
+    <ClInclude Include="PCG\pcg_uint128.hpp">
+      <Filter>Source\Engine\External Libraries\PCG</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleInput.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleRenderer.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleResources.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleScene.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleWindow.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="mmgr\mmgr.cpp">
+      <Filter>Source\Engine\External Libraries\mmgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MapGenerator.cpp">
+      <Filter>Source\MapGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Source\Engine\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
