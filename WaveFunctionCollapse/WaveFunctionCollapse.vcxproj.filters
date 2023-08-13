@@ -32,6 +32,9 @@
     <Filter Include="Source\Engine\External Libraries\PCG">
       <UniqueIdentifier>{6e484a01-d85c-41e9-9710-cde1f3456328}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\MapGenerator\Utils">
+      <UniqueIdentifier>{62a293c5-7024-4b31-a429-45ab92908ff4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -316,6 +319,27 @@
     <ClInclude Include="PCG\pcg_uint128.hpp">
       <Filter>Source\Engine\External Libraries\PCG</Filter>
     </ClInclude>
+    <ClInclude Include="BitMask.h">
+      <Filter>Source\MapGenerator\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>Source\MapGenerator\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DynArray.h">
+      <Filter>Source\MapGenerator\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.h">
+      <Filter>Source\MapGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Source\MapGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Source\MapGenerator\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.h">
+      <Filter>Source\MapGenerator\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -347,6 +371,9 @@
     </ClCompile>
     <ClCompile Include="Log.cpp">
       <Filter>Source\Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BitMask.cpp">
+      <Filter>Source\MapGenerator\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
