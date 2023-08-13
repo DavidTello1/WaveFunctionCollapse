@@ -49,7 +49,7 @@ public:
 		//assert(index > 0 && index < numElements);
 
 		ListItem<T>* item = start;
-		for (int i = 0; i < index; ++i)
+		for (unsigned int i = 0; i < index; ++i)
 		{
 			item = item->next;
 		}

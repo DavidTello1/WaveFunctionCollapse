@@ -44,7 +44,7 @@ public:
 			Alloc(memCapacity + arrayBlockSize);
 		}
 
-		for (int i = 0; i < numElements; ++i)
+		for (unsigned int i = 0; i < numElements; ++i)
 		{
 			if (element > data[i] && max == true)
 			{

@@ -32,11 +32,11 @@ BitMask::BitMask(const char* bits)
 {
 	//assert(bits != nullptr && bits != "");
 
-	numBits = strlen(bits);
+	numBits = (unsigned int)strlen(bits);
 	size = ((numBits - 1) / CHAR_BIT) + 1;
 	bitArray = new unsigned char[size];
 
-	for (int i = 0; i < numBits; ++i)
+	for (unsigned int i = 0; i < numBits; ++i)
 	{
 		if (bits[i] == '1')
 			SetBit(i);
@@ -52,7 +52,7 @@ BitMask::BitMask(const BitMask& mask)
 	bitArray = new unsigned char[size];
 
 	ClearAll();
-	for (int i = 0; i < numBits; ++i)
+	for (unsigned int i = 0; i < numBits; ++i)
 	{
 		if (mask.GetBit(i))
 			SetBit(i);
@@ -97,7 +97,7 @@ const bool BitMask::operator==(const BitMask& other) const
 	if (numBits != other.numBits)
 		return false;
 
-	for (int i = 0; i < size; ++i)
+	for (unsigned int i = 0; i < size; ++i)
 	{
 		if (bitArray[i] != other.bitArray[i])
 			return false;
@@ -111,7 +111,7 @@ const bool BitMask::operator!=(const BitMask& other) const
 	if (numBits != other.numBits)
 		return true;
 
-	for (int i = 0; i < size; ++i)
+	for (unsigned int i = 0; i < size; ++i)
 	{
 		if (bitArray[i] != other.bitArray[i])
 			return true;
@@ -124,7 +124,7 @@ BitMask& BitMask::operator&=(const BitMask& other)
 {
 	//assert(numBits == other.numBits);
 
-	for (int i = 0; i < size; ++i)
+	for (unsigned int i = 0; i < size; ++i)
 	{
 		bitArray[i] = bitArray[i] & other.bitArray[i];
 	}
@@ -140,13 +140,13 @@ void BitMask::SetBit(unsigned int index, bool value)
 
 void BitMask::SetAll()
 {
-	for (int i = 0; i < numBits; i++)
+	for (unsigned int i = 0; i < numBits; i++)
 		SetBit(i);
 }
 
 void BitMask::ClearAll()
 {
-	for (int i = 0; i < numBits; i++)
+	for (unsigned int i = 0; i < numBits; i++)
 		ClearBit(i);
 }
 
@@ -154,7 +154,7 @@ int BitMask::Count() const
 {
 	int count = 0;
 
-	for (int i = 0; i < numBits; ++i)
+	for (unsigned int i = 0; i < numBits; ++i)
 	{
 		if (GetBit(i) == true)
 			++count;
@@ -168,7 +168,7 @@ int BitMask::Pick()
 	int count = 0;
 	List<int> positions = List<int>();
 
-	for (int i = 0; i < numBits; ++i)
+	for (unsigned int i = 0; i < numBits; ++i)
 	{
 		if (GetBit(i) == true)
 		{
@@ -186,7 +186,7 @@ int BitMask::Pick()
 
 void BitMask::Peek() const
 {
-	for (int i = 0; i < numBits; ++i)
+	for (unsigned int i = 0; i < numBits; ++i)
 	{
 		LOG("%d", (int)GetBit(i));
 	}
