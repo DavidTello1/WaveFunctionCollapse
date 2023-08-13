@@ -8,7 +8,7 @@
 ModuleRenderer::ModuleRenderer(bool start_enabled) : Module(start_enabled)
 {
 	camera = viewport = { 0, 0, 0, 0 };
-	background = { 0, 0, 0, 0 };
+	background = { 50, 50, 50, 255 };
 }
 
 ModuleRenderer::~ModuleRenderer()
