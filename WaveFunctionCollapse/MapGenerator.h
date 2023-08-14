@@ -13,8 +13,11 @@ public:
 	~MapGenerator();
 
 	void GenerateMap();
-	void Step();
 	void DrawMap();
+
+	void Step();
+	void Reset();
+	bool IsFinished() const { return isCollapsed; }
 
 private:
 	int HeuristicPick();

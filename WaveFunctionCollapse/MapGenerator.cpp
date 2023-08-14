@@ -1,6 +1,7 @@
 #include "MapGenerator.h"
 
 #include "Application.h"
+#include "ModuleWindow.h"
 #include "ModuleRenderer.h"
 
 #include "Cell.h"
@@ -64,33 +65,55 @@ void MapGenerator::Step()
 	CollapseCells();
 }
 
+void MapGenerator::Reset()
+{
+	isCollapsed = false;
+
+	// Remove all cells
+	for (unsigned int i = 0; i < cells.size(); ++i)
+		delete cells[i];
+	cells.clear();
+
+	// Create new cells
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i) {
+		cells.push_back(new Cell(i, tiles.size()));
+	}
+}
+
 void MapGenerator::DrawMap()
 {
 	static const SDL_Color black = { 0, 0, 0 };
 	static const SDL_Color white = { 255, 255, 255 };
-	static const SDL_Color red = { 255, 0, 0 };
+	static const SDL_Color red = { 255, 200, 200 };
 	static const SDL_Color green = { 0, 255, 0 };
 
-	static const int offsetX = (width * cellSize) / 2;
-	static const int offsetY = (height/2 * cellSize) / 2;
-
-	static const int spacing = 2;
+	static const int offsetX = (App->window->GetWidth() - (width * cellSize)) / 2;
+	static const int offsetY = (App->window->GetHeight() - (height * cellSize)) / 2;
 
 	for (unsigned int i = 0; i < cells.size(); ++i)
 	{
-		int x = cells[i]->index % width;
-		int y = cells[i]->index / width;
+		Cell* cell = cells[i];
+		int x = cell->index % width;
+		int y = cell->index / width;
+		SDL_Rect rect = { x * cellSize + offsetX, y * cellSize + offsetY, cellSize, cellSize };
 
-		SDL_Rect rect = { x * cellSize + offsetX + x * spacing, y * cellSize + offsetY +  y * spacing, cellSize, cellSize };
-		SDL_Color color = (cells[i]->isCollapsed) ? black : white;
+		//if (cell->isCollapsed)
+		//{
+		//	Tile* tile = tiles[cell->tileID];
+		//	App->renderer->Blit(tile->texture, rect.x, rect.y);
+		//}
+		//else
+		//{
+		//	SDL_Color color = (cell->isInvalid) ? red : white;
+		//	App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid);
+		//}
 
-		if (cells[i]->isInvalid)
-			color = red;
-
-		if (cells[i]->tileID == 0)
-			color = white;
-
-		App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cells[i]->isCollapsed || cells[i]->isInvalid);
+		SDL_Color color = (cell->isInvalid) ? red : white;
+		if (cell->isCollapsed && cell->tileID != 0)
+			color = black;
+		
+		App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid || cell->isCollapsed);
 	}
 }
 
