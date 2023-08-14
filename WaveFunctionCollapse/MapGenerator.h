@@ -1,51 +1,37 @@
-//#pragma once
-//
-//struct Tile {
-//	int index = -1;
-//
-//	int* topMask = nullptr;
-//	int* leftMask = nullptr;
-//	int* rightMask = nullptr;
-//	int* bottomMask = nullptr;
-//};
-//
-//struct Cell {
-//	int index = -1;
-//	int* validTiles = nullptr;
-//	bool isCollapsed = false;
-//
-//	int GetEntropy() { 
-//		return this->validTiles.size(); 
-//	}
-//
-//	void Update() { 
-//		this->isCollapsed == (this->validTiles.size() == 1); 
-//	}
-//	
-//	void Observe() {
-//		int index = random(0, this->validTiles.size());
-//		int* tile = this->validTiles[index];
-//		this->validTiles.clear();
-//		this->validTiles.push_back(tile);
-//	}
-//};
-//
-//class MapGenerator
-//{
-//public:
-//	MapGenerator() {};
-//	~MapGenerator() {};
-//
-//	void GenerateMap();
-//	void DrawMap();
-//
-//private:
-//	void Init();
-//
-//	int HeuristicPick();
-//	void CollapseCells();
-//	int* PropagateCells(Cell cell, int* list);
-//	
-//	int* CheckNeighbour(int* validTiles, int index, int dir);
-//};
-//
+#pragma once
+
+#include "List.h"
+#include "DynArray.h"
+
+struct Tile;
+struct Cell;
+
+class MapGenerator
+{
+public:
+	MapGenerator(const int width, const int height, const int cellSize, const DynArray<Tile*>& tiles);
+	~MapGenerator();
+
+	void GenerateMap();
+	void Step();
+	void DrawMap();
+
+private:
+	int HeuristicPick();
+	void CollapseCells();
+	List<int> PropagateCell(const int index);
+	
+	// --- Utils
+	int CheckNeighbour(int index, int direction);
+
+private:
+	int width = 0;
+	int height = 0;
+	int cellSize = 0;
+
+	bool isCollapsed = false;
+
+	DynArray<Cell*> cells;
+	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class
+};
+

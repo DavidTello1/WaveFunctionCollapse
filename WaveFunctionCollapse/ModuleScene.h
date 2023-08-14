@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 
+class MapGenerator;
+
 class ModuleScene : public Module
 {
 public:
@@ -12,5 +14,6 @@ public:
 	bool Update(float dt) override;
 	bool CleanUp() override;
 
-	void Draw();
+private:
+	MapGenerator* map = nullptr;
 };

@@ -23,7 +23,8 @@ public:
 	}
 
 	void Update() {
-		isCollapsed = (mask->Count() == 1);
+		if (mask->Count() == 1)
+			Observe();
 	}
 
 	void Observe() {
@@ -31,6 +32,8 @@ public:
 
 		if (tileID != -1)
 			isCollapsed = true;
+		else
+			isInvalid = true;
 	}
 
 public:
@@ -38,4 +41,5 @@ public:
 	int tileID = -1;
 	BitMask* mask;
 	bool isCollapsed = false;
+	bool isInvalid = false;
 };
