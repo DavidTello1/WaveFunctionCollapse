@@ -1,6 +1,6 @@
 #pragma once
 
-// --- Singly Linked List ---
+// --- Double Linked List ---
 // --------------------------
 
 template<typename T>
@@ -8,8 +8,9 @@ struct ListItem
 {
 	T data;
 	ListItem<T>* next;
+	ListItem<T>* prev;
 
-	inline ListItem(const T& data) : data(data), next(nullptr) {}
+	inline ListItem(const T& data) : data(data), next(nullptr), prev(nullptr) {}
 	~ListItem() {}
 };
 
@@ -65,12 +66,46 @@ public:
 			start = end = itemData;
 		else
 		{
+			itemData->prev = end;
 			end->next = itemData;
 			end = itemData;
 		}
 
 		++numElements;
 		return itemData;
+	}
+
+	bool erase(ListItem<T>* item)
+	{
+		if (item == 0)
+			return false;
+
+		// Now reconstruct the list
+		if (item->prev != 0)
+		{
+			item->prev->next = item->next;
+
+			if (item->next != 0)
+				item->next->prev = item->prev;
+			else
+				end = item->prev;
+		}
+		else
+		{
+			if (item->next)
+			{
+				item->next->prev = 0;
+				start = item->next;
+			}
+			else
+				start = end = 0;
+		}
+
+		delete item;
+		item = 0;
+		--numElements;
+
+		return true;
 	}
 
 	void clear() {
