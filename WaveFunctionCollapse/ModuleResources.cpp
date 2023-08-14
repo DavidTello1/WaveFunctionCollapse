@@ -37,10 +37,13 @@ bool ModuleResources::CleanUp()
 {
     LOG("Freeing textures and Image library");
 
-    for (uint i = 0; i < textures.size(); ++i)
-        SDL_DestroyTexture(textures[i]);
-
+    ListItem<SDL_Texture*>* item;
+    for (item = textures.front(); item != NULL; item = item->next)
+    {
+        SDL_DestroyTexture(item->data);
+    }
     textures.clear();
+
     IMG_Quit();
 
     return true;
@@ -73,18 +76,19 @@ SDL_Texture* const ModuleResources::LoadSurface(SDL_Surface* surface)
         return NULL;
     }
 
-    textures.push_back(texture);
+    textures.add(texture);
     return texture;
 }
 
 bool ModuleResources::UnloadTexture(SDL_Texture* texture)
 {
-    for (uint i = 0; i < textures.size(); ++i)
+    ListItem<SDL_Texture*>* item;
+    for (item = textures.front(); item != NULL; item = item->next)
     {
-        if (textures[i] = texture)
+        if (texture == item->data)
         {
-            SDL_DestroyTexture(textures[i]);
-            textures.erase(textures.begin() + i);
+            SDL_DestroyTexture(item->data);
+            textures.erase(item);
             return true;
         }
     }
@@ -92,7 +96,7 @@ bool ModuleResources::UnloadTexture(SDL_Texture* texture)
     return false;
 }
 
-void ModuleResources::GetTextureSize(const SDL_Texture* texture, uint& width, uint& height) const
+void ModuleResources::GetTextureSize(const SDL_Texture* texture, unsigned int& width, unsigned int& height) const
 {
     SDL_QueryTexture((SDL_Texture*)texture, NULL, NULL, (int*)&width, (int*)&height);
 }

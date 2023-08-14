@@ -1,5 +1,7 @@
 #include "ModuleWindow.h"
 
+#include "Globals.h"
+
 #include "SDL2/include/SDL.h"
 #include "mmgr/mmgr.h"
 
@@ -57,7 +59,7 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-void ModuleWindow::SetWidth(uint width, bool update_size)
+void ModuleWindow::SetWidth(unsigned int width, bool update_size)
 {
 	this->width = width;
 
@@ -65,7 +67,7 @@ void ModuleWindow::SetWidth(uint width, bool update_size)
 		SDL_SetWindowSize(window, width, GetHeight());
 }
 
-void ModuleWindow::SetHeigth(uint height, bool update_size)
+void ModuleWindow::SetHeigth(unsigned int height, bool update_size)
 {
 	this->height = height;
 
@@ -73,7 +75,7 @@ void ModuleWindow::SetHeigth(uint height, bool update_size)
 		SDL_SetWindowSize(window, GetWidth(), height);
 }
 
-void ModuleWindow::SetSize(uint width, uint height, bool update_size)
+void ModuleWindow::SetSize(unsigned int width, unsigned int height, bool update_size)
 {
 	this->width = width;
 	this->height = height;
