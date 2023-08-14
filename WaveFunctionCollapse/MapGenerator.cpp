@@ -98,22 +98,22 @@ void MapGenerator::DrawMap()
 		int y = cell->index / width;
 		SDL_Rect rect = { x * cellSize + offsetX, y * cellSize + offsetY, cellSize, cellSize };
 
-		//if (cell->isCollapsed)
-		//{
-		//	Tile* tile = tiles[cell->tileID];
-		//	App->renderer->Blit(tile->texture, rect.x, rect.y);
-		//}
-		//else
-		//{
-		//	SDL_Color color = (cell->isInvalid) ? red : white;
-		//	App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid);
-		//}
+		if (cell->isCollapsed)
+		{
+			Tile* tile = tiles[cell->tileID];
+			App->renderer->Blit(tile->texture, rect.x, rect.y);
+		}
+		else
+		{
+			SDL_Color color = (cell->isInvalid) ? red : white;
+			App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid);
+		}
 
-		SDL_Color color = (cell->isInvalid) ? red : white;
-		if (cell->isCollapsed && cell->tileID != 0)
-			color = black;
-		
-		App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid || cell->isCollapsed);
+		//SDL_Color color = (cell->isInvalid) ? red : white;
+		//if (cell->isCollapsed && cell->tileID != 0)
+		//	color = black;
+		//
+		//App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid || cell->isCollapsed);
 	}
 }
 
