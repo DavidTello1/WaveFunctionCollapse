@@ -91,6 +91,8 @@ void MapGenerator::DrawMap()
 	static const int offsetX = (App->window->GetWidth() - (width * cellSize)) / 2;
 	static const int offsetY = (App->window->GetHeight() - (height * cellSize)) / 2;
 
+	static const int spacing = 2;
+
 	for (unsigned int i = 0; i < cells.size(); ++i)
 	{
 		Cell* cell = cells[i];
@@ -98,22 +100,33 @@ void MapGenerator::DrawMap()
 		int y = cell->index / width;
 		SDL_Rect rect = { x * cellSize + offsetX, y * cellSize + offsetY, cellSize, cellSize };
 
-		if (cell->isCollapsed)
+		if (isSpacedCells)
 		{
-			Tile* tile = tiles[cell->tileID];
-			App->renderer->Blit(tile->texture, rect.x, rect.y);
+			rect.x += spacing * x;
+			rect.y += spacing * y;
+		}
+
+		if (isDrawTextures)
+		{
+			if (cell->isCollapsed)
+			{
+				Tile* tile = tiles[cell->tileID];
+				App->renderer->Blit(tile->texture, rect.x, rect.y);
+			}
+			else
+			{
+				SDL_Color color = (cell->isInvalid) ? red : white;
+				App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid);
+			}
 		}
 		else
 		{
 			SDL_Color color = (cell->isInvalid) ? red : white;
-			App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid);
-		}
+			if (cell->isCollapsed && cell->tileID != 0)
+				color = black;
 
-		//SDL_Color color = (cell->isInvalid) ? red : white;
-		//if (cell->isCollapsed && cell->tileID != 0)
-		//	color = black;
-		//
-		//App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid || cell->isCollapsed);
+			App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid || cell->isCollapsed);
+		}
 	}
 }
 
@@ -183,7 +196,7 @@ List<int> MapGenerator::PropagateCell(const int index)
 	List<int> list = List<int>();
 
 	// Check neighbours
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < NUM_NEIGHBOURS; ++i)
 	{
 		int neighbourIndex = CheckNeighbour(index, i);
 		if (neighbourIndex == -1)
@@ -212,7 +225,7 @@ List<int> MapGenerator::PropagateCell(const int index)
 		if (*neighbour->mask != prevMask)
 		{
 			neighbour->Update();
-			if (neighbour->isCollapsed)
+			if (neighbour->isCollapsed) //***
 				list.add(neighbourIndex);
 		}
 	}
@@ -227,24 +240,44 @@ int MapGenerator::CheckNeighbour(int index, int direction) //*** change to x, y
 
 	switch (direction)
 	{
-	case 0: // Top
+	case 0: // TopLeft
+		if ((index - 1) > width)
+			return index - 1 - width;
+		break;
+
+	case 1: // Top
 		if (index > width)
 			return index - width;
 		break;
 
-	case 1: // Left
+	case 2: // TopRight
+		if ((index + 1) > width)
+			return index + 1 - width;
+		break;
+
+	case 3: // Left
 		if (index % width != 0)
 			return index - 1;
 		break;
 
-	case 2: // Right
+	case 4: // Right
 		if ((index + 1) % width != 0)
 			return index + 1;
 		break;
 
-	case 3: // Bottom
+	case 5: // BottomLeft
+		if ((index - 1) < width * (height - 1))
+			return index - 1 + width;
+		break;
+
+	case 6: // Bottom
 		if (index < width * (height - 1))
 			return index + width;
+		break;
+
+	case 7: // BottomRight
+		if ((index + 1) < width * (height - 1))
+			return index + 1 + width;
 		break;
 	}
 
