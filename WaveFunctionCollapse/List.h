@@ -46,6 +46,17 @@ public:
 		return (*this);
 	}
 
+	ListItem<T>* operator[](unsigned int index) {
+		//assert(index > 0 && index < numElements);
+
+		ListItem<T>* item = start;
+		for (unsigned int i = 0; i < index; ++i)
+		{
+			item = item->next;
+		}
+		return item;
+	}
+
 	const ListItem<T>* operator[](unsigned int index) const {
 		//assert(index > 0 && index < numElements);
 
