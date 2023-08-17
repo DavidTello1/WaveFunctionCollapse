@@ -1,7 +1,8 @@
 #include "ModuleScene.h"
 
 #include "Globals.h"
-#include "Scene.h"
+
+#include "SceneMapGenerator.h"
 
 #include "mmgr/mmgr.h"
 
@@ -20,6 +21,9 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
+	// Load Scenes
+	LoadScene(new SceneMapGenerator(), true);
+
 	return true;
 }
 
