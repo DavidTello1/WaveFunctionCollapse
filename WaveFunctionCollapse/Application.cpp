@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
+#include "ModuleGUI.h"
 #include "ModuleRenderer.h"
 
 #include "mmgr/mmgr.h"
@@ -22,6 +23,7 @@ Application::Application()
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(resources = new ModuleResources());
 	modules.push_back(scene = new ModuleScene());
+	modules.push_back(gui = new ModuleGUI());
 	modules.push_back(renderer = new ModuleRenderer()); // renderer last to swap buffer
 }
 

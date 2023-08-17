@@ -35,6 +35,12 @@
     <Filter Include="Source\MapGenerator\Utils">
       <UniqueIdentifier>{62a293c5-7024-4b31-a429-45ab92908ff4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\Tools">
+      <UniqueIdentifier>{639cd3e4-c136-4800-9dec-6b393fb7d212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scenes">
+      <UniqueIdentifier>{4e7279cf-b0bc-418f-86c0-c94e5fb93601}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -340,6 +346,18 @@
     <ClInclude Include="StaticArray.h">
       <Filter>Source\MapGenerator\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleGUI.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Source\Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMapGenerator.h">
+      <Filter>Source\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Button.h">
+      <Filter>Source\Engine\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -374,6 +392,12 @@
     </ClCompile>
     <ClCompile Include="BitMask.cpp">
       <Filter>Source\MapGenerator\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleGUI.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneMapGenerator.cpp">
+      <Filter>Source\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

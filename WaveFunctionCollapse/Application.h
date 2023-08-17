@@ -2,13 +2,14 @@
 #include "Globals.h"
 #include "Timer.h"
 
-#include <vector>
+#include <vector> //***
 
 class Module;
 class ModuleInput;
 class ModuleWindow;
 class ModuleResources;
 class ModuleScene;
+class ModuleGUI;
 class ModuleRenderer;
 
 class Application
@@ -30,11 +31,12 @@ private:
 	void FinishUpdate();
 
 public:
-	ModuleInput* input;
-	ModuleWindow* window;
-	ModuleResources* resources;
-	ModuleScene* scene;
-	ModuleRenderer* renderer;
+	ModuleInput* input = nullptr;
+	ModuleWindow* window = nullptr;
+	ModuleResources* resources = nullptr;
+	ModuleScene* scene = nullptr;
+	ModuleGUI* gui = nullptr;
+	ModuleRenderer* renderer = nullptr;
 
 private:
 	Timer	ms_timer;
