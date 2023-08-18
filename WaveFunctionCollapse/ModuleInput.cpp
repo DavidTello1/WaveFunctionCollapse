@@ -3,7 +3,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
-#include "SDL2/include/SDL.h"
+#include "SDL/include/SDL.h"
 #include "mmgr/mmgr.h"
 
 #define MAX_KEYS 300

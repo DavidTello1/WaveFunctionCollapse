@@ -3,8 +3,8 @@
 #include "Application.h"
 #include "ModuleRenderer.h"
 
-#include "SDL2_image/include/SDL_image.h"
-#pragma comment(lib, "SDL2_image/lib/x64/SDL2_image.lib")
+#include "SDL_image/include/SDL_image.h"
+#pragma comment(lib, "SDL_image/lib/x64/SDL2_image.lib")
 
 #include "mmgr/mmgr.h"
 

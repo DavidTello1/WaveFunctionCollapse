@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 
-#include "SDL2/include/SDL.h"
+#include "SDL/include/SDL.h"
 #include <limits.h>
 
 class ModuleRenderer : public Module

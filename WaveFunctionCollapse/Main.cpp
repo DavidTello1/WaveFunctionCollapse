@@ -1,9 +1,9 @@
 #include "Application.h"
 
 // This is needed here because SDL redefines main function
-#include "SDL2/include/SDL.h"
-#pragma comment(lib, "SDL2/lib/x64/SDL2.lib")
-#pragma comment(lib, "SDL2/lib/x64/SDL2main.lib")
+#include "SDL/include/SDL.h"
+#pragma comment(lib, "SDL/lib/x64/SDL2.lib")
+#pragma comment(lib, "SDL/lib/x64/SDL2main.lib")
 
 enum class main_states
 {

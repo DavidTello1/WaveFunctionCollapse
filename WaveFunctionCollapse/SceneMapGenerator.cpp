@@ -7,7 +7,7 @@
 #include "MapGenerator.h"
 #include "Tile.h"
 
-#include "SDL2/include/SDL_scancode.h"
+#include "SDL/include/SDL_scancode.h"
 
 #include "mmgr/mmgr.h"
 
