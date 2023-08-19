@@ -7,6 +7,7 @@
 
 ModuleRenderer::ModuleRenderer(bool start_enabled) : Module(start_enabled)
 {
+	context = NULL;
 	camera = viewport = { 0, 0, 0, 0 };
 	background = { 50, 50, 50, 255 };
 }
@@ -19,12 +20,12 @@ bool ModuleRenderer::Init()
 {
 	LOG("Create SDL rendering context");
 
-	context = SDL_GL_CreateContext(App->window->GetWindow());
-	if (context == NULL)
-	{
-		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
-		return false;
-	}
+	//context = SDL_GL_CreateContext(App->window->GetWindow());
+	//if (context == NULL)
+	//{
+	//	LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+	//	return false;
+	//}
 
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 	renderer = SDL_CreateRenderer(App->window->GetWindow(), -1, flags);

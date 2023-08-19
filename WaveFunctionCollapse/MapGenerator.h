@@ -15,9 +15,14 @@ public:
 	void GenerateMap();
 	void DrawMap();
 
-	// --- Utils
 	void Step();
 	void Reset();
+
+	//void PresetCell(unsigned int index, unsigned int tileID);
+	//void PresetCells(List<unsigned int> cells, List<unsigned int> tileIDs);
+	//void ClearPresetCells();
+
+	// --- Utils
 	bool IsFinished() const { return isCollapsed; }
 
 	// --- Debug
