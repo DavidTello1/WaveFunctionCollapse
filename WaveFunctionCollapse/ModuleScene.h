@@ -15,6 +15,8 @@ public:
 	bool Update(float dt) override;
 	bool CleanUp() override;
 
+	void Draw();
+
 	// --- Scene Management
 	bool LoadScene(Scene* scene, bool active = false);
 	bool UnLoadScene(const char* name);

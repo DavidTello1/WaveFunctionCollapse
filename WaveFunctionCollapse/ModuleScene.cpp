@@ -45,6 +45,12 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
+void ModuleScene::Draw()
+{
+	if (currentScene != nullptr)
+		currentScene->Draw();
+}
+
 // --------------------------------
 bool ModuleScene::LoadScene(Scene* scene, bool active)
 {
