@@ -7,10 +7,9 @@
 
 #include "Scene.h"
 
-//#include "imgui/imgui.h"
-//#include "Imgui/imgui_internal.h"
-//#include "imgui/imgui_impl_sdl.h"
-//#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 #include "mmgr/mmgr.h"
 
@@ -22,22 +21,21 @@ ModuleGUI::~ModuleGUI()
 {
 }
 
-// Called before render is available
 bool ModuleGUI::Init()
 {
-	//LOG("Init editor gui with imgui lib version %s", ImGui::GetVersion());
+	LOG("Init editor gui with imgui lib version %s", ImGui::GetVersion());
 
-	//// Setup Dear ImGui binding
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
+	// Setup Dear ImGui binding
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
 
-	//ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable keyboard controls
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable keyboard controls
 
-	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();
 
-	//ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->GetContext());
-	//ImGui_ImplOpenGL3_Init();
+	ImGui_ImplSDL2_InitForOpenGL(App->window->GetWindow(), App->renderer->GetContext());
+	ImGui_ImplOpenGL3_Init();
 
 	return true;
 }
@@ -49,22 +47,21 @@ bool ModuleGUI::Start()
 
 bool ModuleGUI::PreUpdate(float dt)
 {
-	//// ImGui New Frame
-	//ImGui_ImplOpenGL3_NewFrame();
-	//ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
-	//ImGui::NewFrame();
+	// ImGui New Frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
+	ImGui::NewFrame();
 
 	return true;
 }
 
-// Called before quitting
 bool ModuleGUI::CleanUp()
 {
 	LOG("Freeing editor gui");
 
-	//ImGui_ImplOpenGL3_Shutdown();
-	//ImGui_ImplSDL2_Shutdown();
-	//ImGui::DestroyContext();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 
 	return true;
 }
@@ -76,7 +73,7 @@ void ModuleGUI::Draw()
 	if (currentScene != nullptr)
 		currentScene->DrawUI();
 
-	//// Render
-	//ImGui::Render();
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	// Render
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
