@@ -23,8 +23,16 @@ bool ModuleWindow::Init()
 		return false;
 	}
 
-	//Create window
-	Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+	SDL_DisplayMode DM;
+	SDL_GetDesktopDisplayMode(0, &DM);
+
+	// --- Create window
+	Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+
+	//Use OpenGL 3.2
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+
 	window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 	if (window == NULL)
