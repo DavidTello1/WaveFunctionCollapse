@@ -21,7 +21,7 @@ ModuleResources::~ModuleResources()
 bool ModuleResources::Start()
 {
     // Default Shader
-    defaultShader = shaders[LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER")]->index;
+    defaultShader = shaders[LoadShader("Assets/Shaders/shaders.glsl", "DEFAULT_SHADER")]->index;
 
     // Default Texture (white 1x1)
     glGenTextures(1, &defaultTexture);
@@ -75,8 +75,8 @@ bool ModuleResources::CleanUp()
 
     return true;
 }
-// --------------------------------------------
 
+// --------------------------------------------
 std::string ModuleResources::ReadTextFile(const char* filepath)
 {
     std::ifstream ifs(filepath);
@@ -273,8 +273,11 @@ Texture* ModuleResources::LoadTexture(const char* filepath)
         textures.push_back(tex);
 
         stbi_image_free(image.pixels); // free image
+
+        LOG("Texture loaded correctly: %s", filepath);
         return tex;
     }
-    else
-        return nullptr;
+
+    LOG("Texture could not be loaded: %s", filepath);
+    return nullptr;
 }

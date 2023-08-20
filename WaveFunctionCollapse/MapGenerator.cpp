@@ -83,10 +83,10 @@ void MapGenerator::Reset()
 
 void MapGenerator::DrawMap()
 {
-	static const SDL_Color black = { 0, 0, 0 };
-	static const SDL_Color white = { 255, 255, 255 };
-	static const SDL_Color red = { 255, 200, 200 };
-	static const SDL_Color green = { 0, 255, 0 };
+	static const glm::vec3 black = { 0, 0, 0 };
+	static const glm::vec3 white = { 255, 255, 255 };
+	static const glm::vec3 red = { 255, 0, 0 };
+	static const glm::vec3 green = { 0, 255, 0 };
 
 	static const int offsetX = (App->window->GetWidth() - (width * cellSize)) / 2;
 	static const int offsetY = (App->window->GetHeight() - (height * cellSize)) / 2;
@@ -98,12 +98,17 @@ void MapGenerator::DrawMap()
 		Cell* cell = cells[i];
 		int x = cell->index % width;
 		int y = cell->index / width;
-		SDL_Rect rect = { x * cellSize + offsetX, y * cellSize + offsetY, cellSize, cellSize };
+
+		glm::vec2 position = { x * cellSize + offsetX, y * cellSize + offsetY };
+		glm::vec2 size = { cellSize, cellSize };
 
 		if (isSpacedCells)
 		{
-			rect.x += spacing * x;
-			rect.y += spacing * y;
+			const int offsetSpacedX = (App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
+			const int offsetSpacedY = (App->window->GetHeight() - ((height + spacing) * cellSize)) / 2;
+
+			position.x = x * cellSize + offsetSpacedX + x * spacing;
+			position.y = y * cellSize + offsetSpacedY + y * spacing;
 		}
 
 		if (isDrawTextures)
@@ -111,21 +116,23 @@ void MapGenerator::DrawMap()
 			if (cell->isCollapsed)
 			{
 				Tile* tile = tiles[cell->tileID];
-				App->renderer->Blit(tile->texture, rect.x, rect.y);
+				App->renderer->DrawQuad(position, size, tile->texture);
 			}
 			else
 			{
-				SDL_Color color = (cell->isInvalid) ? red : white;
-				App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid);
+				glm::vec3 color = (cell->isInvalid) ? red : white;
+				App->renderer->DrawQuad(position, size, glm::vec4(color, 1.0f));
 			}
 		}
 		else
 		{
-			SDL_Color color = (cell->isInvalid) ? red : white;
-			if (cell->isCollapsed && cell->tileID != 0)
+			glm::vec3 color = white;
+			if (cell->isInvalid)
+				color = red;
+			else if (cell->isCollapsed && cell->tileID != 0)
 				color = black;
 
-			App->renderer->DrawQuad(rect, color.r, color.g, color.b, 255, cell->isInvalid || cell->isCollapsed);
+			App->renderer->DrawQuad(position, size, glm::vec4(color, 1.0f));
 		}
 	}
 }

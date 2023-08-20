@@ -3,8 +3,8 @@
 
 #include "glm/include/glm/glm.hpp"
 
-#include <vector>
-#include <string>
+#include <vector> //***
+#include <string> //***
 
 typedef unsigned int GLuint;
 typedef unsigned long long u64;
@@ -47,7 +47,7 @@ struct Texture
 };
 
 // -------------------------------------------
-class ModuleResources : public Module
+class ModuleResources : public Module //*** Consider abstracting resource creation to each resource type (also separate with FileManager)
 {
 public:
 	ModuleResources(bool start_enabled = true);

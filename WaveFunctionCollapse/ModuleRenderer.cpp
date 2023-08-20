@@ -2,14 +2,26 @@
 
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleResources.h"
+#include "ModuleScene.h"
+#include "ModuleGUI.h"
+
+#include "Scene.h"
+#include "Camera.h"
+
+#include "SDL/include/SDL_video.h"
+#include "glm/include/glm/gtc/type_ptr.hpp"
+
+#include "Glew/include/glew.h"
+#pragma comment(lib, "glew/x64/glew32.lib")
+#pragma comment (lib, "glu32.lib")    // link OpenGL Utility lib
+#pragma comment (lib, "opengl32.lib") // link Microsoft OpenGL lib
 
 #include "mmgr/mmgr.h"
 
 ModuleRenderer::ModuleRenderer(bool start_enabled) : Module(start_enabled)
 {
 	context = NULL;
-	camera = viewport = { 0, 0, 0, 0 };
-	background = { 50, 50, 50, 255 };
 }
 
 ModuleRenderer::~ModuleRenderer()
@@ -18,134 +30,210 @@ ModuleRenderer::~ModuleRenderer()
 
 bool ModuleRenderer::Init()
 {
-	LOG("Create SDL rendering context");
+	LOG("Creating Renderer context\n");
+	bool ret = true;
 
-	//context = SDL_GL_CreateContext(App->window->GetWindow());
-	//if (context == NULL)
-	//{
-	//	LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
-	//	return false;
-	//}
-
-	Uint32 flags = SDL_RENDERER_ACCELERATED;
-	renderer = SDL_CreateRenderer(App->window->GetWindow(), -1, flags);
-
-	if (renderer == NULL)
+	//Create context
+	context = SDL_GL_CreateContext(App->window->GetWindow());
+	if (context == NULL)
 	{
-		LOG("Could not create the renderer! SDL_Error: %s\n", SDL_GetError());
-		return false;
+		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+		ret = false;
 	}
+	// Initialize glew
+	GLenum error = glewInit();
+	LOG("Loading glew");
 
-	//Get window surface and init camera
-	SDL_Surface* windowSurface = SDL_GetWindowSurface(App->window->GetWindow());
-	camera = { 0, 0, windowSurface->w, windowSurface->h };
+	// OpenGL
+	glViewport(0, 0, App->window->GetWidth(), App->window->GetHeight());
+	glEnable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	return true;
-}
-
-// Called before the first frame
-bool ModuleRenderer::Start()
-{
-	LOG("render start");
-
-	// back background
-	SDL_RenderSetLogicalSize(renderer, App->window->GetWidth(), App->window->GetHeight());
-	SDL_RenderGetViewport(renderer, &viewport);
+	// Create Basic Quad
+	CreateQuad();
 
 	return true;
 }
 
-// Called each loop iteration
 bool ModuleRenderer::PreUpdate(float dt)
 {
-	SDL_RenderClear(renderer);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	return true;
 }
 
 bool ModuleRenderer::PostUpdate(float dt)
 {
-	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
-	SDL_RenderPresent(renderer);
+	// Draw Scene
+	App->scene->Draw();
 
+	// Draw UI
+	App->gui->Draw();
+
+	SDL_GL_SwapWindow(App->window->GetWindow());
 	return true;
 }
 
 // Called before quitting
 bool ModuleRenderer::CleanUp()
 {
-	LOG("Destroying SDL render");
+	LOG("Renderer CleanUp");
 
 	SDL_GL_DeleteContext(context);
-	SDL_DestroyRenderer(renderer);
+
+	glDeleteVertexArrays(1, &quadVAO);
+	glDeleteBuffers(1, &quadVBO);
 
 	return true;
 }
 
-bool ModuleRenderer::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool filled, bool use_camera) const
+// --------------------------------
+void ModuleRenderer::UpdateViewportSize()
 {
-	uint zoom = App->window->GetZoom();
-
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-	SDL_SetRenderDrawColor(renderer, r, g, b, a);
-
-	SDL_Rect rec(rect);
-	if (use_camera)
-	{
-		rec.x = (int)(camera.x + rect.x * zoom);
-		rec.y = (int)(camera.y + rect.y * zoom);
-		rec.w *= zoom;
-		rec.h *= zoom;
-	}
-
-	int result = (filled) ? SDL_RenderFillRect(renderer, &rec) : SDL_RenderDrawRect(renderer, &rec);
-
-	if (result != 0)
-	{
-		LOG("Cannot draw quad to screen. SDL_RenderFillRect error: %s", SDL_GetError());
-		return false;
-	}
-
-	return true;
+	glViewport(0, 0, App->window->GetWidth(), App->window->GetHeight());
 }
 
-bool ModuleRenderer::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, SDL_RendererFlip flip, float speed, double angle, int pivot_x, int pivot_y) const
+
+void ModuleRenderer::CreateQuad()
 {
-	bool ret = true;
-	uint scale = App->window->GetZoom();
+	float vertices[] = {
+		// positions        // texture coords
+		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,	1.0f, 1.0f
+	};
 
-	SDL_Rect rect;
-	rect.x = (int)(camera.x * speed) + x * scale;
-	rect.y = (int)(camera.y * speed) + y * scale;
+	unsigned int indices[] = {
+		0, 1, 2, // first triangle
+		0, 3, 1  // second triangle
+	};
 
-	if (section != NULL)
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+	glGenBuffers(1, &quadIBO);
+
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+}
+
+void ModuleRenderer::DrawQuadEx(const unsigned int shader, const glm::mat4 viewProjMatrix, const glm::mat4 modelMatrix, const uint32_t texture, const glm::vec4 color)
+{
+	glUseProgram(shader);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "uViewProj"), 1, GL_FALSE, (GLfloat*)&viewProjMatrix);
+
+	glUniformMatrix4fv(glGetUniformLocation(shader, "uTransform"), 1, GL_FALSE, (GLfloat*)&modelMatrix);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glUniform1i(glGetUniformLocation(shader, "uTexture"), 0);
+
+	glUniform4f(glGetUniformLocation(shader, "uColor"), color.r, color.g, color.b, color.a);
+
+	glBindVertexArray(quadVAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+// -------------------------------------
+void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+{
+	// Get Camera
+	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
+	if (camera == nullptr)
 	{
-		rect.w = section->w;
-		rect.h = section->h;
+		LOG("Unable to get camera")
+			return;
+	}
+
+	// Get Model Matrix
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
+
+	// Draw Quad
+	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, App->resources->GetDefaultTexture(), color);
+}
+
+void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const uint32_t texture)
+{
+	// Get Camera
+	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
+	if (camera == nullptr)
+	{
+		LOG("Unable to get camera")
+			return;
+	}
+
+	// Get Model Matrix
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
+
+	// Draw Quad
+	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, texture, glm::vec4(1.0f));
+
+}
+
+void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const float& rotation, const glm::vec2& center)
+{
+	// Get Camera
+	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
+	if (camera == nullptr)
+	{
+		LOG("Unable to get camera")
+			return;
+	}
+
+	// Get Model Matrix
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	if (center != glm::vec2(0.0f))
+	{
+		model = glm::translate(model, glm::vec3(center, 0.0f));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-center, 0.0f));
 	}
 	else
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
+
+	// Draw Quad
+	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, App->resources->GetDefaultTexture(), color);
+}
+
+void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2& size, const uint32_t texture, const float& rotation, const glm::vec2& center)
+{
+	// Get Camera
+	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
+	if (camera == nullptr)
 	{
-		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
+		LOG("Unable to get camera")
+			return;
 	}
 
-	rect.w *= scale;
-	rect.h *= scale;
-
-	SDL_Point* p = NULL;
-	SDL_Point pivot;
-
-	if (pivot_x != INT_MAX && pivot_y != INT_MAX)
+	// Get Model Matrix
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+	if (center != glm::vec2(0.0f))
 	{
-		pivot.x = pivot_x;
-		pivot.y = pivot_y;
-		p = &pivot;
+		model = glm::translate(model, glm::vec3(center, 0.0f));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-center, 0.0f));
 	}
+	else
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
 
-	if (SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, flip) != 0)
-	{
-		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
-		ret = false;
-	}
-
-	return ret;
+	// Draw Quad
+	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, texture, glm::vec4(1.0f));
 }

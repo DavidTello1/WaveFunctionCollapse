@@ -4,19 +4,17 @@
 
 #define NUM_NEIGHBOURS 8
 
-struct SDL_Texture;
-
 struct Tile 
 {
 public:
 	int id = -1;
-	SDL_Texture* texture = nullptr;
+	unsigned int texture = 0;
 	StaticArray<BitMask*, NUM_NEIGHBOURS> masks; // topLeft, top, topRight, left, right, bottomLeft, bottom, bottomRight;
 
 public:
-	Tile(const int id, SDL_Texture* texture, const StaticArray<BitMask*, NUM_NEIGHBOURS> masks) : id(id), texture(texture), masks(masks) {};
+	Tile(const int id, unsigned int texture, const StaticArray<BitMask*, NUM_NEIGHBOURS> masks) : id(id), texture(texture), masks(masks) {};
 
-	Tile(const int id, SDL_Texture* texture, 
+	Tile(const int id, unsigned int texture, 
 		const char* topLeft, const char* top, const char* topRight,
 		const char* left, const char* right, 
 		const char* bottomLeft, const char* bottom, const char* bottomRight) : id(id), texture(texture) 

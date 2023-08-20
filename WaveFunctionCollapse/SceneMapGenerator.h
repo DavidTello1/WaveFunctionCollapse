@@ -20,6 +20,7 @@ public:
 	bool Update(float dt) override;
 	bool CleanUp() override;
 
+	bool Draw() override;
 	bool DrawUI() override;
 
 private:

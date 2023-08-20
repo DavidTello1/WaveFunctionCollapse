@@ -1,4 +1,5 @@
 #include "SceneMapGenerator.h"
+#include "Camera.h"
 
 #include "Application.h"
 #include "ModuleResources.h"
@@ -24,23 +25,23 @@ bool SceneMapGenerator::Init()
 	width = 25;
 	height = 25;
 
+	camera = new Camera();
+
     return true;
 }
 
 bool SceneMapGenerator::Start()
 {
-	// --- Create Tiles ---
-	static const int numTiles = 7;
-
-																							 // TL		// Top	   // TR	  // Left	 // Right	// BL	   // Bottom  // BR
-	Tile* empty =		new Tile(0, App->resources->LoadTexture("Textures/empty.png"),		 "1111111", "1001111", "1111111", "1010111", "1101011", "1111111", "1110011", "1111111");
-	Tile* topLeft =		new Tile(1, App->resources->LoadTexture("Textures/topLeft.png"),	 "1000000", "1000000", "1100001", "1000000", "0010110", "1100010", "0001101", "1000100");
-	Tile* topRight =	new Tile(2, App->resources->LoadTexture("Textures/topRight.png"),	 "1010001", "1000000", "1000000", "0101010", "1000000", "1001000", "0001101", "1010010");
-	Tile* bottomLeft =	new Tile(3, App->resources->LoadTexture("Textures/bottomLeft.png"),  "1001010", "0110001", "1010000", "1000000", "0010110", "1000000", "1000000", "1001001");
-	Tile* bottomRight =	new Tile(4, App->resources->LoadTexture("Textures/bottomRight.png"), "1100000", "0110001", "1000110", "0101010", "1000000", "1000101", "1000000", "1000000");
-	Tile* horizontal =	new Tile(5, App->resources->LoadTexture("Textures/horizontal.png"),	 "1010001", "1000000", "1100001", "1101010", "1010110", "1000101", "1000000", "1001001");
-	Tile* vertical =	new Tile(6, App->resources->LoadTexture("Textures/vertical.png"),	 "1001010", "1110001", "1000110", "1000000", "1000000", "1100010", "1001101", "1010010");
+	// --- Tiles																					 // TL		// Top	   // TR	  // Left	 // Right	// BL	   // Bottom  // BR
+	Tile* empty =		new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,		"1111111", "1001111", "1111111", "1010111", "1101011", "1111111", "1110011", "1111111");
+	Tile* topLeft =		new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,		"1000000", "1000000", "1100001", "1000000", "0010110", "1100010", "0001101", "1000100");
+	Tile* topRight =	new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,	"1010001", "1000000", "1000000", "0101010", "1000000", "1001000", "0001101", "1010010");
+	Tile* bottomLeft =	new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,  "1001010", "0110001", "1010000", "1000000", "0010110", "1000000", "1000000", "1001001");
+	Tile* bottomRight =	new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "1100000", "0110001", "1000110", "0101010", "1000000", "1000101", "1000000", "1000000");
+	Tile* horizontal =	new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,	"1010001", "1000000", "1100001", "1101010", "1010110", "1000101", "1000000", "1001001");
+	Tile* vertical =	new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,	"1001010", "1110001", "1000110", "1000000", "1000000", "1100010", "1001101", "1010010");
 	
+	static const int numTiles = 7;
 	DynArray<Tile*> tiles = DynArray<Tile*>(numTiles);
 	tiles.push_back(empty);
 	tiles.push_back(topLeft);
@@ -60,7 +61,7 @@ bool SceneMapGenerator::Start()
 bool SceneMapGenerator::Update(float dt)
 {
 	static bool isDrawTextures = true;
-	static bool isSpacedCells = false;
+	static bool isSpacedCells = true;
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
@@ -84,17 +85,23 @@ bool SceneMapGenerator::Update(float dt)
 		map->SetSpacedCells(isSpacedCells);
 	}
 
-	if (map != nullptr)
-		map->DrawMap();
-
 	return true;
 }
 
 bool SceneMapGenerator::CleanUp()
 {
+	delete camera;
 	delete map;
 
     return true;
+}
+
+bool SceneMapGenerator::Draw()
+{
+	if (map != nullptr)
+		map->DrawMap();
+
+	return true;
 }
 
 bool SceneMapGenerator::DrawUI()
