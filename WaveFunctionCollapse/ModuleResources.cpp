@@ -1,10 +1,12 @@
 #include "ModuleResources.h"
 
-#include "Application.h"
-#include "ModuleRenderer.h"
+#include "Globals.h"
 
-#include "SDL_image/include/SDL_image.h"
-#pragma comment(lib, "SDL_image/lib/x64/SDL2_image.lib")
+#include "stb/stb_image.h"
+#include "Glew/include/glew.h"
+
+#include <windows.h>
+#include <fstream>
 
 #include "mmgr/mmgr.h"
 
@@ -16,87 +18,263 @@ ModuleResources::~ModuleResources()
 {
 }
 
-bool ModuleResources::Init()
+bool ModuleResources::Start()
 {
-    LOG("Init Image library");
+    // Default Shader
+    defaultShader = shaders[LoadShader("Assets/shaders.glsl", "DEFAULT_SHADER")]->index;
 
-    // load support for the PNG image format
-    int flags = IMG_INIT_PNG;
-    int init = IMG_Init(flags);
+    // Default Texture (white 1x1)
+    glGenTextures(1, &defaultTexture);
+    glBindTexture(GL_TEXTURE_2D, defaultTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    uint32_t color = 0xffffffff;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 
-    if ((init & flags) != flags)
+    return true;;
+}
+
+bool ModuleResources::Update(float dt)
+{
+    // Hot reloading
+    for (unsigned int i = 0; i < shaders.size(); ++i)
     {
-        LOG("Could not initialize Image lib. IMG_Init: %s", IMG_GetError());
-        return false;
-    }
+        Shader* shader = shaders[i];
+        u64 currentTimeStamp = ModuleResources::GetFileLastWriteTimestamp(shader->filepath.c_str());
 
-    return true;
+        if (currentTimeStamp > shader->timestamp)
+        {
+            glDeleteProgram(shader->index);
+            std::string programSource = ModuleResources::ReadTextFile(shader->filepath.c_str());
+
+            shader->index = ModuleResources::CreateShader(programSource, shader->name.c_str());
+            shader->timestamp = currentTimeStamp;
+
+            LOG("Successfully reloaded shader '{0}'", shader->name);
+        }
+    }
+    return true;;
 }
 
 bool ModuleResources::CleanUp()
 {
-    LOG("Freeing textures and Image library");
-
-    ListItem<SDL_Texture*>* item;
-    for (item = textures.front(); item != NULL; item = item->next)
+    // Textures
+    for (unsigned int i = 0; i < textures.size(); ++i)
     {
-        SDL_DestroyTexture(item->data);
+        glDeleteTextures(1, &textures[i]->index);
+        delete(textures[i]);
     }
     textures.clear();
 
-    IMG_Quit();
+    // Shaders
+    for (unsigned int i = 0; i < shaders.size(); ++i)
+        delete(shaders[i]);
+    shaders.clear();
 
     return true;
 }
+// --------------------------------------------
 
-SDL_Texture* const ModuleResources::LoadTexture(const char* path)
+std::string ModuleResources::ReadTextFile(const char* filepath)
 {
-    SDL_Texture* texture = NULL;
-    SDL_Surface* surface = IMG_Load(path);
+    std::ifstream ifs(filepath);
 
-    if (surface == NULL)
+    if (ifs)
     {
-        LOG("Could not load surface with path: %s. IMG_Load: %s", path, IMG_GetError());
-        return NULL;
+        std::string fileText((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        return  fileText;
     }
 
-    texture = LoadSurface(surface);
-    SDL_FreeSurface(surface);
-
-    return texture;
+    LOG("fopen() failed reading file {0}", filepath);
+    return "ERROR";
 }
 
-SDL_Texture* const ModuleResources::LoadSurface(SDL_Surface* surface)
+u64 ModuleResources::GetFileLastWriteTimestamp(const char* filepath)
 {
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(App->renderer->GetRenderer(), surface);
+    union Filetime2u64 {
+        FILETIME filetime;
+        u64      u64time;
+    } conversor;
 
-    if (texture == NULL)
+    WIN32_FILE_ATTRIBUTE_DATA Data;
+    if (GetFileAttributesExA(filepath, GetFileExInfoStandard, &Data)) {
+        conversor.filetime = Data.ftLastWriteTime;
+        return(conversor.u64time);
+    }
+    return 0;
+}
+
+// Programs
+GLuint ModuleResources::CreateShader(std::string source, const char* name)
+{
+    GLchar  infoLogBuffer[1024] = {};
+    GLsizei infoLogBufferSize = sizeof(infoLogBuffer);
+    GLsizei infoLogSize;
+    GLint   success;
+
+    char versionString[] = "#version 330\n";
+    char shaderNameDefine[128];
+    sprintf_s(shaderNameDefine, "#define %s\n", name);
+    char vertexShaderDefine[] = "#define VERTEX\n";
+    char fragmentShaderDefine[] = "#define FRAGMENT\n";
+
+    const GLchar* vertexShaderSource[] = {
+        versionString,
+        shaderNameDefine,
+        vertexShaderDefine,
+        source.c_str()
+    };
+    const GLint vertexShaderLengths[] = {
+        (GLint)strlen(versionString),
+        (GLint)strlen(shaderNameDefine),
+        (GLint)strlen(vertexShaderDefine),
+        (GLint)source.length()
+    };
+    const GLchar* fragmentShaderSource[] = {
+        versionString,
+        shaderNameDefine,
+        fragmentShaderDefine,
+        source.c_str()
+    };
+    const GLint fragmentShaderLengths[] = {
+        (GLint)strlen(versionString),
+        (GLint)strlen(shaderNameDefine),
+        (GLint)strlen(fragmentShaderDefine),
+        (GLint)source.length()
+    };
+
+    GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vshader, ARRAY_COUNT(vertexShaderSource), vertexShaderSource, vertexShaderLengths);
+    glCompileShader(vshader);
+    glGetShaderiv(vshader, GL_COMPILE_STATUS, &success);
+    if (!success)
     {
-        LOG("Unable to create texture from surface! SDL Error: %s\n", SDL_GetError());
-        return NULL;
+        glGetShaderInfoLog(vshader, infoLogBufferSize, &infoLogSize, infoLogBuffer);
+        LOG("glCompileShader() failed with vertex shader %s\nReported message:\n%s\n", name, infoLogBuffer);
     }
 
-    textures.add(texture);
-    return texture;
-}
-
-bool ModuleResources::UnloadTexture(SDL_Texture* texture)
-{
-    ListItem<SDL_Texture*>* item;
-    for (item = textures.front(); item != NULL; item = item->next)
+    GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fshader, ARRAY_COUNT(fragmentShaderSource), fragmentShaderSource, fragmentShaderLengths);
+    glCompileShader(fshader);
+    glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
+    if (!success)
     {
-        if (texture == item->data)
-        {
-            SDL_DestroyTexture(item->data);
-            textures.erase(item);
-            return true;
-        }
+        glGetShaderInfoLog(fshader, infoLogBufferSize, &infoLogSize, infoLogBuffer);
+        LOG("glCompileShader() failed with fragment shader %s\nReported message:\n%s\n", name, infoLogBuffer);
     }
 
-    return false;
+    GLuint programHandle = glCreateProgram();
+    glAttachShader(programHandle, vshader);
+    glAttachShader(programHandle, fshader);
+    glLinkProgram(programHandle);
+    glGetProgramiv(programHandle, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(programHandle, infoLogBufferSize, &infoLogSize, infoLogBuffer);
+        LOG("glLinkProgram() failed with program %s\nReported message:\n%s\n", name, infoLogBuffer);
+    }
+
+    glUseProgram(0);
+
+    glDetachShader(programHandle, vshader);
+    glDetachShader(programHandle, fshader);
+    glDeleteShader(vshader);
+    glDeleteShader(fshader);
+
+    return programHandle;
 }
 
-void ModuleResources::GetTextureSize(const SDL_Texture* texture, unsigned int& width, unsigned int& height) const
+u64 ModuleResources::LoadShader(const char* filepath, const char* name)
 {
-    SDL_QueryTexture((SDL_Texture*)texture, NULL, NULL, (int*)&width, (int*)&height);
+    std::string source = ModuleResources::ReadTextFile(filepath);
+
+    Shader* shader = new Shader();
+    shader->index = CreateShader(source, name);
+    shader->filepath = filepath;
+    shader->name = name;
+    shader->timestamp = ModuleResources::GetFileLastWriteTimestamp(filepath);
+
+    // getting info from the shader
+    GLint attributeSize = 0;
+    GLenum attributeType = 0;
+    const GLsizei bufferSize = 64;
+    GLchar attributeName[bufferSize];
+
+    GLint attributeCount = 0;
+    glGetProgramiv(shader->index, GL_ACTIVE_ATTRIBUTES, &attributeCount);
+
+    for (int i = 0; i < attributeCount; ++i)
+    {
+        VertexShaderAttribute attribute = {};
+        GLsizei attributeNameLength = 0;
+
+        glGetActiveAttrib(shader->index, (GLuint)i, bufferSize,
+            &attributeNameLength, &attributeSize, &attributeType, attributeName);
+
+        attribute.ncomponents = attributeSize;
+        attribute.location = glGetAttribLocation(shader->index, attributeName);
+
+        shader->vertexShaderLayout.attributes.push_back(attribute);
+    }
+
+    shaders.push_back(shader);
+    return shaders.size() - 1;
+}
+
+GLuint ModuleResources::CreateTexture(Image image)
+{
+    GLenum internalFormat = GL_RGB8;
+    GLenum dataFormat = GL_RGB;
+    GLenum dataType = GL_UNSIGNED_BYTE;
+
+    switch (image.nchannels)
+    {
+    case 3: dataFormat = GL_RGB; internalFormat = GL_RGB8; break;
+    case 4: dataFormat = GL_RGBA; internalFormat = GL_RGBA8; break;
+    default: LOG("CreateTexture() - Unsupported number of channels");
+    }
+
+    GLuint texHandle;
+    glGenTextures(1, &texHandle);
+    glBindTexture(GL_TEXTURE_2D, texHandle);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size.x, image.size.y, 0, dataFormat, dataType, image.pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    return texHandle;
+}
+
+Texture* ModuleResources::LoadTexture(const char* filepath)
+{
+    // Check if already loaded
+    for (Texture* tex : textures)
+    {
+        if (tex->filepath == filepath)
+            return tex;
+    }
+
+    Image image = {};
+    stbi_set_flip_vertically_on_load(false);
+    image.pixels = stbi_load(filepath, &image.size.x, &image.size.y, &image.nchannels, 0); // load image
+    if (image.pixels)
+    {
+        image.stride = image.size.x * image.nchannels;
+
+        Texture* tex = new Texture();
+        tex->index = CreateTexture(image);
+        tex->filepath = filepath;
+        tex->size = image.size;
+
+        textures.push_back(tex);
+
+        stbi_image_free(image.pixels); // free image
+        return tex;
+    }
+    else
+        return nullptr;
 }
