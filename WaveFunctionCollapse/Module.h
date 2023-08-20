@@ -17,14 +17,11 @@ public:
 
 	void SetEnabled(bool active)
 	{
-		if (enabled != active)
-		{
-			enabled = active;
-			if (active == true)
-				Start();
-			else
-				CleanUp();
-		}
+		if (enabled == active)
+			return;
+
+		enabled = active;
+		(active == true) ? Start() : CleanUp();
 	}
 
 private:

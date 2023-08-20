@@ -14,11 +14,6 @@ ModuleScene::~ModuleScene()
 {
 }
 
-bool ModuleScene::Init()
-{
-	return true;
-}
-
 bool ModuleScene::Start()
 {
 	// Load Scenes
