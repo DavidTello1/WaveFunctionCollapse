@@ -35,6 +35,19 @@ public:
 	}
 
 	// --- Operators
+	const List<T>& operator =(const List<T>& other) {
+		if (numElements > 0)
+			clear();
+
+		ListItem<T>* item = other.start;
+		for (item = other.start; item != nullptr; item = item->next)
+		{
+			add(item->data);
+		}
+
+		return (*this);
+	}
+
 	const List<T>& operator +=(const List<T>& other) {
 		ListItem<T>* item = other.start;
 
