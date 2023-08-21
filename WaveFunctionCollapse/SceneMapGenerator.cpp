@@ -8,6 +8,7 @@
 
 #include "MapGenerator.h"
 #include "Tile.h"
+#include "Cell.h"
 #include "UI_Button.h"
 
 #include "Imgui/imgui.h"
@@ -77,24 +78,42 @@ bool SceneMapGenerator::Start()
 
 bool SceneMapGenerator::Update(float dt)
 {
+	selectedCells.clear();
+
 	// --- UI Buttons
 	ListItem<UI_Button*>* item;
+	int index = 0;
 	for (item = buttons.front(); item != nullptr; item = item->next)
 	{
 		item->data->Update();
+
+		if (isPlay && item->data->IsSelected())
+			selectedCell = index;
+
+		if (item->data->IsSelected())
+			selectedCells.add(index);
+
+		index++;
 	}
 
 	// -------------------
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) // Step
 	{
 		map->IsFinished() ? map->Reset() : map->Step();
+		isPlay = true;
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) // Play
 	{
 		if (map->IsFinished())
 			map->Reset();
 
 		map->GenerateMap();
+		isPlay = true;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) // Stop
+	{
+		map->Reset();
+		isPlay = false;
 	}
 
 	return true;
@@ -131,6 +150,11 @@ bool SceneMapGenerator::DrawUI()
 	return true;
 }
 
+void SceneMapGenerator::PresetCells(List<unsigned int> cells, unsigned int tileID)
+{
+
+}
+
 void SceneMapGenerator::DrawPanel()
 {
 	static const int panelWidth = 220;
@@ -144,11 +168,15 @@ void SceneMapGenerator::DrawPanel()
 	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		// --- Buttons
-		ImGui::ImageButton((ImTextureID)stepIcon, ImVec2(30, 30));
+		static const int buttonSize = 30;
+		static const int paddingX = (ImGui::GetContentRegionAvailWidth() - 3 * (buttonSize + 12)) / 2;
+
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + paddingX);
+		ImGui::ImageButton((ImTextureID)stepIcon, ImVec2(buttonSize, buttonSize));
 		ImGui::SameLine();
-		ImGui::ImageButton((ImTextureID)playIcon, ImVec2(30, 30));
+		ImGui::ImageButton((ImTextureID)playIcon, ImVec2(buttonSize, buttonSize));
 		ImGui::SameLine();
-		ImGui::ImageButton((ImTextureID)restartIcon, ImVec2(30, 30));
+		ImGui::ImageButton((ImTextureID)restartIcon, ImVec2(buttonSize, buttonSize));
 		ImGui::Separator();
 
 		// --- World Data
@@ -165,52 +193,103 @@ void SceneMapGenerator::DrawPanel()
 		ImGui::Separator();
 
 		// --- Cell Inspection
-		ImGui::Columns(2, "Cell Inspection", false);
-		ImGui::SetColumnWidth(0, 65);
-		ImGui::Image((ImTextureID)0, ImVec2(50, 50));
-		ImGui::NextColumn();
-
-		ImGui::Text("Index: %d", 0);
-		ImGui::Text("Position: %d,%d", 0, 0);
-		ImGui::Text("isCollapsed: %s", false);
-		ImGui::Text("tileID: %d", -1);
-		ImGui::Text("mask: %s", "1111111");
-		ImGui::Columns(1);
-
-		// --- Tiles Selector
-		static const int imageWidth = 30;
-		static const int numColumns = 4;
-		static const int menuBarHeight = 32;
-		static const int itemSpacing = 10;
-
-		int numRows = numTiles / numColumns;
-		if (numTiles % numColumns != 0)
-			numRows++;
-
-		int childHeight = numRows * (imageWidth + itemSpacing) + menuBarHeight;
-		childHeight = MIN(childHeight, ImGui::GetContentRegionAvail().y);
-		if (ImGui::BeginChild("Mask Inspector", ImVec2(0, childHeight), true, ImGuiWindowFlags_MenuBar))
-		{
-			if (ImGui::BeginMenuBar())
-			{
-				ImGui::EndMenuBar();
-			}
-
-			int count = 0;
-			for (int i = 0; i < numTiles; ++i)
-			{
-				ImGui::ImageButton((ImTextureID)0, ImVec2(imageWidth, imageWidth));
-				count++;
-
-				if (count < numColumns)
-					ImGui::SameLine();
-				else
-					count = 0;
-			}
-		}
-		ImGui::EndChild();
+		DrawCellInspector();
 	}
 	ImGui::End();
+}
+
+void SceneMapGenerator::DrawCellInspector()
+{
+	List<unsigned int> tileArray;
+
+	if (isPlay)
+	{
+		if (selectedCell == -1)
+		{
+			ImGui::Columns(2, "Cell Inspection", false);
+			ImGui::SetColumnWidth(0, 65);
+			ImGui::Image((ImTextureID)0, ImVec2(50, 50));
+			ImGui::NextColumn();
+
+			ImGui::Text("Index: -");
+			ImGui::Text("Position: -");
+			ImGui::Text("Collapsed: -");
+			ImGui::Text("TileID: -");
+			ImGui::Text("Mask: -");
+			ImGui::Columns(1);
+
+			return;
+		}
+
+		Cell* cell = map->GetCell(selectedCell);
+		ImTextureID texture = 0;
+		if (cell->isCollapsed)
+			texture = (ImTextureID)map->GetTile(cell->tileID)->texture;
+
+		ImGui::Columns(2, "Cell Inspection", false);
+		ImGui::SetColumnWidth(0, 65);
+		ImGui::Image(texture, ImVec2(50, 50));
+		ImGui::NextColumn();
+
+		ImGui::Text("Index: %d", selectedCell);
+		ImGui::Text("Position: %d,%d", selectedCell % width, selectedCell / width);
+		ImGui::Text("Collapsed: %s", (cell->isCollapsed) ? "true" : "false");
+		ImGui::Text("TileID: %d", cell->tileID);
+		ImGui::Text("Mask: %s", cell->mask->ToString());
+		ImGui::Columns(1);
+
+		tileArray = cell->mask->GetSetBits();
+	}
+	else
+	{
+		ImGui::Text("Selected Cells: %d", selectedCells.size());
+
+		if (selectedCells.empty())
+			return;
+
+		for (unsigned int i = 0; i < numTiles; ++i)
+		{
+			tileArray.add(i);
+		}
+	}
+
+	// --- Tiles Selector
+	static const int imageWidth = 30;
+	static const int numColumns = 4;
+	static const int menuBarHeight = 32;
+	static const int itemSpacing = 10;
+
+	int numRows = tileArray.size() / numColumns;
+	if (tileArray.size() % numColumns != 0)
+		numRows++;
+
+	int childHeight = numRows * (imageWidth + itemSpacing) + menuBarHeight;
+	childHeight = MIN(childHeight, ImGui::GetContentRegionAvail().y);
+	if (ImGui::BeginChild("Mask Inspector", ImVec2(0, childHeight), true, ImGuiWindowFlags_MenuBar))
+	{
+		if (ImGui::BeginMenuBar())
+		{
+			ImGui::EndMenuBar();
+		}
+
+		int count = 0;
+		for (int i = 0; i < tileArray.size(); ++i)
+		{
+			unsigned int index = tileArray[i]->data;
+			ImTextureID texture = (ImTextureID)map->GetTile(index)->texture;
+			if (ImGui::ImageButton(texture, ImVec2(imageWidth, imageWidth)))
+			{
+				//PresetCells(selectedCells, i);
+			}
+			count++;
+
+			if (count < numColumns)
+				ImGui::SameLine();
+			else
+				count = 0;
+		}
+	}
+	ImGui::EndChild();
 }
 
 void SceneMapGenerator::DrawButtons()

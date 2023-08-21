@@ -27,7 +27,10 @@ public:
 	bool DrawUI() override;
 
 private:
+	void PresetCells(List<unsigned int> cells, unsigned int tileID);
+
 	void DrawPanel();
+	void DrawCellInspector();
 	void DrawButtons();
 
 	void UpdateButtonsPosition();
@@ -45,7 +48,9 @@ private:
 	// --- Debug
 	List<UI_Button*> buttons;
 	List<unsigned int> selectedCells;
+	int selectedCell = -1;
 
+	bool isPlay = false;
 	bool isDrawTextures = true;
 	bool isDrawSpaced = true;
 	
