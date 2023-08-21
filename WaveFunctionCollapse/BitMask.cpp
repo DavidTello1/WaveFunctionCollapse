@@ -132,6 +132,18 @@ BitMask& BitMask::operator&=(const BitMask& other)
 	return *this;
 }
 
+const char* BitMask::ToString() //***
+{
+	char text[50] = ""; //*** size equals numBits
+
+	for (unsigned int i = 0; i < numBits; ++i)
+	{
+		(GetBit(i)) ? strcat_s(text, "1") : strcat_s(text, "0");
+	}
+
+	return text;
+}
+
 void BitMask::SetBit(unsigned int index, bool value)
 {
 	(value) ? SetBit(index) : ClearBit(index);
@@ -163,25 +175,33 @@ int BitMask::Count() const
 	return count;
 }
 
-int BitMask::Pick()
+List<unsigned int> BitMask::GetSetBits()
 {
-	int count = 0;
-	List<int> positions = List<int>();
+	List<unsigned int> positions = List<unsigned int>();
 
 	for (unsigned int i = 0; i < numBits; ++i)
 	{
 		if (GetBit(i) == true)
-		{
 			positions.add(i);
-			count++;
-		}
 	}
 
-	if (count <= 0)
+	return positions;
+}
+
+int BitMask::Pick()
+{
+	List<unsigned int> positions = GetSetBits();
+
+	if (positions.size() == 0)
 		return -1;
 
-	int index = rand() % count;
-	return positions[index]->data;
+	int index = rand() % positions.size();
+
+	int pick = positions[index]->data;
+	//ClearAll();
+	//SetBit(pick);
+
+	return pick;
 }
 
 void BitMask::Peek() const

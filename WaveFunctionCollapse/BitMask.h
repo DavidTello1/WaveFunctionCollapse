@@ -1,5 +1,7 @@
 #pragma once
 
+#include "List.h"
+
 class BitMask
 {
 private:
@@ -26,10 +28,12 @@ public:
 	BitMask& operator&=(const BitMask& other);
 
 	// --- Utils
+	const char* ToString();
 	void SetBit(unsigned int index, bool value);
 	void SetAll(); // Set all bits to 1
 	void ClearAll(); // Set all bits to 0
 
+	List<unsigned int> GetSetBits();
 	int Count() const;
 	int Pick(); // Returns index or -1 if no bit is set
 
