@@ -25,7 +25,7 @@ public:
 	bool CleanUp() override;
 
 	KEY_STATE GetKey(int id) const { return keyboard[id]; }
-	KEY_STATE GetMouseButton(int id) const { return mouseButtons[id]; }
+	KEY_STATE GetMouseButton(int id) const { return mouseButtons[id - 1]; }
 
 	// Get mouse / axis position
 	void GetMouseMotion(int& x, int& y) const { x = mouseMotionX; y = mouseMotionY; }

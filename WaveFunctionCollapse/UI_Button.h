@@ -1,54 +1,38 @@
-//#pragma once
-//
-//struct SDL_Color;
-//
-//class UI_Button
-//{
-//	UI_Button(int x, int y, int width, int height, SDL_Color idleColor, SDL_Color hoverColor, SDL_Color selectedColor) {
-//		this->x = x;
-//		this->y = y;
-//		this->width = width;
-//		this->height = height;
-//		this->idleColor = idleColor;
-//		this->hoverColor = hoverColor;
-//		this->selectedColor = selectedColor;
-//		this->isSelected = false;
-//	}
-//
-//	~UI_Button() {
-//	}
-//
-//	void Update() {
-//		if (!IsHovered())
-//			return;
-//
-//		if (mouseButton == KEY_REPEAT)
-//		{ 
-//			isSelected = true; 
-//		}
-//		else if (mouseButton == KEY_DOWN)
-//		{ 
-//			isSelected = !isSelected; 
-//		}
-//	}
-//
-//	void Draw() {
-//		SDL_Color color = idleColor;
-//		if (isSelected)
-//			color = selectedColor;
-//		else if (IsHovered())
-//			color = hoverColor;
-//
-//		DrawQuad(x, y, width, height, color);
-//	}
-//
-//	bool IsHovered() const { return (mouseX >= x && mouseX < width && mouseY >= y && mouseY < height); }
-//	bool IsSelected() const { return isSelected; }
-//
-//private:
-//	int x, y;
-//	int width, height;
-//	bool isSelected = false;
-//
-//	SDL_Color idleColor, hoverColor, selectedColor;
-//};
+#pragma once
+
+#include "glm/include/glm/glm.hpp"
+
+class UI_Button
+{
+public:
+	UI_Button(int x, int y, int width, int height, glm::vec4 idleColor, glm::vec4 hoverColor, glm::vec4 selectedColor) {
+		this->x = x;
+		this->y = y;
+		this->width = width;
+		this->height = height;
+		this->idleColor = idleColor;
+		this->hoverColor = hoverColor;
+		this->selectedColor = selectedColor;
+		this->isSelected = false;
+	}
+	~UI_Button() {}
+
+	// --- Logic
+	void Update();
+	void Draw();
+
+	// --- Utils
+	bool IsHovered() const;
+	bool IsSelected() const { return isSelected; }
+
+	const int GetPosX() const { return x; }
+	const int GetPosY() const { return y; }
+	void SetPos(int x, int y) { this->x = x; this->y = y; }
+
+private:
+	int x, y;
+	int width, height;
+	bool isSelected = false;
+
+	glm::vec4 idleColor, hoverColor, selectedColor;
+};

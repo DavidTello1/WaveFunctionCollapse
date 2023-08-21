@@ -8,6 +8,7 @@
 
 #include "MapGenerator.h"
 #include "Tile.h"
+#include "UI_Button.h"
 
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -29,6 +30,20 @@ bool SceneMapGenerator::Init()
 	height = 25;
 
 	camera = new Camera();
+
+	// --- Buttons
+	glm::vec4 idleColor = { 0, 0, 0, 0 };
+	glm::vec4 hoverColor = { 0, 0, 1, 0.5f };
+	glm::vec4 selectedColor = { 0, 0, 1, 0.75f };
+
+	for (int x = 0; x < width; ++x)
+	{
+		for (int y = 0; y < height; ++y)
+		{
+			buttons.add(new UI_Button(x, y, cellSize, cellSize, idleColor, hoverColor, selectedColor));
+		}
+	}
+	UpdateButtonsPosition();
 
     return true;
 }
@@ -62,9 +77,14 @@ bool SceneMapGenerator::Start()
 
 bool SceneMapGenerator::Update(float dt)
 {
-	static bool isDrawTextures = true;
-	static bool isSpacedCells = true;
+	// --- UI Buttons
+	ListItem<UI_Button*>* item;
+	for (item = buttons.front(); item != nullptr; item = item->next)
+	{
+		item->data->Update();
+	}
 
+	// -------------------
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		map->IsFinished() ? map->Reset() : map->Step();
@@ -85,6 +105,13 @@ bool SceneMapGenerator::CleanUp()
 	delete camera;
 	delete map;
 
+	ListItem<UI_Button*>* item;
+	for (item = buttons.front(); item != nullptr; item = item->next)
+	{
+		delete item->data;
+	}
+	buttons.clear();
+
     return true;
 }
 
@@ -97,6 +124,14 @@ bool SceneMapGenerator::Draw()
 }
 
 bool SceneMapGenerator::DrawUI()
+{
+	DrawPanel();
+	DrawButtons();
+
+	return true;
+}
+
+void SceneMapGenerator::DrawPanel()
 {
 	static const int panelWidth = 220;
 	static const int panelHeight = App->window->GetHeight() - 6;
@@ -119,12 +154,13 @@ bool SceneMapGenerator::DrawUI()
 		// --- World Data
 		int size[2] = { width, height };
 		ImGui::DragInt2("Size", size, 1.0f, 1, 1000);
-		
+
 		if (ImGui::Checkbox("Draw Textures", &isDrawTextures)) {
 			map->SetDrawTextures(isDrawTextures);
 		}
 		if (ImGui::Checkbox("Draw Spacing", &isDrawSpaced)) {
 			map->SetSpacedCells(isDrawSpaced);
+			UpdateButtonsPosition();
 		}
 		ImGui::Separator();
 
@@ -175,6 +211,42 @@ bool SceneMapGenerator::DrawUI()
 		ImGui::EndChild();
 	}
 	ImGui::End();
+}
 
-	return true;
+void SceneMapGenerator::DrawButtons()
+{
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i)
+	{
+		buttons[i]->data->Draw();
+	}
+}
+
+void SceneMapGenerator::UpdateButtonsPosition()
+{
+	static const int offsetX = (App->window->GetWidth() - (width * cellSize)) / 2;
+	static const int offsetY = (App->window->GetHeight() - (height * cellSize)) / 2;
+
+	static const int spacing = 2;
+
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i)
+	{
+		int x = i % width;
+		int y = i / width;
+
+		glm::vec2 position = {x * cellSize + offsetX, y * cellSize + offsetY };
+		glm::vec2 size = { cellSize, cellSize };
+
+		if (isDrawSpaced)
+		{
+			const int offsetSpacedX = (App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
+			const int offsetSpacedY = (App->window->GetHeight() - ((height + spacing) * cellSize)) / 2;
+
+			position.x = x * cellSize + offsetSpacedX + x * spacing;
+			position.y = y * cellSize + offsetSpacedY + y * spacing;
+		}
+
+		buttons[i]->data->SetPos(position.x, position.y);
+	}
 }

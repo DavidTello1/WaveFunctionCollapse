@@ -4,6 +4,7 @@
 #include "List.h"
 
 class MapGenerator;
+class UI_Button;
 
 class SceneMapGenerator : public Scene
 {
@@ -26,6 +27,12 @@ public:
 	bool DrawUI() override;
 
 private:
+	void DrawPanel();
+	void DrawButtons();
+
+	void UpdateButtonsPosition();
+
+private:
 	MapGenerator* map = nullptr;
 
 	// --- Map Data
@@ -36,6 +43,7 @@ private:
 	//Flags flags;
 
 	// --- Debug
+	List<UI_Button*> buttons;
 	List<unsigned int> selectedCells;
 
 	bool isDrawTextures = true;
