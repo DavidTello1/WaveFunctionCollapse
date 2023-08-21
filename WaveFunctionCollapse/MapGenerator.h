@@ -24,6 +24,10 @@ public:
 
 	// --- Utils
 	bool IsFinished() const { return isCollapsed; }
+	Cell* GetCell(unsigned int index) { return cells[index]; }
+	Cell* GetCell(unsigned int index) const { return cells[index]; }
+	Tile* GetTile(unsigned int index) { return tiles[index]; }
+	Tile* GetTile(unsigned int index) const { return tiles[index]; }
 
 	// --- Debug
 	void SetDrawTextures(bool value) { isDrawTextures = value; }
@@ -49,5 +53,7 @@ private:
 
 	DynArray<Cell*> cells;
 	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class
+
+	DynArray<unsigned int> presetCells;
 };
 
