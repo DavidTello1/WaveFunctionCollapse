@@ -1,6 +1,8 @@
 #pragma once
 #include "Scene.h"
 
+#include "List.h"
+
 class MapGenerator;
 
 class SceneMapGenerator : public Scene
@@ -24,11 +26,23 @@ public:
 	bool DrawUI() override;
 
 private:
+	MapGenerator* map = nullptr;
+
+	// --- Map Data
+	static const int numTiles = 7;
 	static const int cellSize = 24;
 	int width = 25;
 	int height = 25;
 	//Flags flags;
 
-	MapGenerator* map = nullptr;
+	// --- Debug
+	List<unsigned int> selectedCells;
+
+	bool isDrawTextures = true;
+	bool isDrawSpaced = true;
+	
+	unsigned int stepIcon = 0;
+	unsigned int playIcon = 0;
+	unsigned int restartIcon = 0;
 };
 
