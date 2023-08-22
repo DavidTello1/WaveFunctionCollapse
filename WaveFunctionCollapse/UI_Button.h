@@ -4,6 +4,8 @@
 
 class UI_Button
 {
+	friend class ButtonGrid;
+
 public:
 	UI_Button(int x, int y, int width, int height, glm::vec4 idleColor, glm::vec4 hoverColor, glm::vec4 selectedColor) {
 		this->x = x;

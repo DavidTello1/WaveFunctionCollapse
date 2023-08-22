@@ -13,8 +13,6 @@ public:
 	~MapGenerator();
 
 	void GenerateMap();
-	void DrawMap();
-
 	void Step();
 	void Reset();
 
@@ -28,10 +26,6 @@ public:
 	Cell* GetCell(unsigned int index) const { return cells[index]; }
 	Tile* GetTile(unsigned int index) { return tiles[index]; }
 	Tile* GetTile(unsigned int index) const { return tiles[index]; }
-
-	// --- Debug
-	void SetDrawTextures(bool value) { isDrawTextures = value; }
-	void SetSpacedCells(bool value) { isSpacedCells = value; }
 
 private:
 	int HeuristicPick();
@@ -47,9 +41,6 @@ private:
 	int cellSize = 0;
 
 	bool isCollapsed = false;
-
-	bool isDrawTextures = true; // for debug purposes
-	bool isSpacedCells = true; // for debug purposes
 
 	DynArray<Cell*> cells;
 	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class

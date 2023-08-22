@@ -81,62 +81,6 @@ void MapGenerator::Reset()
 	}
 }
 
-void MapGenerator::DrawMap()
-{
-	static const glm::vec3 black = { 0, 0, 0 };
-	static const glm::vec3 white = { 255, 255, 255 };
-	static const glm::vec3 red = { 255, 0, 0 };
-	static const glm::vec3 green = { 0, 255, 0 };
-
-	static const int offsetX = (App->window->GetWidth() - (width * cellSize)) / 2;
-	static const int offsetY = (App->window->GetHeight() - (height * cellSize)) / 2;
-
-	static const int spacing = 2;
-
-	for (unsigned int i = 0; i < cells.size(); ++i)
-	{
-		Cell* cell = cells[i];
-		int x = cell->index % width;
-		int y = cell->index / width;
-
-		glm::vec2 position = { x * cellSize + offsetX, y * cellSize + offsetY };
-		glm::vec2 size = { cellSize, cellSize };
-
-		if (isSpacedCells)
-		{
-			const int offsetSpacedX = (App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
-			const int offsetSpacedY = (App->window->GetHeight() - ((height + spacing) * cellSize)) / 2;
-
-			position.x = x * cellSize + offsetSpacedX + x * spacing;
-			position.y = y * cellSize + offsetSpacedY + y * spacing;
-		}
-
-		if (isDrawTextures)
-		{
-			if (cell->isCollapsed)
-			{
-				Tile* tile = tiles[cell->tileID];
-				App->renderer->DrawQuad(position, size, tile->texture);
-			}
-			else
-			{
-				glm::vec3 color = (cell->isInvalid) ? red : white;
-				App->renderer->DrawQuad(position, size, glm::vec4(color, 1.0f));
-			}
-		}
-		else
-		{
-			glm::vec3 color = white;
-			if (cell->isInvalid)
-				color = red;
-			else if (cell->isCollapsed && cell->tileID != 0)
-				color = black;
-
-			App->renderer->DrawQuad(position, size, glm::vec4(color, 1.0f));
-		}
-	}
-}
-
 int MapGenerator::HeuristicPick()
 {
 	// Cells list sorted by entropy (smaller entropy first)

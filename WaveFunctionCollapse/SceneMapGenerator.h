@@ -4,16 +4,10 @@
 #include "List.h"
 
 class MapGenerator;
-class UI_Button;
+class ButtonGrid;
 
 class SceneMapGenerator : public Scene
 {
-//private:
-//	enum Flags {
-//		IS_DRAW_TEXTURES = 1 << 1,
-//		IS_DRAW_SPACED = 1 << 2
-//	};
-
 public:
 	SceneMapGenerator();
 	virtual ~SceneMapGenerator();
@@ -31,7 +25,6 @@ private:
 
 	void DrawPanel();
 	void DrawCellInspector();
-	void DrawButtons();
 
 	void UpdateButtonsPosition();
 
@@ -41,18 +34,16 @@ private:
 	// --- Map Data
 	static const int numTiles = 7;
 	static const int cellSize = 24;
+	static const int spacing = 2;
 	int width = 25;
 	int height = 25;
-	//Flags flags;
 
 	// --- Debug
-	List<UI_Button*> buttons;
-	List<unsigned int> selectedCells;
-	int selectedCell = -1;
+	ButtonGrid* buttonGrid = nullptr;
 
-	bool isPlay = false;
-	bool isDrawTextures = true;
-	bool isDrawSpaced = true;
+	bool isPlay = false; //*** mask
+	bool isDrawTextures = true; //***
+	bool isDrawSpaced = true; //***
 	
 	unsigned int stepIcon = 0;
 	unsigned int playIcon = 0;
