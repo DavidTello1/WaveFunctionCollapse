@@ -132,6 +132,28 @@ public:
 		return true;
 	}
 
+	bool erase(const T& data) {
+		ListItem<T>* item;
+		for (item = start; item != nullptr; item = item->next)
+		{
+			if (item->data == data)
+				return erase(item);
+		}
+		return false;
+	}
+
+	bool eraseAt(unsigned int index) { //***
+		//assert(index < numElements);
+
+		ListItem<T>* item = start;
+		for (unsigned int i = 0; i < index; ++i)
+		{
+			item = item->next;
+		}
+
+		return erase(item);
+	}
+
 	void clear() {
 		ListItem<T>* data;
 		ListItem<T>* next;
@@ -179,5 +201,18 @@ public:
 
 	ListItem<T>* front() const {
 		return start;
+	}
+
+	int find(const T& data) const {
+		ListItem<T>* item;
+		int count = 0;
+		for (item = start; item != nullptr; item = item->next)
+		{
+			if (item->data == data)
+				return count;
+
+			++count;
+		}
+		return -1;
 	}
 };
