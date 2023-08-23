@@ -49,38 +49,87 @@ MapGenerator::~MapGenerator()
 
 void MapGenerator::GenerateMap()
 {
-	int limit = cells.size();
+	if (isFirstStep)
+		FirstStep();
 
+	int limit = cells.size();
 	while (!isCollapsed && limit > 0) {
-		CollapseCells();
+		CollapseCell();
 		limit--;
 	}
 }
 
 void MapGenerator::Step()
 {
+	if (isFirstStep)
+		FirstStep();
+
 	if (isCollapsed)
 		return;
 
-	CollapseCells();
+	CollapseCell();
 }
 
-void MapGenerator::Reset()
+void MapGenerator::ResetMap()
 {
+	isFirstStep = true;
 	isCollapsed = false;
 
-	// Remove all cells
+	// Reset all not preset cells
 	for (unsigned int i = 0; i < cells.size(); ++i)
-		delete cells[i];
-	cells.clear();
-
-	// Create new cells
-	int numCells = width * height;
-	for (int i = 0; i < numCells; ++i) {
-		cells.push_back(new Cell(i, tiles.size()));
+	{
+		if (!cells[i]->isPreset)
+			cells[i]->Reset();
 	}
 }
 
+void MapGenerator::ClearPresetCells()
+{
+	for (unsigned int i = 0; i < presetCells.size(); ++i)
+	{
+		unsigned int index = presetCells[i]->data;
+		cells[index]->Reset();
+	}
+	presetCells.clear();
+}
+
+void MapGenerator::PresetCell(unsigned int index, unsigned int tileID)
+{
+	if (index > cells.size() || tileID > tiles.size())
+		return;
+
+	cells[index]->SetCell(tileID);
+	cells[index]->isPreset = true;
+	presetCells.add(index);
+}
+
+void MapGenerator::SetCell(unsigned int index, unsigned int tileID)
+{
+	if (index > cells.size() || tileID > tiles.size())
+		return;
+
+	cells[index]->SetCell(tileID);
+
+	// Propagate
+	List<int> queue = List<int>();
+	queue.add(cells[index]->index);
+
+	int limit = cells.size();
+	while (!queue.empty() && limit > 0)
+	{
+		queue += PropagateCell(queue.front()->data);
+		queue.pop_front();
+		limit--;
+	}
+}
+
+void MapGenerator::ResetCell(unsigned int index)
+{
+	cells[index]->Reset();
+	presetCells.erase(index);
+}
+
+//------------------------------------------------
 int MapGenerator::HeuristicPick()
 {
 	// Cells list sorted by entropy (smaller entropy first)
@@ -119,7 +168,7 @@ int MapGenerator::HeuristicPick()
 	return possibleCells[index];
 }
 
-void MapGenerator::CollapseCells()
+void MapGenerator::CollapseCell()
 {
 	int index = HeuristicPick();
 	if (index == -1)
@@ -154,6 +203,9 @@ List<int> MapGenerator::PropagateCell(const int index)
 			continue;
 
 		Cell* neighbour = cells[neighbourIndex];
+		if (neighbour->isCollapsed)
+			continue;
+
 		BitMask prevMask = BitMask(*neighbour->mask);
 
 		int tileIndex = cells[index]->tileID;
@@ -233,4 +285,25 @@ int MapGenerator::CheckNeighbour(int index, int direction) //*** change to x, y
 	}
 
 	return -1;
+}
+
+void MapGenerator::FirstStep()
+{
+	for (unsigned int i = 0; i < presetCells.size(); ++i)
+	{
+		unsigned int index = presetCells[i]->data;
+
+		List<int> queue = List<int>();
+		queue.add(cells[index]->index);
+
+		int limit = cells.size();
+		while (!queue.empty() && limit > 0)
+		{
+			queue += PropagateCell(queue.front()->data);
+			queue.pop_front();
+			limit--;
+		}
+	}
+
+	isFirstStep = false;
 }

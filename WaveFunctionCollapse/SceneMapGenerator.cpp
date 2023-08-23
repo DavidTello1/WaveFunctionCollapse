@@ -79,7 +79,7 @@ bool SceneMapGenerator::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) // Step
 	{
 		if (map->IsFinished())
-			map->Reset();
+			map->ResetMap();
 
 		if (isPlay == false)
 			buttonGrid->UnSelectAll();
@@ -92,7 +92,7 @@ bool SceneMapGenerator::Update(float dt)
 	else if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN) // Play
 	{
 		if (map->IsFinished())
-			map->Reset();
+			map->ResetMap();
 
 		map->GenerateMap();
 		isPlay = true;
@@ -101,7 +101,7 @@ bool SceneMapGenerator::Update(float dt)
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN) // Stop
 	{
-		map->Reset();
+		map->ResetMap();
 		isPlay = false;
 		buttonGrid->SetSelectionType(ButtonGrid::Type::MULTIPLE_SELECTION);
 		buttonGrid->UnSelectAll();
@@ -123,7 +123,7 @@ bool SceneMapGenerator::CleanUp()
 bool SceneMapGenerator::Draw()
 {
 	static const glm::vec3 black = { 0, 0, 0 };
-	static const glm::vec3 white = { 255, 255, 255 };
+	static const glm::vec3 gray = { 0.5f, 0.5f, 0.5f };
 	static const glm::vec3 red = { 255, 0, 0 };
 	static const glm::vec3 green = { 0, 255, 0 };
 
@@ -147,20 +147,20 @@ bool SceneMapGenerator::Draw()
 
 		if (isDrawTextures)
 		{
-			if (cell->isCollapsed)
+			if (!cell->isInvalid && (cell->isCollapsed || cell->tileID != -1))
 			{
 				Tile* tile = map->GetTile(cell->tileID);
 				App->renderer->DrawQuad(position, size, tile->texture);
 			}
 			else
 			{
-				glm::vec3 color = (cell->isInvalid) ? red : white;
+				glm::vec3 color = (cell->isInvalid) ? red : gray;
 				App->renderer->DrawQuad(position, size, glm::vec4(color, 1.0f));
 			}
 		}
 		else
 		{
-			glm::vec3 color = white;
+			glm::vec3 color = gray;
 			if (cell->isInvalid)
 				color = red;
 			else if (cell->isCollapsed && cell->tileID != 0)
@@ -181,9 +181,26 @@ bool SceneMapGenerator::DrawUI()
 	return true;
 }
 
-void SceneMapGenerator::PresetCells(List<unsigned int> cells, unsigned int tileID)
+void SceneMapGenerator::PresetCells(const List<unsigned int>& cells, const unsigned int tileID)
 {
+	for (unsigned int i = 0; i < cells.size(); ++i)
+	{
+		int index = cells[i]->data;
+		map->PresetCell(index, tileID);
+	}
 
+	buttonGrid->UnSelectAll();
+}
+
+void SceneMapGenerator::ClearCells(const List<unsigned int>& cells)
+{
+	for (unsigned int i = 0; i < cells.size(); ++i)
+	{
+		int index = cells[i]->data;
+		map->ResetCell(index);
+	}
+
+	buttonGrid->UnSelectAll();
 }
 
 void SceneMapGenerator::DrawPanel()
@@ -233,23 +250,9 @@ void SceneMapGenerator::DrawCellInspector()
 	if (isPlay)
 	{
 		if (buttonGrid->GetSelected().empty())
-		{
-			ImGui::Columns(2, "Cell Inspection", false);
-			ImGui::SetColumnWidth(0, 65);
-			ImGui::Image((ImTextureID)0, ImVec2(50, 50));
-			ImGui::NextColumn();
-
-			ImGui::Text("Index: -");
-			ImGui::Text("Position: -");
-			ImGui::Text("Collapsed: -");
-			ImGui::Text("TileID: -");
-			ImGui::Text("Mask: -");
-			ImGui::Columns(1);
-
 			return;
-		}
 
-		int index = buttonGrid->GetSelected()[0]->data;
+		int index = buttonGrid->GetSelected().front()->data;
 		Cell* cell = map->GetCell(index);
 		ImTextureID texture = 0;
 		if (cell->isCollapsed)
@@ -275,6 +278,11 @@ void SceneMapGenerator::DrawCellInspector()
 
 		if (buttonGrid->GetSelected().empty())
 			return;
+
+		if (ImGui::Button("Clear Cells"))
+		{
+			ClearCells(buttonGrid->GetSelected());
+		}
 
 		for (unsigned int i = 0; i < numTiles; ++i)
 			tileArray.add(i);
@@ -306,7 +314,13 @@ void SceneMapGenerator::DrawCellInspector()
 			ImTextureID texture = (ImTextureID)map->GetTile(index)->texture;
 			if (ImGui::ImageButton(texture, ImVec2(imageWidth, imageWidth)))
 			{
-				//PresetCells(selectedCells, i);
+				if (isPlay)
+				{
+					map->SetCell(buttonGrid->GetSelected().front()->data, index);
+					buttonGrid->UnSelectAll();
+				}
+				else
+					PresetCells(buttonGrid->GetSelected(), index);
 			}
 			count++;
 

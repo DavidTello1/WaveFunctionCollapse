@@ -21,11 +21,11 @@ public:
 	bool DrawUI() override;
 
 private:
-	void PresetCells(List<unsigned int> cells, unsigned int tileID);
-
 	void DrawPanel();
 	void DrawCellInspector();
 
+	void PresetCells(const List<unsigned int>& cells, const unsigned int tileID);
+	void ClearCells(const List<unsigned int>& cells);
 	void UpdateButtonsPosition();
 
 private:

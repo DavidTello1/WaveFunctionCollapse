@@ -13,24 +13,27 @@ public:
 	~MapGenerator();
 
 	void GenerateMap();
+	void ResetMap();
 	void Step();
-	void Reset();
 
-	//void PresetCell(unsigned int index, unsigned int tileID);
-	//void PresetCells(List<unsigned int> cells, List<unsigned int> tileIDs);
-	//void ClearPresetCells();
-
-	// --- Utils
-	bool IsFinished() const { return isCollapsed; }
+	// --- Getters
 	Cell* GetCell(unsigned int index) { return cells[index]; }
 	Cell* GetCell(unsigned int index) const { return cells[index]; }
 	Tile* GetTile(unsigned int index) { return tiles[index]; }
 	Tile* GetTile(unsigned int index) const { return tiles[index]; }
 
+	// --- Utils
+	bool IsFinished() const { return isCollapsed; }
+	void SetCell(unsigned int index, unsigned int tileID); // set and propagate cell
+	void ResetCell(unsigned int index);
+	void PresetCell(unsigned int index, unsigned int tileID); // Sets a cell to the defined tile but does not propagate
+	void ClearPresetCells();
+
 private:
 	int HeuristicPick();
-	void CollapseCells();
+	void CollapseCell();
 	List<int> PropagateCell(const int index);
+	void FirstStep(); // propagate preset cells
 	
 	// --- Utils
 	int CheckNeighbour(int index, int direction);
@@ -45,6 +48,7 @@ private:
 	DynArray<Cell*> cells;
 	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class
 
-	DynArray<unsigned int> presetCells;
+	List<unsigned int> presetCells;
+	bool isFirstStep = false;
 };
 
