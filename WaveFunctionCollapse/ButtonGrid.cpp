@@ -58,13 +58,16 @@ void ButtonGrid::Update()
 		{
 			button->isSelected = !button->isSelected;
 
-			if (button->isSelected)
+			if (!button->isSelected)
 			{
-				if (type == SINGLE_SELECTION)
-					UnSelectAll();
-
-				selected.add(i);
+				selected.erase(i);
+				return;
 			}
+
+			if (type == SINGLE_SELECTION)
+				UnSelectAll();
+
+			selected.add(i);
 		}
 		else if (type == MULTIPLE_SELECTION && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT &&
 			(App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT))
