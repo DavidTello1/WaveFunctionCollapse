@@ -255,7 +255,7 @@ void SceneMapGenerator::DrawCellInspector()
 		int index = buttonGrid->GetSelected().front()->data;
 		Cell* cell = map->GetCell(index);
 		ImTextureID texture = 0;
-		if (cell->isCollapsed)
+		if (cell->isCollapsed && !cell->isInvalid)
 			texture = (ImTextureID)map->GetTile(cell->tileID)->texture;
 
 		ImGui::Columns(2, "Cell Inspection", false);
