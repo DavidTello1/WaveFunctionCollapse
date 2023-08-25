@@ -134,6 +134,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="ButtonGrid.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
     <ClInclude Include="Glew\include\glxew.h" />

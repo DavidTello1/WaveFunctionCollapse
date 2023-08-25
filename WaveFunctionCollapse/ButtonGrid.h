@@ -1,4 +1,6 @@
 #pragma once
+#include "Color.h"
+
 #include "DynArray.h"
 #include "List.h"
 
@@ -31,12 +33,13 @@ public:
 
 	// --- Setters
 	void SetPosition(int x, int y) { this->x = x; this->y = y; UpdatePositions(); }
-	void SetWidth(int width) { this->width = width; UpdatePositions();}
-	void SetHeight(int height) { this->height = height; UpdatePositions();}
+	void SetWidth(int width) { Resize(width, height);}
+	void SetHeight(int height) { Resize(width, height);}
 	void SetSpacing(unsigned int spacing) { this->spacing = spacing; UpdatePositions();}
 	void SetSelectionType(Type type) { this->type = type; }
 
 	// --- Utils
+	void Resize(const int width, const int height);
 	void UnSelectAll();
 
 private:
@@ -48,6 +51,8 @@ private:
 	unsigned int buttonSize;
 	unsigned int spacing;
 	Type type;
+
+	Color idleColor, hoverColor, selectedColor;
 
 	DynArray<UI_Button*> buttons;
 	List<unsigned int> selected;

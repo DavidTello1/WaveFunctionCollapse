@@ -18,9 +18,9 @@ ButtonGrid::ButtonGrid(int x, int y, int width, int height, unsigned int buttonS
 	this->type = type;
 
 	// Colors
-	glm::vec4 idleColor = { 0, 0, 0, 0 }; // black, alpha 0
-	glm::vec4 hoverColor = { 0, 0, 1, 0.5f }; // blue, alpha 0.5
-	glm::vec4 selectedColor = { 0, 0, 1, 0.75f }; // blue, alpha 0.75
+	idleColor	  = { 0, 0, 0, 0 };		// black, alpha 0
+	hoverColor	  = { 0, 0, 1, 0.5f };	// blue, alpha 0.5
+	selectedColor = { 0, 0, 1, 0.75f }; // blue, alpha 0.75
 
 	// Init Buttons Array
 	for (int i = 0; i < width; ++i)
@@ -113,6 +113,33 @@ void ButtonGrid::UpdatePositions()
 		}
 	}
 
+}
+
+void ButtonGrid::Resize(const int width, const int height)
+{
+	this->width = width;
+	this->height = height;
+
+	// Delete buttons
+	for (unsigned int i = 0; i < buttons.size(); ++i)
+	{
+		delete buttons[i];
+	}
+	buttons.clear();
+
+	// Create buttons array with new size
+	for (int i = 0; i < width; ++i)
+	{
+		for (int j = 0; j < height; ++j)
+		{
+			int buttonX = x + i * (buttonSize + spacing);
+			int buttonY = y + j * (buttonSize + spacing);
+			buttons.push_back(new UI_Button(buttonX, buttonY, buttonSize, buttonSize, idleColor, hoverColor, selectedColor));
+		}
+	}
+
+	// Update positions
+	UpdatePositions();
 }
 
 void ButtonGrid::UnSelectAll()

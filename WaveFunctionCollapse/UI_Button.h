@@ -1,13 +1,12 @@
 #pragma once
-
-#include "glm/include/glm/glm.hpp"
+#include "Color.h"
 
 class UI_Button
 {
 	friend class ButtonGrid;
 
 public:
-	UI_Button(int x, int y, int width, int height, glm::vec4 idleColor, glm::vec4 hoverColor, glm::vec4 selectedColor) {
+	UI_Button(int x, int y, int width, int height, Color idleColor, Color hoverColor, Color selectedColor) {
 		this->x = x;
 		this->y = y;
 		this->width = width;
@@ -36,5 +35,5 @@ private:
 	int width, height;
 	bool isSelected = false;
 
-	glm::vec4 idleColor, hoverColor, selectedColor;
+	Color idleColor, hoverColor, selectedColor;
 };

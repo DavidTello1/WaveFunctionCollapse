@@ -30,13 +30,13 @@ void UI_Button::Update()
 
 void UI_Button::Draw()
 {
-	glm::vec4 color = idleColor;
+	Color color = idleColor;
 	if (isSelected)
 		color = selectedColor;
 	else if (IsHovered())
 		color = hoverColor;
 
-	App->renderer->DrawQuad(glm::vec2(x, y), glm::vec2(width, height), color);
+	App->renderer->DrawQuad(glm::vec2(x, y), glm::vec2(width, height), glm::vec4(color.r, color.g, color.b, color.a));
 }
 
 bool UI_Button::IsHovered() const
