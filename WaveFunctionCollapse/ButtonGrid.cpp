@@ -144,7 +144,7 @@ void ButtonGrid::Resize(const int width, const int height)
 
 void ButtonGrid::UnSelectAll()
 {
-	for (int i = 0; i < selected.size(); ++i)
+	for (unsigned int i = 0; i < selected.size(); ++i)
 	{
 		int index = selected[i]->data;
 		buttons[index]->isSelected = false;
