@@ -83,6 +83,20 @@ void MapGenerator::ResetMap()
 	}
 }
 
+void MapGenerator::Resize()
+{
+	// Remove cells
+	for (unsigned int i = 0; i < cells.size(); ++i)
+		delete cells[i];
+	cells.clear();
+
+	// Create new cell array with updated size
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i) {
+		cells.push_back(new Cell(i, this->tiles.size()));
+	}
+}
+
 void MapGenerator::ClearPresetCells()
 {
 	for (unsigned int i = 0; i < presetCells.size(); ++i)
