@@ -63,6 +63,9 @@ private:
 	State state = State::STOP;
 	ButtonGrid* buttonGrid = nullptr;
 
+	float widthRatio = 1.0f;
+	float heightRatio = 1.0f;
+
 	bool isMapPreset = false;
 	bool isDrawTextures = true;
 	bool isDrawSpaced = true;

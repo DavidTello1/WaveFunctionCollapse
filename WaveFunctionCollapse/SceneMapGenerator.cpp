@@ -30,6 +30,8 @@ bool SceneMapGenerator::Init()
 {
 	width = 25;
 	height = 25;
+	widthRatio = 1.0f;
+	heightRatio = 1.0f;
 
 	isMapPreset = false;
 	isDrawTextures = true;
@@ -339,6 +341,16 @@ void SceneMapGenerator::DrawSectionButtons()
 
 void SceneMapGenerator::DrawSectionOptions()
 {
+	ImGui::Columns(2, "Time", false);
+	ImGui::Text("Time elapsed:");
+	ImGui::Text("Total Time:");
+	ImGui::NextColumn();
+
+	//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), timeElapsed);
+	//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), totalTime);
+	ImGui::Columns(1);
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	ImGui::Checkbox("Draw Textures", &isDrawTextures);
 
 	if (ImGui::Checkbox("Draw Spacing", &isDrawSpaced))
@@ -355,12 +367,12 @@ void SceneMapGenerator::DrawSectionResize()
 
 	// Size
 	ImGui::SetNextItemWidth(thirdWidth);
-	if (ImGui::DragInt("Width", &mapWidth, 1.0f, 1, 1000))
-		mapHeight = mapWidth;
+	if (ImGui::DragInt("Width", &mapWidth, 1.0f, 1, 1000) && isAspectRatio)
+		mapHeight = mapWidth * heightRatio;
 
 	ImGui::SetNextItemWidth(thirdWidth);
 	if (ImGui::DragInt("Height", &mapHeight, 1.0f, 1, 1000) && isAspectRatio)
-		mapWidth = mapHeight;
+		mapWidth = mapHeight * widthRatio;
 
 	// Aspect Ratio
 	ImGui::Checkbox("Keep aspect ratio", &isAspectRatio);
@@ -377,8 +389,14 @@ void SceneMapGenerator::DrawSectionResize()
 	// Apply Button
 	if (ImGui::Button("Apply", ImVec2(halfWidth, 0)))
 	{
+		if (mapWidth == width && mapHeight == height)
+			return;
+
 		width = mapWidth;
 		height = mapHeight;
+
+		widthRatio = (float)width / (float)height;
+		heightRatio = (float)height / (float)width;
 
 		map->SetSize(mapWidth, mapHeight);
 
