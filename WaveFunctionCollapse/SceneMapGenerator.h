@@ -4,7 +4,9 @@
 #include "List.h"
 
 class MapGenerator;
+
 class ButtonGrid;
+class UI_Button;
 
 class SceneMapGenerator : public Scene
 {
@@ -62,6 +64,7 @@ private:
 	// --- Debug
 	State state = State::STOP;
 	ButtonGrid* buttonGrid = nullptr;
+	UI_Button* bgButton = nullptr;
 
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
@@ -75,4 +78,3 @@ private:
 	unsigned int stopIcon = 0;
 	unsigned int restartIcon = 0;
 };
-

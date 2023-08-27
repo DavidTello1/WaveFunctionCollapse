@@ -39,6 +39,7 @@ public:
 	void SetSelectionType(Type type) { this->type = type; }
 
 	// --- Utils
+	bool IsHovered() const;
 	void Resize(const int width, const int height);
 	void UnSelectAll();
 

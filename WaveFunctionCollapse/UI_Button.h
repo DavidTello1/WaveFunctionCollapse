@@ -24,6 +24,7 @@ public:
 
 	// --- Utils
 	bool IsHovered() const;
+	bool IsClicked() const { return isClicked; }
 	bool IsSelected() const { return isSelected; }
 
 	const int GetPosX() const { return x; }
@@ -33,6 +34,8 @@ public:
 private:
 	int x, y;
 	int width, height;
+
+	bool isClicked = false;
 	bool isSelected = false;
 
 	Color idleColor, hoverColor, selectedColor;

@@ -9,21 +9,26 @@
 
 void UI_Button::Update()
 {
+	isClicked = false;
+
 	if (!IsHovered())
 		return;
 
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
+		isClicked = true;
 		isSelected = !isSelected;
 	}
 	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && 
 		(App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT))
 	{
+		isClicked = true;
 		isSelected = true;
 	}
 	else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT &&
 		(App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RALT) == KEY_REPEAT))
 	{
+		isClicked = true;
 		isSelected = false;
 	}
 }

@@ -10,7 +10,9 @@
 #include "MapGenerator.h"
 #include "Tile.h"
 #include "Cell.h"
+
 #include "ButtonGrid.h"
+#include "UI_Button.h"
 
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -77,6 +79,10 @@ bool SceneMapGenerator::Start()
 	buttonGrid = new ButtonGrid(0, 0, width, height, cellSize, 0, ButtonGrid::Type::MULTIPLE_SELECTION);
 	UpdateButtonsPosition();
 
+	// --- Background Button ---
+	Color transparent = { 0,0,0,0 };
+	bgButton = new UI_Button(0, 0, App->window->GetWidth(), App->window->GetHeight(), transparent, transparent, transparent);
+
 	return true;
 }
 
@@ -87,6 +93,11 @@ bool SceneMapGenerator::Update(float dt)
 
 	// --- Update Button Grid
 	buttonGrid->Update();
+
+	// --- Update Background Button
+	bgButton->Update();
+	if (!buttonGrid->IsHovered() && bgButton->IsClicked())
+		buttonGrid->UnSelectAll();
 
 	// --- Shortcuts
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) // Step
@@ -111,6 +122,8 @@ bool SceneMapGenerator::CleanUp()
 	delete camera;
 
 	delete buttonGrid;
+	delete bgButton;
+
 	delete map;
 
     return true;

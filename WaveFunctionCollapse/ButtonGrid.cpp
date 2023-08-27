@@ -112,7 +112,18 @@ void ButtonGrid::UpdatePositions()
 			buttons[index]->y = y + j * (buttonSize + spacing);
 		}
 	}
+}
 
+bool ButtonGrid::IsHovered() const
+{
+	int mouseX = 0;
+	int mouseY = 0;
+	App->input->GetMousePosition(mouseX, mouseY);
+
+	int totalWidth = width * (buttonSize + spacing);
+	int totalHeight = height * (buttonSize + spacing);
+
+	return (mouseX >= x && mouseX < x + totalWidth && mouseY >= y && mouseY < y + totalHeight);
 }
 
 void ButtonGrid::Resize(const int width, const int height)

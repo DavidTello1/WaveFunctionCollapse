@@ -26,7 +26,6 @@ public:
 	Camera* GetCamera() { return camera; }
 
 protected:
-	char name[MODULE_NAME_LENGTH];
 
 	Camera* camera = nullptr;
 };
