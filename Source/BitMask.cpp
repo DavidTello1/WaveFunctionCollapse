@@ -132,6 +132,18 @@ BitMask& BitMask::operator&=(const BitMask& other)
 	return *this;
 }
 
+BitMask& BitMask::operator|=(const BitMask& other)
+{
+	//assert(numBits == other.numBits);
+
+	for (unsigned int i = 0; i < size; ++i)
+	{
+		bitArray[i] = bitArray[i] | other.bitArray[i];
+	}
+
+	return *this;
+}
+
 const char* BitMask::ToString() //***
 {
 	char text[50] = ""; //*** size equals numBits

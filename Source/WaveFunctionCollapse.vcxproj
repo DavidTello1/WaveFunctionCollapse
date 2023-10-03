@@ -249,9 +249,11 @@
     <ClInclude Include="SDL2\include\SDL_vulkan.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="stb\stb_image_write.h" />
+    <ClInclude Include="String.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UI_Button.h" />
+    <ClInclude Include="UI_Element.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

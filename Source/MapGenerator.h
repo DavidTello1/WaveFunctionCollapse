@@ -39,7 +39,8 @@ public:
 private:
 	int HeuristicPick();
 	void CollapseCell();
-	List<int> PropagateCell(const int index);
+	void PropagateCell(unsigned int index);
+	List<int> PropagateNeighbours(unsigned int index);
 	void FirstStep(); // propagate preset cells
 	
 	// --- Utils

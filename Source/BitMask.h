@@ -26,6 +26,7 @@ public:
 	const bool operator==(const BitMask& other) const;
 	const bool operator!=(const BitMask& other) const;
 	BitMask& operator&=(const BitMask& other);
+	BitMask& operator|=(const BitMask& other);
 
 	// --- Utils
 	const char* ToString();

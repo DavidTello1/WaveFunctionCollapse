@@ -52,15 +52,27 @@ bool ModuleInput::PreUpdate(float dt)
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 	for (int i = 0; i < MAX_KEYS; ++i)
 	{
-		if (keys[i] == 1) { keyboard[i] = (keyboard[i] == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT; }
-		else			  { keyboard[i] = (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN) ? KEY_UP : KEY_IDLE; }
+		if (keys[i] == 1)
+		{
+			keyboard[i] = (keyboard[i] == KEY_IDLE) ? KEY_DOWN : KEY_REPEAT; 
+		}
+		else			  
+		{ 
+			keyboard[i] = (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN) ? KEY_UP : KEY_IDLE; 
+		}
 	}
 
 	// Check mouse input
 	for (int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
 	{
-		if (mouseButtons[i] == KEY_DOWN)	{ mouseButtons[i] = KEY_REPEAT; }
-		else if (mouseButtons[i] == KEY_UP) { mouseButtons[i] = KEY_IDLE; }
+		if (mouseButtons[i] == KEY_DOWN)	
+		{ 
+			mouseButtons[i] = KEY_REPEAT; 
+		}
+		else if (mouseButtons[i] == KEY_UP)
+		{ 
+			mouseButtons[i] = KEY_IDLE;
+		}
 	}
 
 	// Mouse events

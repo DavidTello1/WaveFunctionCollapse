@@ -123,18 +123,7 @@ void MapGenerator::SetCell(unsigned int index, unsigned int tileID)
 		return;
 
 	cells[index]->SetCell(tileID);
-
-	// Propagate
-	List<int> queue = List<int>();
-	queue.add(cells[index]->index);
-
-	int limit = cells.size();
-	while (!queue.empty() && limit > 0)
-	{
-		queue += PropagateCell(queue.front()->data);
-		queue.pop_front();
-		limit--;
-	}
+	PropagateCell(index);
 }
 
 void MapGenerator::ResetCell(unsigned int index)
@@ -193,23 +182,27 @@ void MapGenerator::CollapseCell()
 	if (cells[index]->tileID == -1)
 		return;
 
+	PropagateCell(index);
+}
+
+void MapGenerator::PropagateCell(unsigned int index)
+{
 	List<int> queue = List<int>();
 	queue.add(cells[index]->index);
 
 	int limit = cells.size();
 	while (!queue.empty() && limit > 0)
 	{
-		queue += PropagateCell(queue.front()->data);
+		queue += PropagateNeighbours(queue.front()->data);
 		queue.pop_front();
 		limit--;
 	}
 }
 
-List<int> MapGenerator::PropagateCell(const int index)
+List<int> MapGenerator::PropagateNeighbours(unsigned int index) //***
 {
-	List<int> list = List<int>();
+	List<int> list;
 
-	// Check neighbours
 	for (int i = 0; i < NUM_NEIGHBOURS; ++i)
 	{
 		int neighbourIndex = CheckNeighbour(index, i);
@@ -222,28 +215,32 @@ List<int> MapGenerator::PropagateCell(const int index)
 
 		BitMask prevMask = BitMask(*neighbour->mask);
 
-		int tileIndex = cells[index]->tileID;
-		Tile* tile = tiles[tileIndex];
-		BitMask* cellMask = tile->masks[i];
+		if (cells[index]->isCollapsed)
+		{
+			int tileIndex = cells[index]->tileID;
+			Tile* tile = tiles[tileIndex];
+			BitMask* cellMask = tile->masks[i];
 
-		//LOG("--- prev neighbour mask:");
-		//prevMask.Peek();
+			*neighbour->mask &= *cellMask; // Compare (bitwise And) both masks
+		}
+		else
+		{
+			List<unsigned int> setBits = cells[index]->mask->GetSetBits();
 
-		//LOG("--- tile mask:");
-		//cellMask->Peek();
+			for (unsigned int j = 0; j < setBits.size(); ++j)
+			{
+				int tileIndex = setBits[j]->data;
+				Tile* tile = tiles[tileIndex];
+				BitMask* cellMask = tile->masks[i];
 
-		*neighbour->mask &= *cellMask; // Compare (bitwise And) both masks
-
-		//LOG("--- prev neighbour mask after:");
-		//prevMask.Peek();
-		//LOG("--- neighbour mask:");
-		//neighbour->mask->Peek();
+				*neighbour->mask |= *cellMask; // Compare (bitwise Or) both masks
+			}
+		}
 
 		if (*neighbour->mask != prevMask)
 		{
 			neighbour->Update();
-			if (neighbour->isCollapsed) //***
-				list.add(neighbourIndex);
+			list.add(neighbourIndex);
 		}
 	}
 
@@ -306,17 +303,7 @@ void MapGenerator::FirstStep()
 	for (unsigned int i = 0; i < presetCells.size(); ++i)
 	{
 		unsigned int index = presetCells[i]->data;
-
-		List<int> queue = List<int>();
-		queue.add(cells[index]->index);
-
-		int limit = cells.size();
-		while (!queue.empty() && limit > 0)
-		{
-			queue += PropagateCell(queue.front()->data);
-			queue.pop_front();
-			limit--;
-		}
+		PropagateCell(index);
 	}
 
 	isFirstStep = false;

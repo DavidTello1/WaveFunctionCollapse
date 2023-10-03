@@ -101,7 +101,7 @@ public:
 
 	bool erase(ListItem<T>* item)
 	{
-		if (item == 0)
+		if (item == nullptr)
 			return false;
 
 		// Now reconstruct the list
