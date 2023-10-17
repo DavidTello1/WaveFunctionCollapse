@@ -134,7 +134,9 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="ButtonGrid.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
     <ClInclude Include="Glew\include\glxew.h" />
@@ -147,6 +149,7 @@
     <ClInclude Include="Imgui\imstb_rectpack.h" />
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
+    <ClInclude Include="ModuleEvent.h" />
     <ClInclude Include="ModuleGUI.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneMapGenerator.h" />
@@ -260,6 +263,7 @@
     <ClCompile Include="BitMask.cpp" />
     <ClCompile Include="ButtonGrid.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
     <ClCompile Include="Imgui\imgui_demo.cpp" />
     <ClCompile Include="Imgui\imgui_draw.cpp" />

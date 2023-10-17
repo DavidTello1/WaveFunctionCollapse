@@ -2,6 +2,7 @@
 #include "Camera.h"
 
 #include "Application.h"
+#include "ModuleEvent.h"
 #include "ModuleResources.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
@@ -10,6 +11,8 @@
 #include "MapGenerator.h"
 #include "Tile.h"
 #include "Cell.h"
+
+#include "CameraController.h"
 
 #include "ButtonGrid.h"
 #include "UI_Button.h"
@@ -39,9 +42,19 @@ bool SceneMapGenerator::Init()
 	isDrawTextures = true;
 	isDrawSpaced = true;
 
+	isPanelOpen = true;
+	panelWidth = 220;
+	panelHeight = App->window->GetHeight() - menuBarHeight;
+	panelX = App->window->GetWidth() - panelWidth;
+
 	camera = new Camera();
+	controller = new CameraController(camera, 100.0f, 1.0f);
 
 	state = State::STOP;
+
+	// --- Events
+	App->event->Subscribe(this, &SceneMapGenerator::OnResize);
+	App->event->Subscribe(this, &SceneMapGenerator::OnPanelToggled);
 
     return true;
 }
@@ -81,20 +94,22 @@ bool SceneMapGenerator::Start()
 
 	// --- Background Button ---
 	Color transparent = { 0,0,0,0 };
-	bgButton = new UI_Button(0, 0, App->window->GetWidth(), App->window->GetHeight(), transparent, transparent, transparent);
+	bgButton = new UI_Button(0, 0, panelX, App->window->GetHeight(), transparent, transparent, transparent);
+	bgButton->SetStatic(true);
 
 	return true;
 }
 
 bool SceneMapGenerator::Update(float dt)
 {
+	// --- Check if map is finished
 	if (map->IsFinished())
 		state = State::FINISHED;
 
-	// --- Update Button Grid
+	// --- Update Scene Elements
+	controller->Update(dt);
 	buttonGrid->Update();
 
-	// --- Update Background Button
 	bgButton->Update();
 	if (!buttonGrid->IsHovered() && bgButton->IsClicked())
 		buttonGrid->UnSelectAll();
@@ -120,6 +135,7 @@ bool SceneMapGenerator::Update(float dt)
 bool SceneMapGenerator::CleanUp()
 {
 	delete camera;
+	delete controller;
 
 	delete buttonGrid;
 	delete bgButton;
@@ -146,13 +162,11 @@ bool SceneMapGenerator::Draw()
 		int y = cell->index / width;
 
 		// Padding
-		int padding = 0;
-		if (isDrawSpaced)
-			padding = spacing;
+		int padding = (isDrawSpaced) ? spacing : 0;
 
 		// Offset
-		int offsetX = (App->window->GetWidth() - ((width + padding) * cellSize)) / 2;
-		int offsetY = (App->window->GetHeight() - ((height + padding) * cellSize)) / 2;
+		int offsetX = ((int)App->window->GetWidth() - ((width + padding) * cellSize)) / 2;
+		int offsetY = ((int)App->window->GetHeight() - ((height + padding) * cellSize)) / 2;
 
 		// Position & Size
 		glm::vec2 position = { offsetX + x * (cellSize + padding), offsetY + y * (cellSize + padding) };
@@ -179,6 +193,7 @@ bool SceneMapGenerator::Draw()
 
 bool SceneMapGenerator::DrawUI()
 {
+	DrawMenuBar();
 	DrawPanel();
 	buttonGrid->Draw();
 
@@ -211,14 +226,14 @@ void SceneMapGenerator::ClearCells(const List<unsigned int>& cells)
 
 void SceneMapGenerator::UpdateButtonsPosition()
 {
-	int padding = 0;
-	if (isDrawSpaced)
-		padding = spacing;
+	// Padding
+	int padding = (isDrawSpaced) ? spacing : 0;
 
-	int x = (App->window->GetWidth() - ((width + padding) * cellSize)) / 2;
-	int y = (App->window->GetHeight() - ((height + padding) * cellSize)) / 2;
+	// Offset
+	int offsetX = ((int)App->window->GetWidth() - ((width + padding) * cellSize)) / 2;
+	int offsetY = ((int)App->window->GetHeight() - ((height + padding) * cellSize)) / 2;
 
-	buttonGrid->SetPosition(x, y);
+	buttonGrid->SetPosition(offsetX, offsetY);
 	buttonGrid->SetSpacing(padding);
 }
 
@@ -277,18 +292,62 @@ void SceneMapGenerator::Restart()
 
 // -------------------------------
 // --- DEBUG DRAW ---
+void SceneMapGenerator::DrawMenuBar()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Import Tileset"))
+			{
+			}
+			if (ImGui::MenuItem("Export Tileset"))
+			{
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Export Map"))
+			{
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::Text("|");
+		if (ImGui::MenuItem("Tile Manager"))
+		{
+			//*** change to Tile Manager
+		}
+	}
+	ImGui::EndMainMenuBar();
+}
+
 void SceneMapGenerator::DrawPanel()
 {
-	static const int panelWidth = 220;
-	static const int panelHeight = App->window->GetHeight() - 6;
-	static const int panelX = App->window->GetWidth() - panelWidth - 3;
-	static const int panelY = 3;
+	static const int panelY = menuBarHeight;
 	static const int sectionSpacing = 5;
+	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse;
 
 	ImGui::SetNextWindowSize(ImVec2(panelWidth, panelHeight), ImGuiCond_Always);
-	ImGui::SetNextWindowPos(ImVec2(panelX, panelY), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(panelX, panelY), ImGuiCond_Always);
 
-	if (ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize))
+	if (!isPanelOpen)
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		if (ImGui::Begin("###closedPanel", NULL, flags | ImGuiWindowFlags_NoTitleBar))
+		{
+			if (ImGui::Button("<", ImVec2(panelWidth, 0)))
+			{
+				App->event->Publish(new EventPanelToggled(true));
+				isPanelOpen = true;
+			}
+		}
+		ImGui::End();
+		ImGui::PopStyleVar();
+
+		return;
+	}
+
+	if (ImGui::Begin("Options", &isPanelOpen, flags))
 	{
 		// --- Buttons
 		DrawSectionButtons();
@@ -321,6 +380,9 @@ void SceneMapGenerator::DrawPanel()
 			DrawSectionCellInspector();
 	}
 	ImGui::End();
+
+	if (!isPanelOpen)
+		App->event->Publish(new EventPanelToggled(false));
 }
 
 void SceneMapGenerator::DrawSectionButtons()
@@ -435,6 +497,7 @@ void SceneMapGenerator::DrawSectionCellPresets()
 	// Reset All
 	if (ImGui::Button("Reset All", ImVec2(halfWidth, 0)))
 	{
+		buttonGrid->UnSelectAll();
 		map->ClearPresetCells();
 		isMapPreset = false;
 	}
@@ -549,4 +612,23 @@ void SceneMapGenerator::DrawCellInspector(const List<unsigned int>& tileArray)
 		}
 	}
 	ImGui::EndChild();
+}
+
+void SceneMapGenerator::OnResize(EventWindowResize* e)
+{
+	panelX = e->width - panelWidth;
+	panelHeight = e->height - menuBarHeight;
+
+	bgButton->SetWidth(panelX);
+	bgButton->SetHeight(panelHeight);
+
+	camera->UpdateProjectionMatrix(0, e->width, 0, e->height);
+}
+
+void SceneMapGenerator::OnPanelToggled(EventPanelToggled* e) //*** SHOULD IT BE AN EVENT OR JUST A NORMAL FUNCTION?
+{
+	panelWidth = (e->isOpen) ? 220 : 20;
+	panelX = App->window->GetWidth() - panelWidth;
+
+	bgButton->SetWidth(panelX);
 }

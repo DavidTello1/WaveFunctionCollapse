@@ -421,6 +421,15 @@
     <ClInclude Include="stb\stb_image_write.h">
       <Filter>Source\Engine\External Libraries\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleEvent.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Source\Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>Source\Engine\Tools\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -491,6 +500,9 @@
     </ClCompile>
     <ClCompile Include="stb\stb.cpp">
       <Filter>Source\Engine\External Libraries\stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraController.cpp">
+      <Filter>Source\Engine\Tools\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

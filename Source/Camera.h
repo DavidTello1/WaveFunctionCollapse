@@ -4,6 +4,7 @@
 
 class Camera
 {
+	friend class CameraController;
 public:
 	Camera();
 	~Camera() {};
@@ -20,10 +21,10 @@ public:
 	void UpdateProjectionMatrix(float left, float right, float top, float bottom);
 	const glm::mat4& GetViewProjMatrix() const { return ViewProjMatrix; }
 
-private:
+protected:
 	void UpdateViewMatrix();
 
-private:
+protected:
 	glm::vec3 position = glm::vec3(0.0f);
 	float rotation = 0.0f;
 

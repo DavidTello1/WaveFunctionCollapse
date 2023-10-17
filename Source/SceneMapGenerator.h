@@ -4,9 +4,15 @@
 #include "List.h"
 
 class MapGenerator;
+class CameraController;
 
 class ButtonGrid;
 class UI_Button;
+
+// --- Events
+struct EventWindowResize;
+struct EventPanelToggled;
+// ---
 
 class SceneMapGenerator : public Scene
 {
@@ -43,6 +49,7 @@ private:
 	void Restart();
 
 	// --- Debug Draw
+	void DrawMenuBar();
 	void DrawPanel();
 	void DrawSectionButtons();
 	void DrawSectionOptions();
@@ -51,13 +58,20 @@ private:
 	void DrawSectionCellInspector();
 	void DrawCellInspector(const List<unsigned int>& list);
 
+	// --- EVENTS ---
+	void OnResize(EventWindowResize* e);
+	void OnPanelToggled(EventPanelToggled* e);
+
 private:
+	// --- Scene Data
 	MapGenerator* map = nullptr;
+	CameraController* controller = nullptr;
 
 	// --- Map Data
 	static const int numTiles = 7;
 	static const int cellSize = 24;
 	static const int spacing = 2;
+	static const int menuBarHeight = 19;
 	int width = 25;
 	int height = 25;
 
@@ -72,6 +86,11 @@ private:
 	bool isMapPreset = false;
 	bool isDrawTextures = true;
 	bool isDrawSpaced = true;
+
+	bool isPanelOpen = true;
+	int panelX = 0;
+	int panelWidth = 0;
+	int panelHeight = 0;
 	
 	unsigned int stepIcon = 0;
 	unsigned int playIcon = 0;

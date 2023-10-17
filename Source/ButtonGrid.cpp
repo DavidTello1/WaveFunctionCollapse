@@ -3,6 +3,9 @@
 
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleScene.h"
+#include "Scene.h"
+#include "Camera.h"
 
 #include "SDL/include/SDL_mouse.h"
 #include "SDL/include/SDL_scancode.h"
@@ -18,8 +21,8 @@ ButtonGrid::ButtonGrid(int x, int y, int width, int height, unsigned int buttonS
 	this->type = type;
 
 	// Colors
-	idleColor	  = { 0, 0, 0, 0 };		// black, alpha 0
-	hoverColor	  = { 0, 0, 1, 0.5f };	// blue, alpha 0.5
+	idleColor	  = { 0, 0, 0, 0	 };	// black, alpha 0
+	hoverColor	  = { 0, 0, 1, 0.5f  };	// blue, alpha 0.5
 	selectedColor = { 0, 0, 1, 0.75f }; // blue, alpha 0.75
 
 	// Init Buttons Array
@@ -116,9 +119,13 @@ void ButtonGrid::UpdatePositions()
 
 bool ButtonGrid::IsHovered() const
 {
-	int mouseX = 0;
-	int mouseY = 0;
+	int cameraX = App->scene->GetCurrentScene()->GetCamera()->GetPosition().x;
+	int cameraY = App->scene->GetCurrentScene()->GetCamera()->GetPosition().y;
+
+	int mouseX, mouseY;
 	App->input->GetMousePosition(mouseX, mouseY);
+	mouseX += cameraX;
+	mouseY += cameraY;
 
 	int totalWidth = width * (buttonSize + spacing);
 	int totalHeight = height * (buttonSize + spacing);
@@ -137,6 +144,7 @@ void ButtonGrid::Resize(const int width, const int height)
 		delete buttons[i];
 	}
 	buttons.clear();
+	selected.clear();
 
 	// Create buttons array with new size
 	for (int i = 0; i < width; ++i)
