@@ -1,6 +1,7 @@
 #include "ModuleInput.h"
 
 #include "Application.h"
+#include "ModuleEvent.h"
 #include "ModuleWindow.h"
 
 #include "SDL/include/SDL.h"
@@ -100,8 +101,7 @@ bool ModuleInput::PreUpdate(float dt)
 			switch (e.window.event)
 			{
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				App->window->SetWidth(e.window.data1, false);
-				App->window->SetHeigth(e.window.data2, false);
+				App->event->Publish(new EventWindowResize(e.window.data1, e.window.data2));
 				break;
 			}
 			break;

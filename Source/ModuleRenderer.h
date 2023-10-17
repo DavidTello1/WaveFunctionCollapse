@@ -3,6 +3,8 @@
 
 #include "glm/include/glm/glm.hpp"
 
+struct EventWindowResize;
+
 typedef void* SDL_GLContext;
 
 class ModuleRenderer : public Module
@@ -17,8 +19,8 @@ public:
 	bool CleanUp() override;
 
 	// --- Utils
-	void UpdateViewportSize();
 	const SDL_GLContext& GetContext() const { return context; }
+	void UpdateViewportSize();
 
 	// --- Draw Functions
 	void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color = glm::vec4(1.0f));
@@ -30,6 +32,9 @@ public:
 private:
 	void CreateQuad();
 	void DrawQuadEx(const unsigned int shader, const glm::mat4 viewProjMatrix, const glm::mat4 modelMatrix, const uint32_t texture, const glm::vec4 color);
+
+	// --- EVENTS ---
+	void OnResize(EventWindowResize* e);
 
 private:
 	SDL_GLContext context;

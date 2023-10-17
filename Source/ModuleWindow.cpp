@@ -1,6 +1,8 @@
 #include "ModuleWindow.h"
 
 #include "Globals.h"
+#include "Application.h"
+#include "ModuleEvent.h"
 
 #include "SDL/include/SDL.h"
 #include "mmgr/mmgr.h"
@@ -29,8 +31,8 @@ bool ModuleWindow::Init()
 	// --- Create window
 	Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
-	//Use OpenGL 3.2
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	// Use OpenGL 4.3
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
 	window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
@@ -40,6 +42,9 @@ bool ModuleWindow::Init()
 		LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		return false;
 	}
+
+	// --- Events
+	App->event->Subscribe(this, &ModuleWindow::OnResize);
 
 	return true;
 }
@@ -92,3 +97,8 @@ void ModuleWindow::SetSize(unsigned int width, unsigned int height, bool update_
 		SDL_SetWindowSize(window, width, height);
 }
 
+
+void ModuleWindow::OnResize(EventWindowResize* e)
+{
+	SetSize(e->width, e->height, false);
+}

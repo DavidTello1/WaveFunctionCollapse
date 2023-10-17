@@ -1,6 +1,7 @@
 #include "ModuleRenderer.h"
 
 #include "Application.h"
+#include "ModuleEvent.h"
 #include "ModuleWindow.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
@@ -53,6 +54,9 @@ bool ModuleRenderer::Init()
 	// Create Basic Quad
 	CreateQuad();
 
+	// --- Events
+	App->event->Subscribe(this, &ModuleRenderer::OnResize);
+
 	return true;
 }
 
@@ -95,6 +99,10 @@ void ModuleRenderer::UpdateViewportSize()
 	glViewport(0, 0, App->window->GetWidth(), App->window->GetHeight());
 }
 
+void ModuleRenderer::OnResize(EventWindowResize* e)
+{
+	glViewport(0, 0, e->width, e->height);
+}
 
 void ModuleRenderer::CreateQuad()
 {

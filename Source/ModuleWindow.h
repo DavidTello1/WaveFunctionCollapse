@@ -6,6 +6,7 @@
 #define DEFAULT_HEIGHT 768
 
 struct SDL_Window;
+struct EventWindowResize;
 
 class ModuleWindow : public Module
 {
@@ -26,6 +27,10 @@ public:
 	void SetWidth(unsigned int width, bool update_size = true);
 	void SetHeigth(unsigned int height, bool update_size = true);
 	void SetSize(unsigned int width, unsigned int height, bool update_size = true);
+
+private:
+	// --- EVENTS ---
+	void OnResize(EventWindowResize* e);
 
 private:
 	SDL_Window* window = nullptr; //The window we'll be rendering to
