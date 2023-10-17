@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "Module.h"
+#include "ModuleEvent.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleResources.h"
@@ -19,6 +20,7 @@ Application::Application()
 	capped_ms = 0;
 	fps_counter = 0;
 
+	modules.push_back(event = new ModuleEvent());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(resources = new ModuleResources());

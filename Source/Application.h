@@ -5,6 +5,7 @@
 #include <vector> //***
 
 class Module;
+class ModuleEvent;
 class ModuleInput;
 class ModuleWindow;
 class ModuleResources;
@@ -31,6 +32,7 @@ private:
 	void FinishUpdate();
 
 public:
+	ModuleEvent* event = nullptr;
 	ModuleInput* input = nullptr;
 	ModuleWindow* window = nullptr;
 	ModuleResources* resources = nullptr;
