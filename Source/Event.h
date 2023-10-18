@@ -12,6 +12,12 @@ struct EventWindowResize : public Event
     int height;
 };
 
+struct EventCameraZoom : public Event
+{
+    EventCameraZoom(int z) : zoom(z) {};
+    int zoom;
+};
+
 struct EventPanelToggled : public Event
 {
     EventPanelToggled(bool isOpen) : isOpen(isOpen) {};

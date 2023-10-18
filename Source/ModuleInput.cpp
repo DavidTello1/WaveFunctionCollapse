@@ -97,6 +97,12 @@ bool ModuleInput::PreUpdate(float dt)
 			mouseY = e.motion.y;
 			break;
 
+		case SDL_MOUSEWHEEL:
+			mouseWheel = e.wheel.y;
+			App->event->Publish(new EventCameraZoom(mouseWheel));
+			break;
+
+
 		case SDL_WINDOWEVENT:
 			switch (e.window.event)
 			{

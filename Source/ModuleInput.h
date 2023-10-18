@@ -30,6 +30,7 @@ public:
 	// Get mouse / axis position
 	void GetMouseMotion(int& x, int& y) const { x = mouseMotionX; y = mouseMotionY; }
 	void GetMousePosition(int& x, int& y) const { x = mouseX; y = mouseY; }
+	int GetMouseWheel() const { return mouseWheel; }
 
 public:
 	bool close = false;
@@ -43,4 +44,6 @@ private:
 
 	int mouseX = 0;
 	int mouseY = 0;
+
+	int mouseWheel = 0;
 };
