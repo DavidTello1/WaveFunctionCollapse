@@ -11,7 +11,7 @@ class UI_Button;
 
 // --- Events
 struct EventWindowResize;
-struct EventPanelToggled;
+struct EventCameraZoom;
 // ---
 
 class SceneMapGenerator : public Scene
@@ -40,7 +40,9 @@ private:
 	// --- Debug Utils
 	void PresetCells(const List<unsigned int>& cells, const unsigned int tileID);
 	void ClearCells(const List<unsigned int>& cells);
-	void UpdateButtonsPosition();
+	void UpdateButtonGrid();
+	void MapResized(const int mapWidth, const int mapHeight);
+	void PanelToggled(bool isOpen);
 
 	// --- State Management
 	void Play();
@@ -60,7 +62,7 @@ private:
 
 	// --- EVENTS ---
 	void OnResize(EventWindowResize* e);
-	void OnPanelToggled(EventPanelToggled* e);
+	void OnZoom(EventCameraZoom* e);
 
 private:
 	// --- Scene Data

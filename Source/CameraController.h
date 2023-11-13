@@ -10,13 +10,14 @@ public:
 
 	void Update(float dt);
 
+	float GetMoveSpeed() const { return moveSpeed; }
+	float GetZoomSpeed() const { return zoomSpeed; }
+
 	void SetMoveSpeed(float speed) { moveSpeed = speed; }
 	void SetZoomSpeed(float speed) { zoomSpeed = speed; }
 
 private:
 	Camera* camera = nullptr;
-
-	float zoom = 0.0f;
 
 	float moveSpeed = 0.0f;
 	float zoomSpeed = 0.0f;

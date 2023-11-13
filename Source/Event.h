@@ -17,9 +17,3 @@ struct EventCameraZoom : public Event
     EventCameraZoom(int z) : zoom(z) {};
     int zoom;
 };
-
-struct EventPanelToggled : public Event
-{
-    EventPanelToggled(bool isOpen) : isOpen(isOpen) {};
-    bool isOpen;
-};
