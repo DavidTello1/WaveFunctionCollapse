@@ -504,6 +504,9 @@
     <ClCompile Include="CameraController.cpp">
       <Filter>Source\Engine\Tools\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="UI_Element.cpp">
+      <Filter>Source\Engine\Tools\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Game\Assets\Shaders\shaders.glsl">

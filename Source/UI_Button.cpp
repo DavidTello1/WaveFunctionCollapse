@@ -10,7 +10,9 @@
 #include "SDL/include/SDL_mouse.h"
 #include "SDL/include/SDL_scancode.h"
 
-void UI_Button::Update()
+#include "glm/include/glm/gtc/type_ptr.hpp" //***
+
+void UI_Button::Update(float dt)
 {
 	isClicked = false;
 
@@ -44,33 +46,19 @@ void UI_Button::Draw()
 	else if (IsHovered())
 		color = hoverColor;
 
-	int posX = x;
-	int posY = y;
+	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
+	float zoom = camera->GetZoom();
+
+	glm::vec4 rect = glm::vec4(x, y, width, height);
+
 	if (isStatic)
 	{
-		int cameraX = App->scene->GetCurrentScene()->GetCamera()->GetPosition().x;
-		int cameraY = App->scene->GetCurrentScene()->GetCamera()->GetPosition().y;
-
-		posX += cameraX;
-		posY += cameraY;
+		rect.x += camera->GetPosition().x;
+		rect.y += camera->GetPosition().y;
+		rect.z *= camera->GetZoom();
+		rect.w *= camera->GetZoom();
 	}
 
-	App->renderer->DrawQuad(glm::vec2(posX, posY), glm::vec2(width, height), glm::vec4(color.r, color.g, color.b, color.a));
+	App->renderer->DrawQuad(glm::vec2(rect.x, rect.y), glm::vec2(rect.z, rect.w), glm::vec4(color.r, color.g, color.b, color.a));
 }
 
-bool UI_Button::IsHovered() const
-{
-	int cameraX = App->scene->GetCurrentScene()->GetCamera()->GetPosition().x;
-	int cameraY = App->scene->GetCurrentScene()->GetCamera()->GetPosition().y;
-
-	int mouseX, mouseY;
-	App->input->GetMousePosition(mouseX, mouseY);
-
-	if (!isStatic)
-	{
-		mouseX += cameraX;
-		mouseY += cameraY;
-	}
-
-	return (mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height);
-}

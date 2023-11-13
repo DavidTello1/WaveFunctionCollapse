@@ -283,6 +283,7 @@
     <ClCompile Include="SceneMapGenerator.cpp" />
     <ClCompile Include="stb\stb.cpp" />
     <ClCompile Include="UI_Button.cpp" />
+    <ClCompile Include="UI_Element.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Game\Assets\Shaders\shaders.glsl" />

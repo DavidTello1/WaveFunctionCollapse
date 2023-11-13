@@ -10,25 +10,19 @@
 #include "SDL/include/SDL_mouse.h"
 #include "SDL/include/SDL_scancode.h"
 
-ButtonGrid::ButtonGrid(int x, int y, int width, int height, unsigned int buttonSize, unsigned int spacing, Type type)
+ButtonGrid::ButtonGrid(int x, int y, int columns, int rows, unsigned int buttonSize, unsigned int spacing, Type type) : 
+	UI_Element(x, y, columns * (buttonSize + spacing), rows * (buttonSize + spacing)), 
+	columns(columns), rows(rows), buttonSize(buttonSize), spacing(spacing), type(type)
 {
-	this->x = x;
-	this->y = y;
-	this->width = width;
-	this->height = height;
-	this->buttonSize = buttonSize;
-	this->spacing = spacing;
-	this->type = type;
-
 	// Colors
 	idleColor	  = { 0, 0, 0, 0	 };	// black, alpha 0
 	hoverColor	  = { 0, 0, 1, 0.5f  };	// blue, alpha 0.5
 	selectedColor = { 0, 0, 1, 0.75f }; // blue, alpha 0.75
 
 	// Init Buttons Array
-	for (int i = 0; i < width; ++i)
+	for (int i = 0; i < columns; ++i)
 	{
-		for (int j = 0; j < height; ++j)
+		for (int j = 0; j < rows; ++j)
 		{
 			int buttonX = x + i * (buttonSize + spacing);
 			int buttonY = y + j * (buttonSize + spacing);
@@ -48,7 +42,7 @@ ButtonGrid::~ButtonGrid()
 	buttons.clear();
 }
 
-void ButtonGrid::Update()
+void ButtonGrid::Update(float dt)
 {
 	for (unsigned int i = 0; i < buttons.size(); ++i)
 	{
@@ -105,38 +99,25 @@ void ButtonGrid::Draw()
 
 void ButtonGrid::UpdatePositions()
 {
-	for (int i = 0; i < width; ++i)
+	for (int i = 0; i < columns; ++i)
 	{
-		for (int j = 0; j < height; ++j)
+		for (int j = 0; j < rows; ++j)
 		{
-			int index = i + width * j;
+			int index = i + columns * j;
 
 			buttons[index]->x = x + i * (buttonSize + spacing);
 			buttons[index]->y = y + j * (buttonSize + spacing);
 		}
 	}
+
+	width = columns * (buttonSize + spacing);
+	height = rows * (buttonSize + spacing);
 }
 
-bool ButtonGrid::IsHovered() const
+void ButtonGrid::Resize(const int columns, const int rows)
 {
-	int cameraX = App->scene->GetCurrentScene()->GetCamera()->GetPosition().x;
-	int cameraY = App->scene->GetCurrentScene()->GetCamera()->GetPosition().y;
-
-	int mouseX, mouseY;
-	App->input->GetMousePosition(mouseX, mouseY);
-	mouseX += cameraX;
-	mouseY += cameraY;
-
-	int totalWidth = width * (buttonSize + spacing);
-	int totalHeight = height * (buttonSize + spacing);
-
-	return (mouseX >= x && mouseX < x + totalWidth && mouseY >= y && mouseY < y + totalHeight);
-}
-
-void ButtonGrid::Resize(const int width, const int height)
-{
-	this->width = width;
-	this->height = height;
+	this->columns = columns;
+	this->rows = rows;
 
 	// Delete buttons
 	for (unsigned int i = 0; i < buttons.size(); ++i)
@@ -147,17 +128,10 @@ void ButtonGrid::Resize(const int width, const int height)
 	selected.clear();
 
 	// Create buttons array with new size
-	for (int i = 0; i < width; ++i)
+	for (int i = 0; i < columns * rows; ++i)
 	{
-		for (int j = 0; j < height; ++j)
-		{
-			int buttonX = x + i * (buttonSize + spacing);
-			int buttonY = y + j * (buttonSize + spacing);
-			buttons.push_back(new UI_Button(buttonX, buttonY, buttonSize, buttonSize, idleColor, hoverColor, selectedColor));
-		}
+		buttons.push_back(new UI_Button(0, 0, buttonSize, buttonSize, idleColor, hoverColor, selectedColor));
 	}
-
-	// Update positions
 	UpdatePositions();
 }
 

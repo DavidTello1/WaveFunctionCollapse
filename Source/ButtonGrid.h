@@ -1,4 +1,5 @@
 #pragma once
+#include "UI_Element.h"
 #include "Color.h"
 
 #include "DynArray.h"
@@ -6,7 +7,7 @@
 
 class UI_Button;
 
-class ButtonGrid
+class ButtonGrid : public UI_Element
 {
 public:
 	enum Type {
@@ -19,36 +20,30 @@ public:
 	~ButtonGrid();
 
 	// --- Logic
-	void Update();
-	void Draw();
+	void Update(float dt) override;
+	void Draw() override;
 
 	// --- Getters
-	const int GetPosX() const { return x; }
-	const int GetPosY() const { return y; }
-	const int GetWidth() const { return width; }
-	const int GetHeight() const { return height; }
 	const unsigned int GetSpacing() const { return spacing; }
 	const Type GetSelectionType() const { return type; }
 	const List<unsigned int>& GetSelected() const { return selected; }
 
 	// --- Setters
-	void SetPosition(int x, int y) { this->x = x; this->y = y; UpdatePositions(); }
-	void SetWidth(int width) { Resize(width, height);}
-	void SetHeight(int height) { Resize(width, height);}
-	void SetSpacing(unsigned int spacing) { this->spacing = spacing; UpdatePositions();}
+	void SetPos(int x, int y) { this->x = x; this->y = y; UpdatePositions(); }
+	void SetColumns(int columns) { Resize(columns, rows); }
+	void SetRows(int rows) { Resize(columns, rows); }
+	void SetSpacing(unsigned int spacing) { this->spacing = spacing; UpdatePositions(); }
 	void SetSelectionType(Type type) { this->type = type; }
 
 	// --- Utils
-	bool IsHovered() const;
-	void Resize(const int width, const int height);
+	void Resize(const int columns, const int rows);
 	void UnSelectAll();
 
 private:
 	void UpdatePositions();
 
 private:
-	int x, y;
-	int width, height;
+	int columns, rows;
 	unsigned int buttonSize;
 	unsigned int spacing;
 	Type type;
