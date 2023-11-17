@@ -26,17 +26,11 @@
     <Filter Include="Source\Engine\External Libraries\PCG">
       <UniqueIdentifier>{6e484a01-d85c-41e9-9710-cde1f3456328}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\MapGenerator\Utils">
-      <UniqueIdentifier>{62a293c5-7024-4b31-a429-45ab92908ff4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\Tools">
       <UniqueIdentifier>{639cd3e4-c136-4800-9dec-6b393fb7d212}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Scenes">
       <UniqueIdentifier>{4e7279cf-b0bc-418f-86c0-c94e5fb93601}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Tools\Entities">
-      <UniqueIdentifier>{6076d467-4778-4601-83c2-eaee8e0d63ad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Engine\External Libraries\Glew">
       <UniqueIdentifier>{e1665ba2-05b8-468b-bd32-2328c7d34328}</UniqueIdentifier>
@@ -49,6 +43,15 @@
     </Filter>
     <Filter Include="Source\Engine\External Libraries\stb_image">
       <UniqueIdentifier>{70f3c0a7-97b8-4df6-9f3b-eced4db2c372}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Tools\Entities">
+      <UniqueIdentifier>{6076d467-4778-4601-83c2-eaee8e0d63ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Tools\Entities\UI">
+      <UniqueIdentifier>{e49cfda8-225c-4a9a-9ecf-2b53bea1b790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\MapGenerator\DataStructures">
+      <UniqueIdentifier>{62a293c5-7024-4b31-a429-45ab92908ff4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -332,13 +335,13 @@
       <Filter>Source\Engine\External Libraries\PCG</Filter>
     </ClInclude>
     <ClInclude Include="BitMask.h">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="List.h">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="DynArray.h">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="Cell.h">
       <Filter>Source\MapGenerator</Filter>
@@ -347,10 +350,10 @@
       <Filter>Source\MapGenerator</Filter>
     </ClInclude>
     <ClInclude Include="PriorityQueue.h">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="StaticArray.h">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="ModuleGUI.h">
       <Filter>Source\Engine\Modules</Filter>
@@ -361,20 +364,8 @@
     <ClInclude Include="SceneMapGenerator.h">
       <Filter>Source\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="ButtonGrid.h">
-      <Filter>Source\Engine\Tools\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Source\Engine\Tools\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="UI_Button.h">
-      <Filter>Source\Engine\Tools\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="UI_Element.h">
-      <Filter>Source\Engine\Tools\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Source\Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Glew\include\eglew.h">
       <Filter>Source\Engine\External Libraries\Glew</Filter>
@@ -413,7 +404,7 @@
       <Filter>Source\Engine\External Libraries\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="String.h">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="stb\stb_image.h">
       <Filter>Source\Engine\External Libraries\stb_image</Filter>
@@ -429,6 +420,18 @@
     </ClInclude>
     <ClInclude Include="CameraController.h">
       <Filter>Source\Engine\Tools\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Button.h">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonGrid.h">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Element.h">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Source\Engine\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -463,7 +466,7 @@
       <Filter>Source\Engine\Utils</Filter>
     </ClCompile>
     <ClCompile Include="BitMask.cpp">
-      <Filter>Source\MapGenerator\Utils</Filter>
+      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClCompile>
     <ClCompile Include="ModuleGUI.cpp">
       <Filter>Source\Engine\Modules</Filter>
@@ -471,13 +474,7 @@
     <ClCompile Include="SceneMapGenerator.cpp">
       <Filter>Source\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="ButtonGrid.cpp">
-      <Filter>Source\Engine\Tools\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source\Engine\Tools\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="UI_Button.cpp">
       <Filter>Source\Engine\Tools\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -504,8 +501,14 @@
     <ClCompile Include="CameraController.cpp">
       <Filter>Source\Engine\Tools\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="UI_Button.cpp">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonGrid.cpp">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClCompile>
     <ClCompile Include="UI_Element.cpp">
-      <Filter>Source\Engine\Tools\Entities</Filter>
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

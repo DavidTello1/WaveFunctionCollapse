@@ -5,43 +5,62 @@
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 
-#include "SDL/include/SDL_scancode.h"
+#include "SDL/include/SDL_mouse.h"
 
 void CameraController::Update(float dt)
 {
-	bool isChanged = false;
+	if (camera == nullptr)
+		return;
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_A) == KEY_STATE::KEY_REPEAT) // Left
+	OnPanning();
+}
+
+void CameraController::OnPanning()
+{
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_DOWN)
 	{
-		camera->position.x -= moveSpeed * dt;
-		isChanged = true;
+		int mouseX, mouseY;
+		App->input->GetMousePosition(mouseX, mouseY);
+
+		lastX = mouseX;
+		lastY = mouseY;
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_D) == KEY_STATE::KEY_REPEAT) // Right
+	else if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
-		camera->position.x += moveSpeed * dt;
-		isChanged = true;
-	}
+		int mouseX, mouseY;
+		App->input->GetMousePosition(mouseX, mouseY);
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_W) == KEY_STATE::KEY_REPEAT) // Up
-	{
-		camera->position.y -= moveSpeed * dt;
-		isChanged = true;
-	}
+		if (lastX == mouseX && lastY == mouseY)
+			return;
 
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_DOWN ||
-		App->input->GetKey(SDL_SCANCODE_S) == KEY_STATE::KEY_REPEAT) // Down
-	{
-		camera->position.y += moveSpeed * dt;
-		isChanged = true;
-	}
-
-	// --- Update Camera ViewMatrix
-	if (isChanged)
-	{
+		camera->position.x += (lastX - mouseX) * camera->zoom;
+		camera->position.y += (lastY - mouseY) * camera->zoom;
 		camera->UpdateViewMatrix();
+
+		lastX = mouseX;
+		lastY = mouseY;
 	}
+}
+
+void CameraController::SetZoom(float value)
+{
+	if (value > maxZoom)
+		value = maxZoom;
+	else if (value < minZoom)
+		value = minZoom;
+
+	if (camera == nullptr || value == camera->zoom)
+		return;
+
+	int mouseX, mouseY;
+	App->input->GetMousePosition(mouseX, mouseY);
+
+	// Apply Offset to Camera Position (Center in Mouse)
+	camera->position.x += mouseX * (camera->zoom - value);
+	camera->position.y += mouseY * (camera->zoom - value);
+
+	// Update Camera
+	camera->zoom = value;
+	camera->UpdateProjectionMatrix(0.0f, (float)App->window->GetWidth() * value, (float)App->window->GetHeight() * value, 0.0f);
+	camera->UpdateViewMatrix();
 }

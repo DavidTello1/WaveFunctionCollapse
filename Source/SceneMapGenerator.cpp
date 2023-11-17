@@ -47,8 +47,8 @@ bool SceneMapGenerator::Init()
 	panelHeight = App->window->GetHeight() - menuBarHeight;
 	panelX = App->window->GetWidth() - panelWidth;
 
-	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f, 1.0f, 10.0f);
-	controller = new CameraController(camera, 100.0f, 2.0f);
+	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f);
+	controller = new CameraController(camera, 100.0f, 1.0f);
 
 	state = State::STOP;
 
@@ -107,6 +107,8 @@ bool SceneMapGenerator::Update(float dt)
 
 	// --- Update Scene Elements
 	controller->Update(dt);
+
+	// if (!blockButton->IsHovered())
 	buttonGrid->Update(dt);
 
 	bgButton->Update(dt);
@@ -648,6 +650,6 @@ void SceneMapGenerator::OnZoom(EventCameraZoom* e)
 {
 	float zoom = camera->GetZoom();
 	zoom += (e->zoom > 0) ? -controller->GetZoomSpeed() : controller->GetZoomSpeed();
-		
-	camera->SetZoom(zoom);
+	
+	controller->SetZoom(zoom);
 }
