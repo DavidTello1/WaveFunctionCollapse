@@ -94,7 +94,10 @@ bool SceneMapGenerator::Start()
 
 	// --- Background Button ---
 	Color transparent = { 0,0,0,0 };
-	bgButton = new UI_Button(0, 0, panelX, App->window->GetHeight(), transparent, transparent, transparent, true);
+	bgButton = new UI_Button(0, menuBarHeight, panelX, App->window->GetHeight(), transparent, transparent, transparent, true);
+
+	// --- Block Button for Panel ---
+	blockButton = new UI_Button(panelX, menuBarHeight, panelWidth, panelHeight, transparent, transparent, transparent, true);
 
 	return true;
 }
@@ -108,12 +111,13 @@ bool SceneMapGenerator::Update(float dt)
 	// --- Update Scene Elements
 	controller->Update(dt);
 
-	// if (!blockButton->IsHovered())
-	buttonGrid->Update(dt);
+	if (!blockButton->IsHovered())
+		buttonGrid->Update(dt);
 
 	bgButton->Update(dt);
 	if (!buttonGrid->IsHovered() && bgButton->IsClicked() &&
-		App->input->GetKey(SDL_SCANCODE_RCTRL) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LCTRL) != KEY_REPEAT)
+		App->input->GetKey(SDL_SCANCODE_RCTRL) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LCTRL) != KEY_REPEAT &&
+		App->input->GetKey(SDL_SCANCODE_RALT) != KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) != KEY_REPEAT)
 	{
 		buttonGrid->UnSelectAll();
 	}
@@ -197,11 +201,10 @@ bool SceneMapGenerator::Draw()
 
 bool SceneMapGenerator::DrawUI()
 {
+	buttonGrid->Draw();
+
 	DrawMenuBar();
 	DrawPanel();
-
-	bgButton->Draw();//***
-	buttonGrid->Draw();
 
 	return true;
 }
@@ -261,6 +264,9 @@ void SceneMapGenerator::PanelToggled(bool isOpen)
 	panelX = App->window->GetWidth() - panelWidth;
 
 	bgButton->SetWidth(panelX);
+
+	blockButton->SetWidth(panelWidth);
+	blockButton->SetPosX(panelX);
 }
 
 // ------------------------
@@ -443,7 +449,7 @@ void SceneMapGenerator::DrawSectionButtons()
 void SceneMapGenerator::DrawSectionOptions()
 {
 	ImGui::Columns(2, "Time", false);
-	ImGui::Text("Time elapsed:");
+	ImGui::Text("Step Time:");
 	ImGui::Text("Total Time:");
 	ImGui::NextColumn();
 
@@ -638,8 +644,10 @@ void SceneMapGenerator::OnResize(EventWindowResize* e)
 	panelX = e->width - panelWidth;
 	panelHeight = e->height - menuBarHeight;
 
-	bgButton->SetWidth(panelX);
-	bgButton->SetHeight(e->height);
+	bgButton->SetSize(panelX, e->height);
+
+	blockButton->SetPosX(panelX);
+	blockButton->SetSize(panelWidth, panelHeight);
 
 	UpdateButtonGrid();
 

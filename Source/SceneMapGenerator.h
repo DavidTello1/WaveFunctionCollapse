@@ -81,6 +81,7 @@ private:
 	State state = State::STOP;
 	ButtonGrid* buttonGrid = nullptr;
 	UI_Button* bgButton = nullptr;
+	UI_Button* blockButton = nullptr;
 
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
