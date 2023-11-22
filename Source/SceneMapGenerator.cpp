@@ -8,6 +8,8 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
 
+#include "PerfTimer.h"
+
 #include "MapGenerator.h"
 #include "Tile.h"
 #include "Cell.h"
@@ -273,6 +275,8 @@ void SceneMapGenerator::PanelToggled(bool isOpen)
 // --- STATE MANAGEMENT ---
 void SceneMapGenerator::Play()
 {
+	timer.Start();
+
 	if (state != State::STOP && state != State::PAUSE)
 		return;
 
@@ -282,10 +286,14 @@ void SceneMapGenerator::Play()
 
 	buttonGrid->UnSelectAll();
 	buttonGrid->SetSelectionType(ButtonGrid::Type::SINGLE_SELECTION);
+
+	totalTime += timer.ReadMs();
 }
 
 void SceneMapGenerator::Step()
 {
+	timer.Start();
+
 	if (state != State::STOP && state != State::PAUSE)
 		return;
 
@@ -295,6 +303,9 @@ void SceneMapGenerator::Step()
 
 	buttonGrid->UnSelectAll();
 	buttonGrid->SetSelectionType(ButtonGrid::Type::SINGLE_SELECTION);
+
+	stepTime = timer.ReadMs();
+	totalTime += stepTime;
 }
 
 void SceneMapGenerator::Stop()
@@ -308,6 +319,8 @@ void SceneMapGenerator::Stop()
 
 	buttonGrid->UnSelectAll();
 	buttonGrid->SetSelectionType(ButtonGrid::Type::MULTIPLE_SELECTION);
+
+	stepTime = totalTime = 0.0f;
 }
 
 void SceneMapGenerator::Restart()
@@ -320,6 +333,8 @@ void SceneMapGenerator::Restart()
 	map->ResetMap();
 
 	buttonGrid->UnSelectAll();
+
+	stepTime = totalTime = 0.0f;
 }
 
 // -------------------------------
@@ -448,14 +463,13 @@ void SceneMapGenerator::DrawSectionButtons()
 
 void SceneMapGenerator::DrawSectionOptions()
 {
-	ImGui::Columns(2, "Time", false);
-	ImGui::Text("Step Time:");
+	ImGui::Text("Step Time: ");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", stepTime);
+	
 	ImGui::Text("Total Time:");
-	ImGui::NextColumn();
-
-	//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), timeElapsed);
-	//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), totalTime);
-	ImGui::Columns(1);
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	ImGui::Checkbox("Draw Textures", &isDrawTextures);

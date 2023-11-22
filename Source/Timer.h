@@ -19,11 +19,16 @@ public:
 		stopped_at = SDL_GetTicks();
 	}
 
-	Uint32 Read() {
+	Uint32 Read() const {
 		if (running == true)
 			return SDL_GetTicks() - started_at;
 		else
 			return stopped_at - started_at;
+	}
+
+	float ReadSec() const
+	{
+		return float(SDL_GetTicks() - started_at) / 1000.0f;
 	}
 
 private:

@@ -151,6 +151,7 @@
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="ModuleEvent.h" />
     <ClInclude Include="ModuleGUI.h" />
+    <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneMapGenerator.h" />
     <ClInclude Include="StaticArray.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="SceneMapGenerator.cpp" />
     <ClCompile Include="stb\stb.cpp" />
     <ClCompile Include="UI_Button.cpp" />

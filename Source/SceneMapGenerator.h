@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "PerfTimer.h"
 
 #include "List.h"
 
@@ -79,9 +80,14 @@ private:
 
 	// --- Debug
 	State state = State::STOP;
+
 	ButtonGrid* buttonGrid = nullptr;
 	UI_Button* bgButton = nullptr;
 	UI_Button* blockButton = nullptr;
+
+	PerfTimer timer;
+	float stepTime = 0;
+	float totalTime = 0;
 
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
