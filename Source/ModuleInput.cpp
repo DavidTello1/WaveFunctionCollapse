@@ -5,6 +5,8 @@
 #include "ModuleWindow.h"
 
 #include "SDL/include/SDL.h"
+#include "imGui/imgui_impl_sdl.h"
+
 #include "mmgr/mmgr.h"
 
 #define MAX_KEYS 300
@@ -13,7 +15,7 @@ ModuleInput::ModuleInput(bool start_enabled) : Module(start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
-	memset(mouseButtons, KEY_IDLE, sizeof(KEY_STATE) * NUM_MOUSE_BUTTONS);
+	memset(mouseButtons, KEY_IDLE, sizeof(KEY_STATE) * MAX_MOUSE_BUTTONS);
 	close = false;
 }
 
@@ -38,7 +40,7 @@ bool ModuleInput::Init()
 
 bool ModuleInput::Start() 
 {
-	SDL_StopTextInput();
+	//SDL_StopTextInput();
 
 	return true;
 }
@@ -64,14 +66,14 @@ bool ModuleInput::PreUpdate(float dt)
 	}
 
 	// Check mouse input
-	for (int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
+	for (int i = 0; i < MAX_MOUSE_BUTTONS; ++i)
 	{
-		if (mouseButtons[i] == KEY_DOWN)	
-		{ 
-			mouseButtons[i] = KEY_REPEAT; 
+		if (mouseButtons[i] == KEY_DOWN)
+		{
+			mouseButtons[i] = KEY_REPEAT;
 		}
 		else if (mouseButtons[i] == KEY_UP)
-		{ 
+		{
 			mouseButtons[i] = KEY_IDLE;
 		}
 	}
@@ -80,6 +82,8 @@ bool ModuleInput::PreUpdate(float dt)
 	static SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&e); // Process Input for Imgui Widgets
+
 		switch (e.type)
 		{
 		case SDL_MOUSEBUTTONDOWN:

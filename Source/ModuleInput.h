@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 
-#define NUM_MOUSE_BUTTONS 5
+#define MAX_MOUSE_BUTTONS 5
 
 enum KEY_STATE
 {
@@ -37,7 +37,7 @@ public:
 
 private:
 	KEY_STATE* keyboard;
-	KEY_STATE mouseButtons[NUM_MOUSE_BUTTONS];
+	KEY_STATE mouseButtons[MAX_MOUSE_BUTTONS];
 
 	int mouseMotionX = 0;
 	int mouseMotionY = 0;
