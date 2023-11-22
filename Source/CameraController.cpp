@@ -17,7 +17,7 @@ void CameraController::Update(float dt)
 
 void CameraController::OnPanning()
 {
-	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_DOWN)
+	if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_DOWN)
 	{
 		int mouseX, mouseY;
 		App->input->GetMousePosition(mouseX, mouseY);
@@ -25,7 +25,7 @@ void CameraController::OnPanning()
 		lastX = mouseX;
 		lastY = mouseY;
 	}
-	else if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	else if (App->input->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
 	{
 		int mouseX, mouseY;
 		App->input->GetMousePosition(mouseX, mouseY);

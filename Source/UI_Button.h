@@ -8,8 +8,8 @@ class UI_Button : public UI_Element
 	friend class ButtonGrid;
 
 public:
-	UI_Button(int x, int y, int width, int height, Color idleColor, Color hoverColor, Color selectedColor, bool isStatic = false, int layer = 0) :
-		UI_Element(x, y, width, height, isStatic, layer), 
+	UI_Button(int x, int y, int width, int height, Color idleColor, Color hoverColor, Color selectedColor, bool isStatic = false) :
+		UI_Element(x, y, width, height, isStatic), 
 		idleColor(idleColor), hoverColor(hoverColor), selectedColor(selectedColor), isSelected(false) {}
 
 	~UI_Button() {}

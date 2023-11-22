@@ -9,8 +9,7 @@
 
 #include "SDL/include/SDL_mouse.h"
 #include "SDL/include/SDL_scancode.h"
-
-#include "glm/include/glm/gtc/type_ptr.hpp" //***
+#include "glm/include/glm/gtc/type_ptr.hpp"
 
 void UI_Button::Update(float dt)
 {
@@ -61,4 +60,3 @@ void UI_Button::Draw()
 
 	App->renderer->DrawQuad(glm::vec2(rect.x, rect.y), glm::vec2(rect.z, rect.w), glm::vec4(color.r, color.g, color.b, color.a));
 }
-
