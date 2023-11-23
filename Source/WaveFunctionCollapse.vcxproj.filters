@@ -325,18 +325,6 @@
     <ClInclude Include="Globals.h">
       <Filter>Source\Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="PCG\pcg_extras.hpp">
-      <Filter>Source\Engine\External Libraries\PCG</Filter>
-    </ClInclude>
-    <ClInclude Include="PCG\pcg_random.hpp">
-      <Filter>Source\Engine\External Libraries\PCG</Filter>
-    </ClInclude>
-    <ClInclude Include="PCG\pcg_uint128.hpp">
-      <Filter>Source\Engine\External Libraries\PCG</Filter>
-    </ClInclude>
-    <ClInclude Include="BitMask.h">
-      <Filter>Source\MapGenerator\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="List.h">
       <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
@@ -433,6 +421,18 @@
     <ClInclude Include="Color.h">
       <Filter>Source\Engine\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="PCG\pcg_basic.h">
+      <Filter>Source\Engine\External Libraries\PCG</Filter>
+    </ClInclude>
+    <ClInclude Include="BitArray.h">
+      <Filter>Source\MapGenerator\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="PerfTimer.h">
+      <Filter>Source\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomNumber.h">
+      <Filter>Source\Engine\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -464,9 +464,6 @@
     </ClCompile>
     <ClCompile Include="Log.cpp">
       <Filter>Source\Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="BitMask.cpp">
-      <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClCompile>
     <ClCompile Include="ModuleGUI.cpp">
       <Filter>Source\Engine\Modules</Filter>
@@ -509,6 +506,12 @@
     </ClCompile>
     <ClCompile Include="UI_Element.cpp">
       <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PCG\pcg_basic.c">
+      <Filter>Source\Engine\External Libraries\PCG</Filter>
+    </ClCompile>
+    <ClCompile Include="PerfTimer.cpp">
+      <Filter>Source\Engine\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

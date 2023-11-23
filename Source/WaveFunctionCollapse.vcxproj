@@ -132,10 +132,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BitArray.h" />
     <ClInclude Include="ButtonGrid.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="DynArray.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Glew\include\eglew.h" />
     <ClInclude Include="Glew\include\glew.h" />
@@ -149,18 +151,17 @@
     <ClInclude Include="Imgui\imstb_rectpack.h" />
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
+    <ClInclude Include="List.h" />
     <ClInclude Include="ModuleEvent.h" />
     <ClInclude Include="ModuleGUI.h" />
+    <ClInclude Include="PCG\pcg_basic.h" />
+    <ClInclude Include="RandomNumber.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneMapGenerator.h" />
-    <ClInclude Include="StaticArray.h" />
     <ClInclude Include="Cell.h" />
-    <ClInclude Include="DynArray.h" />
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="List.h" />
     <ClInclude Include="MapGenerator.h" />
-    <ClInclude Include="BitMask.h" />
     <ClInclude Include="mmgr\mmgr.h" />
     <ClInclude Include="mmgr\nommgr.h" />
     <ClInclude Include="Module.h" />
@@ -169,9 +170,6 @@
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="PCG\pcg_extras.hpp" />
-    <ClInclude Include="PCG\pcg_random.hpp" />
-    <ClInclude Include="PCG\pcg_uint128.hpp" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="SDL2\include\begin_code.h" />
     <ClInclude Include="SDL2\include\close_code.h" />
@@ -251,6 +249,7 @@
     <ClInclude Include="SDL2\include\SDL_version.h" />
     <ClInclude Include="SDL2\include\SDL_video.h" />
     <ClInclude Include="SDL2\include\SDL_vulkan.h" />
+    <ClInclude Include="StaticArray.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="String.h" />
@@ -261,7 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="BitMask.cpp" />
     <ClCompile Include="ButtonGrid.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
@@ -281,6 +279,7 @@
     <ClCompile Include="ModuleResources.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="SceneMapGenerator.cpp" />
     <ClCompile Include="stb\stb.cpp" />
