@@ -34,11 +34,10 @@ bool ModuleScene::CleanUp()
 {
 	LOG("Deleting scenes");
 
-	ListItem<Scene*>* item;
-	for (item = scenes.front(); item != nullptr; item = item->next)
+	for (List<Scene*>::Iterator it = scenes.begin(); it != scenes.end(); ++it)
 	{
-		item->data->CleanUp();
-		delete item->data;
+		(*it)->CleanUp();
+		delete (*it);
 	}
 	scenes.clear();
 
@@ -59,7 +58,7 @@ bool ModuleScene::LoadScene(Scene* scene, bool active)
 	int index = FindScene(scene->GetName());
 	if (index == -1)
 	{
-		scenes.add(scene);
+		scenes.append(scene);
 	}
 
 	ret = scene->Init();
@@ -83,13 +82,13 @@ bool ModuleScene::UnLoadScene(const char* name)
 		return false;
 	}
 
-	Scene* scene = scenes[index]->data;
+	Scene* scene = scenes.at(index);
 	ret = scene->CleanUp();
 
 	if (!ret)
 		LOG("Unable to Unload Scene, error at CleanUp: %s", scene->GetName());
 
-	ret = scenes.erase(scenes[index]);
+	ret = scenes.erase(scene);
 
 	if (!ret)
 		LOG("Unable to Unload Scene, error erasing from list: %d", index);
@@ -106,17 +105,18 @@ void ModuleScene::SetCurrentScene(const char* name)
 		return;
 	}
 
-	currentScene = scenes[index]->data;
+	currentScene = scenes.at(index);
 }
 
 int ModuleScene::FindScene(const char* name)
 {
-	int count = 0;
+	if (scenes.empty())
+		return -1;
 
-	ListItem<Scene*>* item;
-	for (item = scenes.front(); item != nullptr; item = item->next)
+	int count = 0;
+	for (List<Scene*>::Iterator it = scenes.begin(); it != scenes.end(); ++it)
 	{
-		if (item->data->GetName() == name) //***
+		if ((*it)->GetName() == name) //*** ACCESS BY NAME ? (SHOULD BE UUID)
 			return count;
 
 		++count;

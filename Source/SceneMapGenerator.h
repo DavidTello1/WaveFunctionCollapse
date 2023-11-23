@@ -3,6 +3,8 @@
 #include "PerfTimer.h"
 
 #include "List.h"
+#include "BitArray.h"
+#include "String.h"
 
 class MapGenerator;
 class CameraController;
@@ -44,6 +46,8 @@ private:
 	void UpdateButtonGrid();
 	void MapResized(const int mapWidth, const int mapHeight);
 	void PanelToggled(bool isOpen);
+
+	String MaskToString(const BitArray& mask);
 
 	// --- State Management
 	void Play();

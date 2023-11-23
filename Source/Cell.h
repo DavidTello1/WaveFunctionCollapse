@@ -1,5 +1,5 @@
 #pragma once
-#include "BitMask.h"
+#include "BitArray.h"
 
 struct Cell 
 {
@@ -12,24 +12,17 @@ public:
 		isPreset = false;
 
 		this->index = index;
-		this->mask = new BitMask(maskSize);
-		this->mask->SetAll();
+		this->mask = BitArray(maskSize);
+		this->mask.setAll();
 	};
 
 	// --- Destructor
 	~Cell() {
-		delete mask;
-		mask = nullptr;
 	}
 
-	// --- Main Functions
-	void Update() {
-		if (mask->Count() == 1)
-			Observe();
-	}
-
-	void Observe() {
-		tileID = mask->Pick();
+	// --- Collapse Cell
+	void Observe(int id) {
+		tileID = id;
 		isCollapsed = true;
 
 		if (tileID == -1)
@@ -38,7 +31,7 @@ public:
 
 	// --- Utils
 	int GetEntropy() const {
-		return mask->Count();
+		return mask.count();
 	}
 
 	void Reset() {
@@ -46,18 +39,18 @@ public:
 		isCollapsed = false;
 		isInvalid = false;
 		isPreset = false;
-		mask->SetAll();
+		mask.setAll();
 	}
 	
 	void SetCell(int tileID) {
-		//if (tileID < 0 || tileID > maskSize) //***MASK SIZE
-		//	return;
+		if (tileID < 0 || tileID > mask.size())
+			return;
 
 		this->tileID = tileID;
 		isCollapsed = true;
 		isInvalid = false;
-		mask->ClearAll();
-		mask->SetBit(tileID, true);
+		mask.clearAll();
+		mask.setBit(tileID);
 	}
 
 public:
@@ -66,5 +59,5 @@ public:
 	bool isCollapsed = false;
 	bool isInvalid = false;
 	bool isPreset = false;
-	BitMask* mask;
+	BitArray mask;
 };

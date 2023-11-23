@@ -7,10 +7,9 @@
 #include "Cell.h"
 #include "Tile.h"
 
-#include "PriorityQueue.h"
-
-#include <random>
-#include <time.h>
+#include "RandomNumber.h"
+//#include "PriorityQueue.h"
+#include <queue> //***
 
 #include "mmgr/mmgr.h"
 
@@ -33,7 +32,7 @@ MapGenerator::MapGenerator(const int width, const int height, const int cellSize
 	}
 
 	// Seed random
-	srand(time(NULL));
+	RNG = RandomNumber();
 }
 
 MapGenerator::~MapGenerator()
@@ -54,20 +53,32 @@ void MapGenerator::GenerateMap()
 
 	int limit = cells.size();
 	while (!isCollapsed && limit > 0) {
-		CollapseCell();
+
+		int index = HeuristicPick();
+		if (index == -1)
+			continue;
+
+		CollapseCell(index);
+		PropagateCell(index);
+
 		limit--;
 	}
 }
 
 void MapGenerator::Step()
 {
-	if (isFirstStep)
-		FirstStep();
-
 	if (isCollapsed)
 		return;
 
-	CollapseCell();
+	if (isFirstStep)
+		FirstStep();
+
+	int index = HeuristicPick();
+	if (index == -1)
+		return;
+
+	CollapseCell(index);
+	PropagateCell(index);
 }
 
 void MapGenerator::ResetMap()
@@ -101,7 +112,7 @@ void MapGenerator::ClearPresetCells()
 {
 	for (unsigned int i = 0; i < presetCells.size(); ++i)
 	{
-		unsigned int index = presetCells[i]->data;
+		unsigned int index = presetCells.at(i);
 		cells[index]->Reset();
 	}
 	presetCells.clear();
@@ -114,7 +125,7 @@ void MapGenerator::PresetCell(unsigned int index, unsigned int tileID)
 
 	cells[index]->SetCell(tileID);
 	cells[index]->isPreset = true;
-	presetCells.add(index);
+	presetCells.append(index);
 }
 
 void MapGenerator::SetCell(unsigned int index, unsigned int tileID)
@@ -136,64 +147,77 @@ void MapGenerator::ResetCell(unsigned int index)
 int MapGenerator::HeuristicPick()
 {
 	// Cells list sorted by entropy (smaller entropy first)
-	PriorityQueue<Cell*> sortedCells = PriorityQueue<Cell*>(cells.size());
+	List<Cell*> possibleCells;
+	int minEntropy = cells.front()->mask.size();
 	for (unsigned int i = 0; i < cells.size(); ++i)
 	{
-		if (cells[i]->isCollapsed || cells[i]->isInvalid)
+		Cell* cell = cells[i];
+		if (cell->isCollapsed || cell->isInvalid || cell->GetEntropy() > minEntropy)
 			continue;
 
-		sortedCells.push(cells[i]);
+		if (cell->GetEntropy() < minEntropy)
+		{
+			possibleCells.clear();
+			minEntropy = cell->GetEntropy();
+		}
+
+		possibleCells.append(cell);
 	}
 
-	if (sortedCells.empty())
+	if (possibleCells.empty())
 	{
 		this->isCollapsed = true;
 		return -1;
 	}
 
-	// Get list of cells with least entropy
-	DynArray<int> possibleCells = DynArray<int>();
-	int minEntropy = sortedCells.front()->GetEntropy();
-
-	for (unsigned int i = 0; i < sortedCells.size(); ++i) 
+	for (unsigned int i = 0; i < possibleCells.size(); ++i)
 	{
-		Cell* cell = sortedCells[i];
-
-		if (cell->GetEntropy() > minEntropy)
-			break;
-
-		possibleCells.push_back(cell->index);
+		Cell* cell = possibleCells.at(i);
+		LOG(" - %d: %d", cell->index, cell->GetEntropy());
 	}
+	LOG("----------------------")
+
 
 	// Pick cell randomly from list of possible cells
-	int index = rand() % possibleCells.size();
+	int index = RNG.GenerateBoundedInt(possibleCells.size());
 
-	return possibleCells[index];
+	return possibleCells.at(index)->index;
 }
 
-void MapGenerator::CollapseCell()
+void MapGenerator::CollapseCell(unsigned int index)
 {
-	int index = HeuristicPick();
-	if (index == -1)
+	// Fill array with possible tiles to choose from
+	DynArray<int> possibleTiles;
+	for (unsigned int i = 0; i < cells[index]->mask.size(); ++i)
+	{
+		if (cells[index]->mask.getBit(i))
+			possibleTiles.push_back(i);
+	}
+
+	if (possibleTiles.empty())
+	{
+		Cell* cell = cells[index]; //*** for testing purposes
 		return;
+	}
 
-	cells[index]->Observe();
+	// Pick a tile from array
+	uint32_t tile = RNG.GenerateBoundedInt(possibleTiles.size());
+	int tileID = possibleTiles[tile];
 
-	if (cells[index]->tileID == -1)
-		return;
-
-	PropagateCell(index);
+	// Set Cell to Tile
+	cells[index]->Observe(tileID);
 }
 
 void MapGenerator::PropagateCell(unsigned int index)
 {
 	List<int> queue = List<int>();
-	queue.add(cells[index]->index);
+	queue.append(cells[index]->index);
 
 	int limit = cells.size();
 	while (!queue.empty() && limit > 0)
 	{
-		queue += PropagateNeighbours(queue.front()->data);
+		int cellIndex = queue.front();
+		queue.append(PropagateNeighbours(cellIndex));
 		queue.pop_front();
 		limit--;
 	}
@@ -213,34 +237,46 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index) //***
 		if (neighbour->isCollapsed)
 			continue;
 
-		BitMask prevMask = BitMask(*neighbour->mask);
+		BitArray prevMask = BitArray(neighbour->mask);
 
 		if (cells[index]->isCollapsed)
 		{
 			int tileIndex = cells[index]->tileID;
 			Tile* tile = tiles[tileIndex];
-			BitMask* cellMask = tile->masks[i];
+			BitArray cellMask = tile->masks[i];
 
-			*neighbour->mask &= *cellMask; // Compare (bitwise And) both masks
+			neighbour->mask &= cellMask; // Compare (bitwise And) both masks
 		}
-		else
-		{
-			List<unsigned int> setBits = cells[index]->mask->GetSetBits();
+		//else
+		//{
+		//	List<unsigned int> setBits = cells[index]->mask->GetSetBits();
 
-			for (unsigned int j = 0; j < setBits.size(); ++j)
+		//	for (unsigned int j = 0; j < setBits.size(); ++j)
+		//	{
+		//		int tileIndex = setBits[j]->data;
+		//		Tile* tile = tiles[tileIndex];
+		//		BitArray* cellMask = tile->masks[i];
+
+		//		*neighbour->mask &= *cellMask; // Compare (bitwise Or) both masks
+		//	}
+		//}
+
+		if (neighbour->mask != prevMask)
+		{
+			list.append(neighbourIndex);
+
+			if (neighbour->mask.count() == 1)
 			{
-				int tileIndex = setBits[j]->data;
-				Tile* tile = tiles[tileIndex];
-				BitMask* cellMask = tile->masks[i];
-
-				*neighbour->mask |= *cellMask; // Compare (bitwise Or) both masks
+				for (unsigned int i = 0; i < neighbour->mask.size(); ++i) //*** BitArray->FirstSetBit()
+				{
+					if (neighbour->mask.getBit(i))
+						neighbour->Observe(i);
+				}
 			}
-		}
-
-		if (*neighbour->mask != prevMask)
-		{
-			neighbour->Update();
-			list.add(neighbourIndex);
+			else if (neighbour->mask.count() == 0)
+			{
+				neighbour->isInvalid = true;
+			}
 		}
 	}
 
@@ -302,7 +338,7 @@ void MapGenerator::FirstStep()
 {
 	for (unsigned int i = 0; i < presetCells.size(); ++i)
 	{
-		unsigned int index = presetCells[i]->data;
+		unsigned int index = presetCells.at(i);
 		PropagateCell(index);
 	}
 

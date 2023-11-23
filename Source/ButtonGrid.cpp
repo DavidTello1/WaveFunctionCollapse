@@ -64,7 +64,7 @@ void ButtonGrid::Update(float dt)
 			if (type == SINGLE_SELECTION)
 				UnSelectAll();
 
-			selected.add(i);
+			selected.append(i);
 		}
 		else if (type == MULTIPLE_SELECTION && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT &&
 			(App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT))
@@ -72,7 +72,7 @@ void ButtonGrid::Update(float dt)
 			if (!button->isSelected)
 			{
 				button->isSelected = true;
-				selected.add(i);
+				selected.append(i);
 			}
 		}
 		else if (type == MULTIPLE_SELECTION && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT &&
@@ -139,7 +139,7 @@ void ButtonGrid::UnSelectAll()
 {
 	for (unsigned int i = 0; i < selected.size(); ++i)
 	{
-		int index = selected[i]->data;
+		int index = selected.at(i);
 		buttons[index]->isSelected = false;
 	}
 	selected.clear();

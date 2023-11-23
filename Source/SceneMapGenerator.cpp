@@ -8,8 +8,6 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
 
-#include "PerfTimer.h"
-
 #include "MapGenerator.h"
 #include "Tile.h"
 #include "Cell.h"
@@ -18,6 +16,8 @@
 
 #include "ButtonGrid.h"
 #include "UI_Button.h"
+
+#include "PerfTimer.h"
 
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
@@ -217,7 +217,7 @@ void SceneMapGenerator::PresetCells(const List<unsigned int>& cells, const unsig
 {
 	for (unsigned int i = 0; i < cells.size(); ++i)
 	{
-		int index = cells[i]->data;
+		int index = cells.at(i);
 		map->PresetCell(index, tileID);
 	}
 
@@ -228,7 +228,7 @@ void SceneMapGenerator::ClearCells(const List<unsigned int>& cells)
 {
 	for (unsigned int i = 0; i < cells.size(); ++i)
 	{
-		int index = cells[i]->data;
+		int index = cells.at(i);
 		map->ResetCell(index);
 	}
 
@@ -269,6 +269,18 @@ void SceneMapGenerator::PanelToggled(bool isOpen)
 
 	blockButton->SetWidth(panelWidth);
 	blockButton->SetPosX(panelX);
+}
+
+String SceneMapGenerator::MaskToString(const BitArray& mask)
+{
+	String string = String(mask.size());
+
+	for (unsigned int i = 0; i < mask.size(); ++i)
+	{
+		string += (mask.getBit(i)) ? '1' : '0';
+	}
+
+	return string;
 }
 
 // ------------------------
@@ -545,7 +557,7 @@ void SceneMapGenerator::DrawSectionCellPresets()
 
 	List<unsigned int> tileArray;
 	for (unsigned int i = 0; i < numTiles; ++i)
-		tileArray.add(i);
+		tileArray.append(i);
 
 	DrawCellInspector(tileArray);
 }
@@ -558,7 +570,7 @@ void SceneMapGenerator::DrawSectionCellInspector()
 		return;
 
 	// Cell
-	int index = buttonGrid->GetSelected().front()->data;
+	int index = buttonGrid->GetSelected().front();
 	Cell* cell = map->GetCell(index);
 
 	// Texture
@@ -585,15 +597,22 @@ void SceneMapGenerator::DrawSectionCellInspector()
 	ImGui::TextColored(yellow, "%d, %d", index % width, index / width);
 	ImGui::TextColored(yellow, (cell->isCollapsed) ? "true" : "false");
 	ImGui::TextColored(yellow, "%d", cell->tileID);
-	ImGui::TextColored(yellow, cell->mask->ToString());
+	ImGui::TextColored(yellow, MaskToString(cell->mask).c_str());
 	ImGui::Columns(1);
 
 	// Inspector
 	if (state == State::FINISHED)
 		return;
 
+	List<unsigned int> setBits;
+	for (unsigned int i = 0; i < cell->mask.size(); ++i)
+	{
+		if (cell->mask.getBit(i) == true)
+			setBits.append(i);
+	}
+
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
-	DrawCellInspector(cell->mask->GetSetBits());
+	DrawCellInspector(setBits);
 }
 
 void SceneMapGenerator::DrawCellInspector(const List<unsigned int>& tileArray)
@@ -625,7 +644,7 @@ void SceneMapGenerator::DrawCellInspector(const List<unsigned int>& tileArray)
 		int count = 0;
 		for (int i = 0; i < tileArray.size(); ++i)
 		{
-			unsigned int index = tileArray[i]->data;
+			unsigned int index = tileArray.at(i);
 			ImTextureID texture = (ImTextureID)map->GetTile(index)->texture;
 			if (ImGui::ImageButton(texture, ImVec2(imageWidth, imageWidth)))
 			{
@@ -636,7 +655,7 @@ void SceneMapGenerator::DrawCellInspector(const List<unsigned int>& tileArray)
 				}
 				else
 				{
-					map->SetCell(buttonGrid->GetSelected().front()->data, index);
+					map->SetCell(buttonGrid->GetSelected().front(), index);
 					buttonGrid->UnSelectAll();
 				}
 			}

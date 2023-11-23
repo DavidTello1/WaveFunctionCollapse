@@ -1,4 +1,5 @@
 #pragma once
+#include "RandomNumber.h"
 
 #include "List.h"
 #include "DynArray.h"
@@ -38,7 +39,7 @@ public:
 
 private:
 	int HeuristicPick();
-	void CollapseCell();
+	void CollapseCell(unsigned int index);
 	void PropagateCell(unsigned int index);
 	List<int> PropagateNeighbours(unsigned int index);
 	void FirstStep(); // propagate preset cells
@@ -59,4 +60,6 @@ private:
 	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class
 
 	List<unsigned int> presetCells;
+
+	RandomNumber RNG;
 };
