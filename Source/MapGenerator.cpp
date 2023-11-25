@@ -8,8 +8,6 @@
 #include "Tile.h"
 
 #include "RandomNumber.h"
-//#include "PriorityQueue.h"
-#include <queue> //***
 
 #include "mmgr/mmgr.h"
 
@@ -37,6 +35,8 @@ MapGenerator::MapGenerator(const int width, const int height, const int cellSize
 
 MapGenerator::~MapGenerator()
 {
+	presetCells.clear();
+
 	for (unsigned int i = 0; i < cells.size(); ++i)
 		delete cells[i];
 	cells.clear();
@@ -96,6 +96,9 @@ void MapGenerator::ResetMap()
 
 void MapGenerator::Resize()
 {
+	// Clear preset cells list
+	presetCells.clear();
+
 	// Remove cells
 	for (unsigned int i = 0; i < cells.size(); ++i)
 		delete cells[i];
@@ -146,7 +149,7 @@ void MapGenerator::ResetCell(unsigned int index)
 //------------------------------------------------
 int MapGenerator::HeuristicPick()
 {
-	// Cells list sorted by entropy (smaller entropy first)
+	// Get Cells with minimum entropy
 	List<Cell*> possibleCells;
 	int minEntropy = cells.front()->mask.size();
 	for (unsigned int i = 0; i < cells.size(); ++i)
@@ -164,19 +167,12 @@ int MapGenerator::HeuristicPick()
 		possibleCells.append(cell);
 	}
 
+	// If no possible cells -> Map is Collapsed
 	if (possibleCells.empty())
 	{
 		this->isCollapsed = true;
 		return -1;
 	}
-
-	for (unsigned int i = 0; i < possibleCells.size(); ++i)
-	{
-		Cell* cell = possibleCells.at(i);
-		LOG(" - %d: %d", cell->index, cell->GetEntropy());
-	}
-	LOG("----------------------")
-
 
 	// Pick cell randomly from list of possible cells
 	int index = RNG.GenerateBoundedInt(possibleCells.size());
@@ -195,10 +191,7 @@ void MapGenerator::CollapseCell(unsigned int index)
 	}
 
 	if (possibleTiles.empty())
-	{
-		Cell* cell = cells[index]; //*** for testing purposes
 		return;
-	}
 
 	// Pick a tile from array
 	uint32_t tile = RNG.GenerateBoundedInt(possibleTiles.size());
@@ -210,26 +203,29 @@ void MapGenerator::CollapseCell(unsigned int index)
 
 void MapGenerator::PropagateCell(unsigned int index)
 {
-	List<int> queue = List<int>();
+	List<int> queue;
 	queue.append(cells[index]->index);
 
 	int limit = cells.size();
 	while (!queue.empty() && limit > 0)
 	{
 		int cellIndex = queue.front();
-		queue.append(PropagateNeighbours(cellIndex));
+		List<int> neighbours = PropagateNeighbours(cellIndex);
+
+		queue.append(neighbours);
 		queue.pop_front();
+
 		limit--;
 	}
 }
 
-List<int> MapGenerator::PropagateNeighbours(unsigned int index) //***
+List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 {
 	List<int> list;
 
-	for (int i = 0; i < NUM_NEIGHBOURS; ++i)
+	for (int dir = 0; dir < NUM_NEIGHBOURS; ++dir)
 	{
-		int neighbourIndex = CheckNeighbour(index, i);
+		int neighbourIndex = CheckNeighbour(index, dir);
 		if (neighbourIndex == -1)
 			continue;
 
@@ -239,27 +235,32 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index) //***
 
 		BitArray prevMask = BitArray(neighbour->mask);
 
-		if (cells[index]->isCollapsed)
+		Cell* cell = cells[index];
+		if (cell->isCollapsed)
 		{
-			int tileIndex = cells[index]->tileID;
+			int tileIndex = cell->tileID;
 			Tile* tile = tiles[tileIndex];
-			BitArray cellMask = tile->masks[i];
+			BitArray tileMask = tile->GetMasks()[dir];
 
-			neighbour->mask &= cellMask; // Compare (bitwise And) both masks
+			neighbour->mask &= tileMask; // Compare (bitwise And) both masks
 		}
-		//else
-		//{
-		//	List<unsigned int> setBits = cells[index]->mask->GetSetBits();
+		else
+		{
+			BitArray accMask = BitArray(tiles.size()); // All bits set to 0
 
-		//	for (unsigned int j = 0; j < setBits.size(); ++j)
-		//	{
-		//		int tileIndex = setBits[j]->data;
-		//		Tile* tile = tiles[tileIndex];
-		//		BitArray* cellMask = tile->masks[i];
+			for (unsigned int tileIndex = 0; tileIndex < tiles.size(); ++tileIndex)
+			{
+				if (cell->mask.getBit(tileIndex))
+				{
+					Tile* tile = tiles[tileIndex];
+					BitArray tileMask = tile->GetMasks()[dir];
 
-		//		*neighbour->mask &= *cellMask; // Compare (bitwise Or) both masks
-		//	}
-		//}
+					accMask |= tileMask;
+				}
+			}
+
+			neighbour->mask &= accMask;
+		}
 
 		if (neighbour->mask != prevMask)
 		{
@@ -267,11 +268,11 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index) //***
 
 			if (neighbour->mask.count() == 1)
 			{
-				for (unsigned int i = 0; i < neighbour->mask.size(); ++i) //*** BitArray->FirstSetBit()
-				{
-					if (neighbour->mask.getBit(i))
-						neighbour->Observe(i);
-				}
+				int tileID = neighbour->mask.firstSetBit();
+				if (tileID == -1)
+					return list;
+
+				neighbour->Observe(tileID);
 			}
 			else if (neighbour->mask.count() == 0)
 			{
@@ -283,51 +284,31 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index) //***
 	return list;
 }
 
-int MapGenerator::CheckNeighbour(int index, int direction) //*** change to x, y 
+int MapGenerator::CheckNeighbour(int index, int direction)
 {
 	if (index < 0 || index >= (int)cells.size())
 		return -1;
 
 	switch (direction)
 	{
-	case 0: // TopLeft
-		if ((index - 1) > width)
-			return index - 1 - width;
-		break;
-
-	case 1: // Top
+	case 0: // Top
 		if (index > width)
 			return index - width;
 		break;
 
-	case 2: // TopRight
-		if ((index + 1) > width)
-			return index + 1 - width;
-		break;
-
-	case 3: // Left
+	case 1: // Left
 		if (index % width != 0)
 			return index - 1;
 		break;
 
-	case 4: // Right
+	case 2: // Right
 		if ((index + 1) % width != 0)
 			return index + 1;
 		break;
 
-	case 5: // BottomLeft
-		if ((index - 1) < width * (height - 1))
-			return index - 1 + width;
-		break;
-
-	case 6: // Bottom
+	case 3: // Bottom
 		if (index < width * (height - 1))
 			return index + width;
-		break;
-
-	case 7: // BottomRight
-		if ((index + 1) < width * (height - 1))
-			return index + 1 + width;
 		break;
 	}
 

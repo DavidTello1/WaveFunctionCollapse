@@ -50,7 +50,7 @@ bool SceneMapGenerator::Init()
 	panelX = App->window->GetWidth() - panelWidth;
 
 	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f);
-	controller = new CameraController(camera, 100.0f, 1.0f);
+	controller = new CameraController(camera, 0.3f);
 
 	state = State::STOP;
 
@@ -69,14 +69,14 @@ bool SceneMapGenerator::Start()
 	stopIcon = App->resources->LoadTexture("Assets/Textures/Icons/stop.png")->index;
 	restartIcon = App->resources->LoadTexture("Assets/Textures/Icons/restart.png")->index;
 
-	// --- Tiles																					 // TL		// Top	   // TR	  // Left	 // Right	// BL	   // Bottom  // BR
-	Tile* empty =		new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,		"1111111", "1001111", "1111111", "1010111", "1101011", "1111111", "1110011", "1111111");
-	Tile* topLeft =		new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,		"1000000", "1000000", "1100001", "1000000", "0010110", "1100010", "0001101", "1000100");
-	Tile* topRight =	new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,	"1010001", "1000000", "1000000", "0101010", "1000000", "1001000", "0001101", "1010010");
-	Tile* bottomLeft =	new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,  "1001010", "0110001", "1010000", "1000000", "0010110", "1000000", "1000000", "1001001");
-	Tile* bottomRight =	new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "1100000", "0110001", "1000110", "0101010", "1000000", "1000101", "1000000", "1000000");
-	Tile* horizontal =	new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,	"1010001", "1000000", "1100001", "1101010", "1010110", "1000101", "1000000", "1001001");
-	Tile* vertical =	new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,	"1001010", "1110001", "1000110", "1000000", "1000000", "1100010", "1001101", "1010010");
+	// --- Tiles																							// Top	   // Left	 // Right	// Bottom
+	Tile* empty =		new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,		"1001111", "1010111", "1101011","1110011");
+	Tile* topLeft =		new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,		"1000000", "1000000", "0010110","0001101");
+	Tile* topRight =	new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,		"1000000", "0101010", "1000000","0001101");
+	Tile* bottomLeft =	new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,	"0110001", "1000000", "0010110","1000000");
+	Tile* bottomRight =	new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index,	"0110001", "0101010", "1000000","1000000");
+	Tile* horizontal =	new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,	"1000000", "1101010", "1010110","1000000");
+	Tile* vertical =	new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,		"1110001", "1000000", "1000000","1001101");
 	
 	DynArray<Tile*> tiles = DynArray<Tile*>(numTiles);
 	tiles.push_back(empty);
@@ -149,6 +149,7 @@ bool SceneMapGenerator::CleanUp()
 
 	delete buttonGrid;
 	delete bgButton;
+	delete blockButton;
 
 	delete map;
 
@@ -186,7 +187,7 @@ bool SceneMapGenerator::Draw()
 		if (isDrawTextures && !cell->isInvalid && (cell->isCollapsed || cell->isPreset))
 		{
 			Tile* tile = map->GetTile(cell->tileID);
-			App->renderer->DrawQuad(position, size, tile->texture);
+			App->renderer->DrawQuad(position, size, tile->GetTexture());
 			continue;
 		}
 
@@ -576,7 +577,7 @@ void SceneMapGenerator::DrawSectionCellInspector()
 	// Texture
 	ImTextureID texture = 0;
 	if (cell->isCollapsed && !cell->isInvalid)
-		texture = (ImTextureID)map->GetTile(cell->tileID)->texture;
+		texture = (ImTextureID)map->GetTile(cell->tileID)->GetTexture();
 
 	ImGui::Columns(3, "Cell Inspection", false);
 	ImGui::SetColumnWidth(0, 60);
@@ -645,7 +646,7 @@ void SceneMapGenerator::DrawCellInspector(const List<unsigned int>& tileArray)
 		for (int i = 0; i < tileArray.size(); ++i)
 		{
 			unsigned int index = tileArray.at(i);
-			ImTextureID texture = (ImTextureID)map->GetTile(index)->texture;
+			ImTextureID texture = (ImTextureID)map->GetTile(index)->GetTexture();
 			if (ImGui::ImageButton(texture, ImVec2(imageWidth, imageWidth)))
 			{
 				if (state == State::STOP)

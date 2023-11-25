@@ -258,6 +258,20 @@ public:
 		return counter;
 	}
 
+	int firstSetBit(int offset = 0) const
+	{
+		if (offset < 0 || offset >= numBits)
+			return -1;
+
+		for (unsigned int i = offset; i < numBits; ++i)
+		{
+			if (getBit(i) == true)
+				return i;
+		}
+
+		return -1;
+	}
+
 private:
 	// Allocate Memory
 	void Alloc(unsigned int mem)

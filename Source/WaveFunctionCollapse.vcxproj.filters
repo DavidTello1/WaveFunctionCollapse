@@ -337,9 +337,6 @@
     <ClInclude Include="Tile.h">
       <Filter>Source\MapGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="PriorityQueue.h">
-      <Filter>Source\MapGenerator\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="StaticArray.h">
       <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>

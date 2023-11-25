@@ -170,7 +170,6 @@
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="SDL2\include\begin_code.h" />
     <ClInclude Include="SDL2\include\close_code.h" />
     <ClInclude Include="SDL2\include\SDL.h" />
