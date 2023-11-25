@@ -12,8 +12,8 @@ public:
 		isPreset = false;
 
 		this->index = index;
-		this->mask = BitArray(maskSize);
-		this->mask.setAll();
+		mask = BitArray(maskSize);
+		mask.setAll();
 	};
 
 	// --- Destructor
@@ -25,8 +25,12 @@ public:
 		tileID = id;
 		isCollapsed = true;
 
+		mask.clearAll();
+
 		if (tileID == -1)
 			isInvalid = true;
+		else
+			mask.setBit(id);
 	}
 
 	// --- Utils

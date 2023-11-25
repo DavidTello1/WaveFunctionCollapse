@@ -31,7 +31,7 @@ public:
 	void SetSize(int width, int height) { this->width = width; this->height = height; Resize(); }
 
 	// --- Utils
-	bool IsFinished() const { return isCollapsed; }
+	bool IsFinished() const { return numCollapsed >= cells.size(); }
 	void SetCell(unsigned int index, unsigned int tileID); // set and propagate cell
 	void ResetCell(unsigned int index);
 	void PresetCell(unsigned int index, unsigned int tileID); // sets a cell to the specified tile but does not propagate
@@ -53,8 +53,8 @@ private:
 	int height = 0;
 	int cellSize = 0;
 
-	bool isCollapsed = false;
 	bool isFirstStep = false;
+	int numCollapsed = 0;
 
 	DynArray<Cell*> cells;
 	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class

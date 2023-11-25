@@ -52,7 +52,7 @@ void MapGenerator::GenerateMap()
 		FirstStep();
 
 	int limit = cells.size();
-	while (!isCollapsed && limit > 0) {
+	while (!IsFinished() && limit > 0) {
 
 		int index = HeuristicPick();
 		if (index == -1)
@@ -67,7 +67,7 @@ void MapGenerator::GenerateMap()
 
 void MapGenerator::Step()
 {
-	if (isCollapsed)
+	if (IsFinished())
 		return;
 
 	if (isFirstStep)
@@ -84,7 +84,7 @@ void MapGenerator::Step()
 void MapGenerator::ResetMap()
 {
 	isFirstStep = true;
-	isCollapsed = false;
+	numCollapsed = 0;
 
 	// Reset all not preset cells
 	for (unsigned int i = 0; i < cells.size(); ++i)
@@ -170,7 +170,7 @@ int MapGenerator::HeuristicPick()
 	// If no possible cells -> Map is Collapsed
 	if (possibleCells.empty())
 	{
-		this->isCollapsed = true;
+		numCollapsed = cells.size();
 		return -1;
 	}
 
@@ -199,6 +199,7 @@ void MapGenerator::CollapseCell(unsigned int index)
 
 	// Set Cell to Tile
 	cells[index]->Observe(tileID);
+	numCollapsed++;
 }
 
 void MapGenerator::PropagateCell(unsigned int index)
@@ -264,20 +265,18 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 
 		if (neighbour->mask != prevMask)
 		{
-			list.append(neighbourIndex);
+			if (neighbour->mask.count() == 0)
+			{
+				neighbour->isInvalid = true;
+				continue;
+			}
 
 			if (neighbour->mask.count() == 1)
 			{
-				int tileID = neighbour->mask.firstSetBit();
-				if (tileID == -1)
-					return list;
+				CollapseCell(neighbourIndex);
+			}
 
-				neighbour->Observe(tileID);
-			}
-			else if (neighbour->mask.count() == 0)
-			{
-				neighbour->isInvalid = true;
-			}
+			list.append(neighbourIndex);
 		}
 	}
 
@@ -292,7 +291,7 @@ int MapGenerator::CheckNeighbour(int index, int direction)
 	switch (direction)
 	{
 	case 0: // Top
-		if (index > width)
+		if (index >= width)
 			return index - width;
 		break;
 
