@@ -42,5 +42,5 @@ void main()
 
 // NOTE: You can write several shaders in the same file if you want as
 // long as you embrace them within an #ifdef block (as you can see above).
-// The third parameter of the LoadProgram function in engine.cpp allows
+// The third parameter of the LoadShader function in ModuleResources allows
 // chosing the shader you want to load by name.
