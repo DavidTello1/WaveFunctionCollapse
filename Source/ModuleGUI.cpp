@@ -7,8 +7,6 @@
 
 #include "Scene.h"
 
-#include "imgui/imgui.h"
-#include "Imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 
@@ -32,7 +30,6 @@ bool ModuleGUI::Init()
 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable keyboard controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable docking
 
 	ImGui::StyleColorsDark();
 
@@ -53,9 +50,6 @@ bool ModuleGUI::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->GetWindow());
 	ImGui::NewFrame();
-
-	// Dockspace
-	Dockspace();
 
 	return true;
 }
@@ -81,27 +75,4 @@ void ModuleGUI::Draw()
 	// Render
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void ModuleGUI::Dockspace()
-{
-	static const float menuBarHeight = 19; // ImGui::GetCurrentWindow()->MenuBarHeight();
-
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + menuBarHeight));
-	ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - menuBarHeight));
-	ImGui::SetNextWindowViewport(viewport->ID);
-
-	ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::Begin("DockSpace", NULL, window_flags);
-	ImGuiID main_dockspace = ImGui::GetID("MyDockspace");
-
-	ImGui::DockSpace(main_dockspace);
-	ImGui::End();
-	ImGui::PopStyleVar(3);
 }

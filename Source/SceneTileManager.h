@@ -6,6 +6,9 @@
 struct Tile;
 
 struct TileData {
+	//int texture;
+	//StaticArray<BitArray, 4> masks
+
 	const char* name;
 	const char* filepath;
 	int tileIndex;
@@ -53,5 +56,10 @@ private:
 	DynArray<TileData*> tileData;
 
 	bool isFilter = false;
+
+	// --- Panel Data
+	static const int menubarHeight = 19;
+	static const int toolbarHeight = 46;
+	static const int hierarchyWidth = 180;
 };
 

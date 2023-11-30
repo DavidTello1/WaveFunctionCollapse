@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "ModuleResources.h"
+#include "ModuleWindow.h"
 #include "ModuleScene.h"
 
 #include "String.h"
@@ -102,7 +103,7 @@ void SceneTileManager::DrawMenuBar()
 		ImGui::Text("|");
 		if (ImGui::MenuItem("Map Generator"))
 		{
-			//*** change to SceneMapGenerator
+			App->scene->SetCurrentScene("MapGenerator");
 		}
 	}
 	ImGui::EndMainMenuBar();
@@ -110,9 +111,19 @@ void SceneTileManager::DrawMenuBar()
 
 void SceneTileManager::DrawToolbar()
 {
-	static const int buttonSize = 24;
+	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | 
+		ImGuiWindowFlags_NoTitleBar;
 
-	if (ImGui::Begin("Toolbar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse))
+	static const int toolbarX = 0;
+	static const int toolbarY = menubarHeight;
+	static const int toolbarHeight = 46;
+
+	static const int buttonSize = 24;
+	
+	ImGui::SetNextWindowSize(ImVec2(App->window->GetWidth(), toolbarHeight), ImGuiCond_Always);
+	ImGui::SetNextWindowPos(ImVec2(toolbarX, toolbarY), ImGuiCond_Once);
+
+	if (ImGui::Begin("Toolbar", NULL, flags))
 	{
 		if (ImGui::ImageButton(NULL, ImVec2(buttonSize, buttonSize))) // Save
 		{
@@ -133,15 +144,23 @@ void SceneTileManager::DrawToolbar()
 		{
 			//*** FILTER NEIGHBOURS
 		}
-
-		ImGui::End();
 	}
+	ImGui::End();
 
 }
 
 void SceneTileManager::DrawHierarchy()
 {
-	if (ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoCollapse))
+	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
+
+	static const int hierarchyX = 0;
+	static const int hierarchyY = menubarHeight + toolbarHeight;
+	int hierarchyHeight = App->window->GetHeight() - hierarchyY;
+
+	ImGui::SetNextWindowPos(ImVec2(hierarchyX, hierarchyY), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(hierarchyWidth, hierarchyHeight), ImGuiCond_Always);
+
+	if (ImGui::Begin("Hierarchy", NULL, flags))
 	{
 		for (unsigned int i = 0; i < tiles.size(); ++i)
 		{
@@ -149,14 +168,23 @@ void SceneTileManager::DrawHierarchy()
 			if (ImGui::Selectable(name.c_str(), currentTile == i, ImGuiSelectableFlags_SpanAvailWidth))
 				currentTile = i;
 		}
-
-		ImGui::End();
 	}
+	ImGui::End();
 }
 
 void SceneTileManager::DrawMainPanel()
 {
-	if (ImGui::Begin("Tile", NULL, ImGuiWindowFlags_NoCollapse))
+	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
+
+	static const int mainPanelX = hierarchyWidth;
+	static const int mainPanelY = menubarHeight + toolbarHeight;
+	int mainPanelWidth = App->window->GetWidth() - mainPanelX;
+	int mainPanelHeight = App->window->GetHeight() - mainPanelY;
+
+	ImGui::SetNextWindowPos(ImVec2(mainPanelX, mainPanelY), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(mainPanelWidth, mainPanelHeight), ImGuiCond_Always);
+
+	if (ImGui::Begin("Tile", NULL, flags))
 	{
 		DrawNeighbours(); 
 
@@ -164,9 +192,8 @@ void SceneTileManager::DrawMainPanel()
 		DrawTileInfo();
 
 		DrawTileList();
-
-		ImGui::End();
 	}
+	ImGui::End();
 }
 
 void SceneTileManager::DrawNeighbours()
@@ -204,8 +231,8 @@ void SceneTileManager::DrawNeighbours()
 
 		ImGui::PopStyleColor();
 		ImGui::PopStyleVar();
-		ImGui::EndChild();
 	}
+	ImGui::EndChild();
 }
 
 
@@ -218,8 +245,8 @@ void SceneTileManager::DrawTileInfo()
 		ImGui::Text("Name: ");
 		ImGui::Text("Path: ");
 
-		ImGui::EndChild();
 	}
+	ImGui::EndChild();
 }
 
 void SceneTileManager::DrawTileList()
@@ -227,6 +254,6 @@ void SceneTileManager::DrawTileList()
 	if (ImGui::BeginChild("Tile List", ImVec2(0, 0), true))
 	{
 
-		ImGui::EndChild();
 	}
+	ImGui::EndChild();
 }

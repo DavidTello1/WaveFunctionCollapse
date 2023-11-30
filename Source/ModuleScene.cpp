@@ -5,6 +5,8 @@
 #include "SceneMapGenerator.h"
 #include "SceneTileManager.h"
 
+#include <string> //*** DELETE WHEN USING UIDs (used in FindScene)
+
 #include "mmgr/mmgr.h"
 
 ModuleScene::ModuleScene(bool start_enabled) : Module(start_enabled)
@@ -18,11 +20,8 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Start()
 {
 	// Scenes
-	scenes.append(new SceneMapGenerator());
-	scenes.append(new SceneTileManager());
-
-	// Current Scene
-	LoadScene(scenes.at(1), true);
+	LoadScene(new SceneMapGenerator(), false);
+	LoadScene(new SceneTileManager(), true);
 
 	return true;
 }
@@ -121,7 +120,8 @@ int ModuleScene::FindScene(const char* name)
 	int count = 0;
 	for (List<Scene*>::Iterator it = scenes.begin(); it != scenes.end(); ++it)
 	{
-		if ((*it)->GetName() == name) //*** ACCESS BY NAME ? (SHOULD BE UUID)
+		String sceneName = (*it)->GetName();
+		if (sceneName == name) //*** ACCESS BY NAME ? (SHOULD BE UUID)
 			return count;
 
 		++count;

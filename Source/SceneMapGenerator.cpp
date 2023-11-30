@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
+#include "ModuleScene.h"
 
 #include "MapGenerator.h"
 #include "Tile.h"
@@ -375,7 +376,7 @@ void SceneMapGenerator::DrawMenuBar()
 		ImGui::Text("|");
 		if (ImGui::MenuItem("Tile Manager"))
 		{
-			//*** change to SceneTileManager
+			App->scene->SetCurrentScene("TileManager");
 		}
 	}
 	ImGui::EndMainMenuBar();
