@@ -21,12 +21,15 @@ public:
 	virtual bool Draw() { return true; }
 	virtual bool DrawUI() { return true; }
 
+	//virtual bool Load(File* file) { return true; }
+	//virtual bool Save(File* file) { return true; }
+
 	// --- Utils
 	const char* GetName() const { return name; }
 	Camera* GetCamera() { return camera; }
 
 protected:
-	char name[MODULE_NAME_LENGTH];
+	char name[MODULE_NAME_LENGTH]; //*** UID
 
 	Camera* camera = nullptr;
 };

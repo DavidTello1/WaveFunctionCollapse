@@ -430,6 +430,9 @@
     <ClInclude Include="RandomNumber.h">
       <Filter>Source\Engine\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="SceneTileManager.h">
+      <Filter>Source\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -509,6 +512,9 @@
     </ClCompile>
     <ClCompile Include="PerfTimer.cpp">
       <Filter>Source\Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTileManager.cpp">
+      <Filter>Source\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

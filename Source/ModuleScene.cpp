@@ -3,6 +3,7 @@
 #include "Globals.h"
 
 #include "SceneMapGenerator.h"
+#include "SceneTileManager.h"
 
 #include "mmgr/mmgr.h"
 
@@ -16,8 +17,12 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Start()
 {
-	// Load Scenes
-	LoadScene(new SceneMapGenerator(), true);
+	// Scenes
+	scenes.append(new SceneMapGenerator());
+	scenes.append(new SceneTileManager());
+
+	// Current Scene
+	LoadScene(scenes.at(1), true);
 
 	return true;
 }

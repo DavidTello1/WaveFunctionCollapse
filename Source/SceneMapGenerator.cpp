@@ -375,7 +375,7 @@ void SceneMapGenerator::DrawMenuBar()
 		ImGui::Text("|");
 		if (ImGui::MenuItem("Tile Manager"))
 		{
-			//*** change to Tile Manager
+			//*** change to SceneTileManager
 		}
 	}
 	ImGui::EndMainMenuBar();
