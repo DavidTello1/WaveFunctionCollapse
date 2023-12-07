@@ -15,7 +15,7 @@
 void log(const char file[], int line, const char* format, ...);
 
 // Utils
-#define CAP(n) ((n <= 0.0f) ? n=0.0f : (n >= 1.0f) ? n=1.0f : n=n)
+#define CAP(n) ((n <= 0.0f) ? n = 0.0f : (n >= 1.0f) ? n = 1.0f : n = n)
 #define MIN(a,b) ((a)<(b)) ? (a) : (b)
 #define MAX(a,b) ((a)>(b)) ? (a) : (b)
 
@@ -57,3 +57,16 @@ typedef unsigned long long int u64;
 	       x = nullptr;\
 		 }\
 	 }
+
+// --- CONFIGURATION ---
+#define TITLE "Wave Function Collapse"
+#define ORGANIZATION "David Tello"
+#define VERSION "0.1-alpha"
+
+#define FOLDER_ASSETS "Assets/"
+#define FOLDER_SETTINGS "Settings/"
+#define FOLDER_LIBRARY "Library/"
+
+#define FOLDER_LIBRARY_SCENES "Library/Scenes/"
+#define FOLDER_LIBRARY_TEXTURES "Library/Textures/"
+#define FOLDER_LIBRARY_SHADERS "Library/Shaders/"

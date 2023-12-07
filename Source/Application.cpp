@@ -4,6 +4,7 @@
 #include "ModuleEvent.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
+#include "ModuleFileSystem.h"
 #include "ModuleResources.h"
 #include "ModuleScene.h"
 #include "ModuleGUI.h"
@@ -23,6 +24,7 @@ Application::Application()
 	modules.push_back(event = new ModuleEvent());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(window = new ModuleWindow());
+	modules.push_back(filesystem = new ModuleFileSystem(FOLDER_ASSETS));
 	modules.push_back(resources = new ModuleResources());
 	modules.push_back(scene = new ModuleScene());
 	modules.push_back(gui = new ModuleGUI());

@@ -8,6 +8,7 @@ class Module;
 class ModuleEvent;
 class ModuleInput;
 class ModuleWindow;
+class ModuleFileSystem;
 class ModuleResources;
 class ModuleScene;
 class ModuleGUI;
@@ -35,6 +36,7 @@ public:
 	ModuleEvent* event = nullptr;
 	ModuleInput* input = nullptr;
 	ModuleWindow* window = nullptr;
+	ModuleFileSystem* filesystem = nullptr;
 	ModuleResources* resources = nullptr;
 	ModuleScene* scene = nullptr;
 	ModuleGUI* gui = nullptr;
