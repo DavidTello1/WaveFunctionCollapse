@@ -10,6 +10,8 @@
 #include "ModuleGUI.h"
 #include "ModuleRenderer.h"
 
+#include "RandomNumber.h"
+
 #include "mmgr/mmgr.h"
 
 Application::Application()
@@ -20,6 +22,8 @@ Application::Application()
 	last_fps = -1;
 	capped_ms = 0;
 	fps_counter = 0;
+
+	RNG = new RandomNumber();
 
 	modules.push_back(event = new ModuleEvent());
 	modules.push_back(input = new ModuleInput());
@@ -38,6 +42,8 @@ Application::~Application()
 		RELEASE(*it);
 	
 	modules.clear();
+
+	RELEASE(RNG);
 }
 
 bool Application::Init()
@@ -144,4 +150,9 @@ uint Application::GetFramerateLimit() const
 void Application::SetFramerateLimit(uint max_framerate)
 {
 	capped_ms = (max_framerate > 0) ? 1000 / max_framerate : 0;
+}
+
+UID Application::GenerateUID()
+{
+	return RNG->GenerateUID();
 }

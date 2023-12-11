@@ -9,6 +9,8 @@
 #include "ModuleRenderer.h"
 #include "ModuleScene.h"
 
+#include "ResourceTexture.h"
+
 #include "MapGenerator.h"
 #include "Tile.h"
 #include "Cell.h"
@@ -64,29 +66,34 @@ bool SceneMapGenerator::Init()
 
 bool SceneMapGenerator::Start()
 {
-	// --- Icons (UI)
-	playIcon = App->resources->LoadTexture("Assets/Textures/Icons/play.png")->index;
-	stepIcon = App->resources->LoadTexture("Assets/Textures/Icons/step.png")->index;
-	stopIcon = App->resources->LoadTexture("Assets/Textures/Icons/stop.png")->index;
-	restartIcon = App->resources->LoadTexture("Assets/Textures/Icons/restart.png")->index;
+	// --- TEST ---
+	//UID id = App->resources->ImportResource("Assets/Textures/Icons/play.png");
+	//playIcon = ((Texture*)App->resources->LoadResource(id))->index;
+	// ---
 
-	// --- Tiles																							// Top	   // Left	 // Right	// Bottom
-	Tile* empty =		new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,		"1001111", "1010111", "1101011","1110011");
-	Tile* topLeft =		new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,		"1000000", "1000000", "0010110","0001101");
-	Tile* topRight =	new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,		"1000000", "0101010", "1000000","0001101");
-	Tile* bottomLeft =	new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,	"0110001", "1000000", "0010110","1000000");
-	Tile* bottomRight =	new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index,	"0110001", "0101010", "1000000","1000000");
-	Tile* horizontal =	new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,	"1000000", "1101010", "1010110","1000000");
-	Tile* vertical =	new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,		"1110001", "1000000", "1000000","1001101");
-	
+	//// --- Icons (UI)
+	//playIcon = App->resources->LoadTexture("Assets/Textures/Icons/play.png")->index;
+	//stepIcon = App->resources->LoadTexture("Assets/Textures/Icons/step.png")->index;
+	//stopIcon = App->resources->LoadTexture("Assets/Textures/Icons/stop.png")->index;
+	//restartIcon = App->resources->LoadTexture("Assets/Textures/Icons/restart.png")->index;
+
+	//// --- Tiles																							// Top	   // Left	 // Right	// Bottom
+	//Tile* empty =		new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,		"1001111", "1010111", "1101011","1110011");
+	//Tile* topLeft =		new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,		"1000000", "1000000", "0010110","0001101");
+	//Tile* topRight =	new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,		"1000000", "0101010", "1000000","0001101");
+	//Tile* bottomLeft =	new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,	"0110001", "1000000", "0010110","1000000");
+	//Tile* bottomRight =	new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index,	"0110001", "0101010", "1000000","1000000");
+	//Tile* horizontal =	new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,	"1000000", "1101010", "1010110","1000000");
+	//Tile* vertical =	new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,		"1110001", "1000000", "1000000","1001101");
+	//
 	DynArray<Tile*> tiles = DynArray<Tile*>(numTiles);
-	tiles.push_back(empty);
-	tiles.push_back(topLeft);
-	tiles.push_back(topRight);
-	tiles.push_back(bottomLeft);
-	tiles.push_back(bottomRight);
-	tiles.push_back(horizontal);
-	tiles.push_back(vertical);
+	//tiles.push_back(empty);
+	//tiles.push_back(topLeft);
+	//tiles.push_back(topRight);
+	//tiles.push_back(bottomLeft);
+	//tiles.push_back(bottomRight);
+	//tiles.push_back(horizontal);
+	//tiles.push_back(vertical);
 
 	// --- Create Map Generator ---
 	map = new MapGenerator(width, height, cellSize, tiles);

@@ -168,8 +168,12 @@ void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, 
 	model = glm::translate(model, glm::vec3(position, 0.0f));
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 
+	// Get Default Shader & Texture
+	unsigned int defaultShader = 0; //***
+	uint32_t defaultTexture = 0; //***
+
 	// Draw Quad
-	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, App->resources->GetDefaultTexture(), color);
+	DrawQuadEx(defaultShader, camera->GetViewProjMatrix(), model, defaultTexture, color);
 }
 
 void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const uint32_t texture)
@@ -187,12 +191,16 @@ void ModuleRenderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, 
 	model = glm::translate(model, glm::vec3(position, 0.0f));
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 
+	// Get Default Shader
+	unsigned int defaultShader = 0; //***
+
 	// Draw Quad
-	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, texture, glm::vec4(1.0f));
+	DrawQuadEx(defaultShader, camera->GetViewProjMatrix(), model, texture, glm::vec4(1.0f));
 
 }
 
-void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const float& rotation, const glm::vec2& center)
+void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const float& rotation, 
+	const glm::vec2& center)
 {
 	// Get Camera
 	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
@@ -215,8 +223,12 @@ void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2&
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 
+	// Get Default Shader & Texture
+	unsigned int defaultShader = 0; //***
+	uint32_t defaultTexture = 0; //***
+
 	// Draw Quad
-	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, App->resources->GetDefaultTexture(), color);
+	DrawQuadEx(defaultShader, camera->GetViewProjMatrix(), model, defaultTexture, color);
 }
 
 void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2& size, const uint32_t texture, const float& rotation, const glm::vec2& center)
@@ -242,6 +254,9 @@ void ModuleRenderer::DrawQuadRotated(const glm::vec2& position, const glm::vec2&
 		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, glm::vec3(size, 1.0f));
 
+	// Get Default Shader
+	unsigned int defaultShader = 0; //***
+
 	// Draw Quad
-	DrawQuadEx(App->resources->GetDefaultShader(), camera->GetViewProjMatrix(), model, texture, glm::vec4(1.0f));
+	DrawQuadEx(defaultShader, camera->GetViewProjMatrix(), model, texture, glm::vec4(1.0f));
 }

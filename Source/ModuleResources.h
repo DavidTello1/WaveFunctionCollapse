@@ -1,81 +1,70 @@
 #pragma once
 #include "Module.h"
+#include "Globals.h"
 
-#include "glm/include/glm/glm.hpp"
+#include <vector>
 
-#include <vector> //***
-#include <string> //***
+class ResourceManager;
 
-typedef unsigned int GLuint;
-typedef unsigned long long u64;
-
-// --- Shader ---
-struct VertexShaderAttribute
-{
-	unsigned char location;
-	unsigned char ncomponents;
+enum ResourceType {
+	ANY = 0,
+	TEXTURE,
+	SHADER,
+	SCENE
 };
 
-struct VertexShaderLayout
-{
-	std::vector<VertexShaderAttribute> attributes;
+struct ResourceData {
+	ResourceData() = default;
+	ResourceData(UID id, ResourceType type, const char* assetsPath, const char* libaryPath, uint64_t lastModTime)
+		: id(id), type(type), assetsPath(assetsPath), libraryPath(libraryPath), lastModTime(lastModTime) {}
+
+	UID id = 0;
+	ResourceType type = ANY;
+	const char* assetsPath = "";
+	const char* libraryPath = "";
+	uint64_t lastModTime = 0;
 };
 
-struct Shader
-{
-	GLuint             index;
-	std::string        filepath;
-	std::string        name;
-	u64                timestamp;
-	VertexShaderLayout vertexShaderLayout;
-};
-
-// --- Texture ---
-struct Image
-{
-	void* pixels;
-	glm::ivec2	size;
-	int			nchannels;
-	int			stride;
-};
-
-struct Texture
-{
-	GLuint      index;
-	std::string filepath;
-	glm::ivec2	size;
-};
-
-// -------------------------------------------
-class ModuleResources : public Module //*** Consider abstracting resource creation to each resource type (also separate with FileManager)
+class ModuleResources : public Module
 {
 public:
 	ModuleResources(bool start_enabled = true);
 	virtual ~ModuleResources();
 
 	bool Start() override;
-	bool Update(float dt) override;
 	bool CleanUp() override;
 
-	// --- Utils
-	const GLuint GetDefaultShader() const { return defaultShader; }
-	const GLuint GetDefaultTexture() const { return defaultTexture; }
+	// ---
+	UID ImportResource(const char* filepath); // Load resource from outside resource library & Create copy inside library (own-file-format)
+	void SaveResource(UID id); // Save in resource library (own-file-format)
+	void RemoveResource(UID id); // Remove resource from library & assets and delete metaFile
 
-	static std::string ReadTextFile(const char* filepath); // Reads a whole file and returns a string with its contents. Returned string is temporary.
-	static u64 GetFileLastWriteTimestamp(const char* filepath); // Retrieves a timestamp indicating the last time the file was modified. Useful for hot reloads.
+	void LoadResource(UID id); // Load from library
+	void UnloadResource(UID id); // Unload from library
 
-	// --- Shaders
-	static GLuint CreateShader(std::string filepath, const char* name);
-	u64 LoadShader(const char* filepath, const char* name);
+private:
+	// Utils
+	int FindResource(UID id) const;
+	ResourceData* GetResourceData(UID id);
+	const ResourceData* GetResourceData(UID id) const;
+	const ResourceType GetResourceType(const char* filepath) const;
+	const char* GetLibraryPath(UID id, ResourceType type) const;
+	const char* NormalizePath(const char* path) const;
 
-	// --- Textures
-	static GLuint CreateTexture(Image image);
-	Texture* LoadTexture(const char* filepath);
+	// File Management
+	UID ImportFromAssets(const char* assetsPath);
+	//void ImportAllFiles(const char* folder, std::vector<const char*> exclude_extensions);
+	//void HotReloading();
 
-public:
-	std::vector<Texture*> textures;
-	std::vector<Shader*> shaders;
+	// Meta Files
+	const char* GetMetaPath(const char* filepath) const;
+	bool ExistsMeta(const char* filepath) const;
+	void RemoveMeta(const char* filepath);
+	ResourceData LoadMeta(const char* filepath);
+	void SaveMeta(const ResourceData& data);
 
-	GLuint defaultShader = 0;
-	GLuint defaultTexture = 0;
+private:
+	std::vector<ResourceData> resourceDatas; // contains the ResourceData of all the resources inside Library Folder
+
+	std::vector<ResourceManager*> resource_mgrs;
 };

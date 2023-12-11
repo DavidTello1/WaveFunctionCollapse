@@ -1,12 +1,12 @@
 #include "ModuleResources.h"
-
 #include "Globals.h"
 
-#include "stb/stb_image.h"
-#include "Glew/include/glew.h"
+#include "Application.h"
+#include "ModuleFileSystem.h"
 
-#include <windows.h>
-#include <fstream>
+#include "ResourceTexture.h"
+#include "ResourceShader.h"
+#include "ResourceScene.h"
 
 #include "mmgr/mmgr.h"
 
@@ -20,264 +20,294 @@ ModuleResources::~ModuleResources()
 
 bool ModuleResources::Start()
 {
-    // Default Shader
-    defaultShader = shaders[LoadShader("Assets/Shaders/shaders.glsl", "DEFAULT_SHADER")]->index;
+    //// Default Shader
+    //defaultShader = shaders[LoadShader("Assets/Shaders/shaders.glsl", "DEFAULT_SHADER")]->index;
 
-    // Default Texture (white 1x1)
-    glGenTextures(1, &defaultTexture);
-    glBindTexture(GL_TEXTURE_2D, defaultTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    uint32_t color = 0xffffffff;
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+    //// Default Texture (white 1x1)
+    //glGenTextures(1, &defaultTexture);
+    //glBindTexture(GL_TEXTURE_2D, defaultTexture);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //uint32_t color = 0xffffffff;
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 
-    return true;;
-}
+    // --------------------
+    resource_mgrs.push_back(new ResourceTexture());
+    resource_mgrs.push_back(new ResourceShader());
+    //resource_mgrs.push_back(new ResourceScene());
 
-bool ModuleResources::Update(float dt)
-{
-    // Hot reloading
-    for (unsigned int i = 0; i < shaders.size(); ++i)
-    {
-        Shader* shader = shaders[i];
-        u64 currentTimeStamp = ModuleResources::GetFileLastWriteTimestamp(shader->filepath.c_str());
-
-        if (currentTimeStamp > shader->timestamp)
-        {
-            glDeleteProgram(shader->index);
-            std::string programSource = ModuleResources::ReadTextFile(shader->filepath.c_str());
-
-            shader->index = ModuleResources::CreateShader(programSource, shader->name.c_str());
-            shader->timestamp = currentTimeStamp;
-
-            LOG("Successfully reloaded shader '{0}'", shader->name);
-        }
-    }
     return true;;
 }
 
 bool ModuleResources::CleanUp()
 {
-    // Textures
-    for (unsigned int i = 0; i < textures.size(); ++i)
+    for (size_t i = 0; i < resource_mgrs.size(); ++i)
     {
-        glDeleteTextures(1, &textures[i]->index);
-        delete(textures[i]);
+        delete resource_mgrs[i];
     }
-    textures.clear();
-
-    // Shaders
-    for (unsigned int i = 0; i < shaders.size(); ++i)
-        delete(shaders[i]);
-    shaders.clear();
+    resource_mgrs.clear();
 
     return true;
 }
 
-// --------------------------------------------
-std::string ModuleResources::ReadTextFile(const char* filepath)
+UID ModuleResources::ImportResource(const char* filepath)
 {
-    std::ifstream ifs(filepath);
+    // Get Assets Path
+    std::string fileName = App->filesystem->GetFileName(NormalizePath(filepath));
 
-    if (ifs)
-    {
-        std::string fileText((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-        return  fileText;
-    }
+    std::string assetsPath = FOLDER_ASSETS + fileName;
 
-    LOG("fopen() failed reading file {0}", filepath);
-    return "ERROR";
+    // Copy Resource in Assets Folder
+    App->filesystem->Import(filepath, assetsPath.c_str());
+
+    // Import Resource from Assets Folder
+    return ImportFromAssets(assetsPath.c_str());
 }
 
-u64 ModuleResources::GetFileLastWriteTimestamp(const char* filepath)
+void ModuleResources::RemoveResource(UID id)
 {
-    union Filetime2u64 {
-        FILETIME filetime;
-        u64      u64time;
-    } conversor;
+    const ResourceData* data = GetResourceData(id);
 
-    WIN32_FILE_ATTRIBUTE_DATA Data;
-    if (GetFileAttributesExA(filepath, GetFileExInfoStandard, &Data)) {
-        conversor.filetime = Data.ftLastWriteTime;
-        return(conversor.u64time);
+    if (data == nullptr)
+    {
+        LOG("Error removing resource, id not found: %d", id);
+        return;
     }
-    return 0;
+
+    // Remove resource from manager
+    resource_mgrs[(int)data->type]->Remove(id);
+
+    // Remove file from library
+    App->filesystem->Remove(data->libraryPath);
+
+    // Remove meta file from assets
+    RemoveMeta(data->assetsPath);
+
+    // Remove ResourceData from array
+    int index = FindResource(id);
+    resourceDatas.erase(resourceDatas.begin() + index);
 }
 
-// Programs
-GLuint ModuleResources::CreateShader(std::string source, const char* name)
+void ModuleResources::SaveResource(UID id)
 {
-    GLchar  infoLogBuffer[1024] = {};
-    GLsizei infoLogBufferSize = sizeof(infoLogBuffer);
-    GLsizei infoLogSize;
-    GLint   success;
+    ResourceData* data = GetResourceData(id);
 
-    char versionString[] = "#version 330\n";
-    char shaderNameDefine[128];
-    sprintf_s(shaderNameDefine, "#define %s\n", name);
-    char vertexShaderDefine[] = "#define VERTEX\n";
-    char fragmentShaderDefine[] = "#define FRAGMENT\n";
+    // Save Resource in Library Folder
+    resource_mgrs[(int)data->type]->Save(id, data->libraryPath);
 
-    const GLchar* vertexShaderSource[] = {
-        versionString,
-        shaderNameDefine,
-        vertexShaderDefine,
-        source.c_str()
-    };
-    const GLint vertexShaderLengths[] = {
-        (GLint)strlen(versionString),
-        (GLint)strlen(shaderNameDefine),
-        (GLint)strlen(vertexShaderDefine),
-        (GLint)source.length()
-    };
-    const GLchar* fragmentShaderSource[] = {
-        versionString,
-        shaderNameDefine,
-        fragmentShaderDefine,
-        source.c_str()
-    };
-    const GLint fragmentShaderLengths[] = {
-        (GLint)strlen(versionString),
-        (GLint)strlen(shaderNameDefine),
-        (GLint)strlen(fragmentShaderDefine),
-        (GLint)source.length()
-    };
-
-    GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vshader, ARRAY_COUNT(vertexShaderSource), vertexShaderSource, vertexShaderLengths);
-    glCompileShader(vshader);
-    glGetShaderiv(vshader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vshader, infoLogBufferSize, &infoLogSize, infoLogBuffer);
-        LOG("glCompileShader() failed with vertex shader %s\nReported message:\n%s\n", name, infoLogBuffer);
-    }
-
-    GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fshader, ARRAY_COUNT(fragmentShaderSource), fragmentShaderSource, fragmentShaderLengths);
-    glCompileShader(fshader);
-    glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fshader, infoLogBufferSize, &infoLogSize, infoLogBuffer);
-        LOG("glCompileShader() failed with fragment shader %s\nReported message:\n%s\n", name, infoLogBuffer);
-    }
-
-    GLuint programHandle = glCreateProgram();
-    glAttachShader(programHandle, vshader);
-    glAttachShader(programHandle, fshader);
-    glLinkProgram(programHandle);
-    glGetProgramiv(programHandle, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(programHandle, infoLogBufferSize, &infoLogSize, infoLogBuffer);
-        LOG("glLinkProgram() failed with program %s\nReported message:\n%s\n", name, infoLogBuffer);
-    }
-
-    glUseProgram(0);
-
-    glDetachShader(programHandle, vshader);
-    glDetachShader(programHandle, fshader);
-    glDeleteShader(vshader);
-    glDeleteShader(fshader);
-
-    return programHandle;
+    // Update Last Modfication Time
+    data->lastModTime = App->filesystem->GetLastModTime(data->assetsPath);
 }
 
-u64 ModuleResources::LoadShader(const char* filepath, const char* name)
+void ModuleResources::LoadResource(UID id)
 {
-    std::string source = ModuleResources::ReadTextFile(filepath);
+    const ResourceData* data = GetResourceData(id);
 
-    Shader* shader = new Shader();
-    shader->index = CreateShader(source, name);
-    shader->filepath = filepath;
-    shader->name = name;
-    shader->timestamp = ModuleResources::GetFileLastWriteTimestamp(filepath);
-
-    // getting info from the shader
-    GLint attributeSize = 0;
-    GLenum attributeType = 0;
-    const GLsizei bufferSize = 64;
-    GLchar attributeName[bufferSize];
-
-    GLint attributeCount = 0;
-    glGetProgramiv(shader->index, GL_ACTIVE_ATTRIBUTES, &attributeCount);
-
-    for (int i = 0; i < attributeCount; ++i)
+    if (data == nullptr)
     {
-        VertexShaderAttribute attribute = {};
-        GLsizei attributeNameLength = 0;
-
-        glGetActiveAttrib(shader->index, (GLuint)i, bufferSize,
-            &attributeNameLength, &attributeSize, &attributeType, attributeName);
-
-        attribute.ncomponents = attributeSize;
-        attribute.location = glGetAttribLocation(shader->index, attributeName);
-
-        shader->vertexShaderLayout.attributes.push_back(attribute);
+        LOG("Error loading resource, id not found: %d", id);
+        return;
     }
 
-    shaders.push_back(shader);
-    return shaders.size() - 1;
+    resource_mgrs[(int)data->type]->Load(id, data->libraryPath);
 }
 
-GLuint ModuleResources::CreateTexture(Image image)
+void ModuleResources::UnloadResource(UID id)
 {
-    GLenum internalFormat = GL_RGB8;
-    GLenum dataFormat = GL_RGB;
-    GLenum dataType = GL_UNSIGNED_BYTE;
+    const ResourceData* data = GetResourceData(id);
 
-    switch (image.nchannels)
+    if (data == nullptr)
     {
-    case 3: dataFormat = GL_RGB; internalFormat = GL_RGB8; break;
-    case 4: dataFormat = GL_RGBA; internalFormat = GL_RGBA8; break;
-    default: LOG("CreateTexture() - Unsupported number of channels");
+        LOG("Error loading resource, id not found: %d", id);
+        return;
     }
 
-    GLuint texHandle;
-    glGenTextures(1, &texHandle);
-    glBindTexture(GL_TEXTURE_2D, texHandle);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size.x, image.size.y, 0, dataFormat, dataType, image.pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    return texHandle;
+    resource_mgrs[(int)data->type]->Unload(id);
 }
 
-Texture* ModuleResources::LoadTexture(const char* filepath)
+// --------------------
+int ModuleResources::FindResource(UID id) const
 {
-    // Check if already loaded
-    for (Texture* tex : textures)
+    for (size_t i = 0; i < resourceDatas.size(); ++i)
     {
-        if (tex->filepath == filepath)
-            return tex;
+        if (resourceDatas[i].id == id)
+            return i;
+    }
+    return -1;
+}
+
+ResourceData* ModuleResources::GetResourceData(UID id)
+{
+    int index = FindResource(id);
+
+    if (index == -1)
+        return nullptr;
+
+    return &resourceDatas[index];
+}
+
+const ResourceData* ModuleResources::GetResourceData(UID id) const
+{
+    int index = FindResource(id);
+
+    if (index == -1)
+        return nullptr;
+
+    return &resourceDatas[index];
+}
+
+const ResourceType ModuleResources::GetResourceType(const char* filepath) const
+{
+    std::string ext = App->filesystem->GetExtension(filepath);
+
+    // Texture
+    if (ext == "png" ||
+        ext == "jpg" ||
+        ext == "bmp" ||
+        ext == "tga")
+    {
+        return ResourceType::TEXTURE;
     }
 
-    Image image = {};
-    stbi_set_flip_vertically_on_load(false);
-    image.pixels = stbi_load(filepath, &image.size.x, &image.size.y, &image.nchannels, 0); // load image
-    if (image.pixels)
+    // Shader
+    if (ext == "glsl")
+        return ResourceType::SHADER;
+
+    // Scene
+    else if (ext == "scene")
+        return ResourceType::SCENE;
+
+    // INVALID
+    LOG("Error invalid extension: %s", ext.c_str());
+    return ResourceType::ANY;
+}
+
+const char* ModuleResources::GetLibraryPath(UID id, ResourceType type) const
+{
+    std::string path;
+
+    switch (type)
     {
-        image.stride = image.size.x * image.nchannels;
+    case ResourceType::TEXTURE:
+        path = FOLDER_LIBRARY_TEXTURES + std::string("%d", id) + std::string(EXTENSION_TEXTURE);
+        break;
 
-        Texture* tex = new Texture();
-        tex->index = CreateTexture(image);
-        tex->filepath = filepath;
-        tex->size = image.size;
+    case ResourceType::SHADER:
+        path = FOLDER_LIBRARY_SHADERS + std::string("%d", id) + std::string(EXTENSION_SHADER);
+        break;
 
-        textures.push_back(tex);
+    case ResourceType::SCENE:
+        path = FOLDER_LIBRARY_SCENES + std::string("%d", id) + std::string(EXTENSION_SCENE);
+        break;
 
-        stbi_image_free(image.pixels); // free image
-
-        LOG("Texture loaded correctly: %s", filepath);
-        return tex;
+    default:
+        LOG("Error ResourceType invalid");
+        return nullptr;
     }
 
-    LOG("Texture could not be loaded: %s", filepath);
-    return nullptr;
+    return path.c_str();
+}
+
+const char* ModuleResources::NormalizePath(const char* filepath) const
+{
+    std::string path = filepath;
+
+    for (std::string::iterator it = path.begin(); it != path.end(); ++it)
+    {
+        if (*it == '\\')
+        {
+            *it = '/';
+            continue;
+        }
+        *it = tolower(*it);
+    }
+
+    return path.c_str();
+}
+
+// --------------------
+UID ModuleResources::ImportFromAssets(const char* assetsPath)
+{
+    ResourceData data;
+
+    if (ExistsMeta(assetsPath))
+    {
+        data = LoadMeta(assetsPath);
+    }
+    else
+    {
+        // Fill ResourceData
+        data.id = App->GenerateUID();
+        data.type = GetResourceType(assetsPath);
+        data.assetsPath = assetsPath;
+        data.libraryPath = GetLibraryPath(data.id, data.type);
+        data.lastModTime = App->filesystem->GetLastModTime(assetsPath);
+
+        // Save Meta File
+        SaveMeta(data);
+    }
+
+    // Add ResourceData to array //*** check if already exists? -> overwrite
+    resourceDatas.push_back(data); //*** persistence of data?
+
+    // Create Resource in Library Folder
+    resource_mgrs[(int)data.type]->Import(data.assetsPath, data.libraryPath);
+
+    return data.id;
+}
+
+// --------------------
+const char* ModuleResources::GetMetaPath(const char* filepath) const
+{
+    std::string metaPath = filepath + std::string(".meta");
+    return metaPath.c_str();
+}
+
+bool ModuleResources::ExistsMeta(const char* filepath) const
+{
+    const char* metaPath = GetMetaPath(filepath);
+    return App->filesystem->Exists(metaPath);
+}
+
+void ModuleResources::RemoveMeta(const char* filepath)
+{
+    const char* metaPath = GetMetaPath(filepath);
+    App->filesystem->Remove(metaPath);
+}
+
+ResourceData ModuleResources::LoadMeta(const char* filepath) //***
+{
+    //const char* metaPath = GetMetaPath(filepath);
+
+    //char* buffer = nullptr;
+    //App->filesystem->Load(metaPath, &buffer);
+    //
+    //ResourceData data;
+    //data.id          = buffer[0];
+    //data.type        = buffer[0];
+    //data.assetsPath  = buffer[0];
+    //data.libraryPath = buffer[0];
+    //data.lastModTime = buffer[0];
+
+    //return data;
+
+    return ResourceData();
+}
+
+void ModuleResources::SaveMeta(const ResourceData& data) //***
+{
+    //const char* metaPath = GetMetaPath(data.assetsPath);
+
+    //char* buffer = nullptr;
+    //unsigned int size = 0;
+
+    //buffer += std::to_string(data.id);
+    //buffer += data.type;
+    //buffer += data.assetsPath;
+    //buffer += data.libraryPath;
+    //buffer += std::to_string(data.lastModTime);
+
+    //App->filesystem->Save(metaPath, buffer, size);
 }

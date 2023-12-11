@@ -28,9 +28,9 @@ public:
 		return pcg32_boundedrand_r(&rng, bound);
 	}
 
-	//uint64_t GenerateUUID() {
-	//	return 0;
-	//}
+	uint64_t GenerateUID() { //***
+		return 0;
+	}
 
 private:
 	pcg32_random_t rng;

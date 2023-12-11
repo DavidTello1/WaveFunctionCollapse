@@ -2,7 +2,7 @@
 #include "Globals.h"
 #include "Timer.h"
 
-#include <vector> //***
+#include <vector>
 
 class Module;
 class ModuleEvent;
@@ -13,6 +13,8 @@ class ModuleResources;
 class ModuleScene;
 class ModuleGUI;
 class ModuleRenderer;
+
+class RandomNumber;
 
 class Application
 {
@@ -27,6 +29,8 @@ public:
 	int GetFPS() { return last_fps; }
 	uint GetFramerateLimit() const;
 	void SetFramerateLimit(uint max_framerate);
+
+	UID GenerateUID();
 
 private:
 	void PrepareUpdate();
@@ -51,6 +55,8 @@ private:
 	int		last_frame_ms;
 	int		last_fps;
 	int		capped_ms;
+
+	RandomNumber* RNG = nullptr;
 
 	std::vector<Module*> modules;
 };

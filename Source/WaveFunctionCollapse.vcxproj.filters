@@ -20,9 +20,6 @@
     <Filter Include="Source\Engine\Modules">
       <UniqueIdentifier>{c66b108c-20d0-49c8-8ac5-9784c6abdc3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Utils">
-      <UniqueIdentifier>{dc255ef5-117c-4d5b-8dbd-2547246479b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Engine\External Libraries\PCG">
       <UniqueIdentifier>{6e484a01-d85c-41e9-9710-cde1f3456328}</UniqueIdentifier>
     </Filter>
@@ -44,19 +41,28 @@
     <Filter Include="Source\Engine\External Libraries\stb_image">
       <UniqueIdentifier>{70f3c0a7-97b8-4df6-9f3b-eced4db2c372}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\Tools\Entities">
-      <UniqueIdentifier>{6076d467-4778-4601-83c2-eaee8e0d63ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\Tools\Entities\UI">
-      <UniqueIdentifier>{e49cfda8-225c-4a9a-9ecf-2b53bea1b790}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\MapGenerator\DataStructures">
       <UniqueIdentifier>{62a293c5-7024-4b31-a429-45ab92908ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Game Entities">
+      <UniqueIdentifier>{6076d467-4778-4601-83c2-eaee8e0d63ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Game Entities\UI">
+      <UniqueIdentifier>{e49cfda8-225c-4a9a-9ecf-2b53bea1b790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Resources">
+      <UniqueIdentifier>{e07d8409-36f1-4929-8482-837b07859bb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\Tools\Utils">
+      <UniqueIdentifier>{dc255ef5-117c-4d5b-8dbd-2547246479b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries\PhysFS">
+      <UniqueIdentifier>{2f69cd67-85c4-4cbb-8205-309ca47312b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Module.h">
       <Filter>Source\Engine\Modules</Filter>
@@ -323,7 +329,7 @@
       <Filter>Source\Engine\External Libraries\SDL</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClInclude>
     <ClInclude Include="List.h">
       <Filter>Source\MapGenerator\DataStructures</Filter>
@@ -350,7 +356,7 @@
       <Filter>Source\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Source\Engine\Tools\Entities</Filter>
+      <Filter>Source\Engine\Game Entities</Filter>
     </ClInclude>
     <ClInclude Include="Glew\include\eglew.h">
       <Filter>Source\Engine\External Libraries\Glew</Filter>
@@ -404,19 +410,19 @@
       <Filter>Source\Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="CameraController.h">
-      <Filter>Source\Engine\Tools\Entities</Filter>
+      <Filter>Source\Engine\Game Entities</Filter>
     </ClInclude>
     <ClInclude Include="UI_Button.h">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+      <Filter>Source\Engine\Game Entities\UI</Filter>
     </ClInclude>
     <ClInclude Include="ButtonGrid.h">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+      <Filter>Source\Engine\Game Entities\UI</Filter>
     </ClInclude>
     <ClInclude Include="UI_Element.h">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+      <Filter>Source\Engine\Game Entities\UI</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClInclude>
     <ClInclude Include="PCG\pcg_basic.h">
       <Filter>Source\Engine\External Libraries\PCG</Filter>
@@ -425,13 +431,31 @@
       <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="PerfTimer.h">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClInclude>
     <ClInclude Include="RandomNumber.h">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClInclude>
     <ClInclude Include="SceneTileManager.h">
       <Filter>Source\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTexture.h">
+      <Filter>Source\Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceScene.h">
+      <Filter>Source\Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceShader.h">
+      <Filter>Source\Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFileSystem.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\include\physfs.h">
+      <Filter>Source\Engine\External Libraries\PhysFS</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Source\Engine\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -463,7 +487,7 @@
       <Filter>Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Log.cpp">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModuleGUI.cpp">
       <Filter>Source\Engine\Modules</Filter>
@@ -472,7 +496,7 @@
       <Filter>Source\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Source\Engine\Tools\Entities</Filter>
+      <Filter>Source\Engine\Game Entities</Filter>
     </ClCompile>
     <ClCompile Include="Imgui\imgui.cpp">
       <Filter>Source\Engine\External Libraries\ImGui</Filter>
@@ -496,25 +520,37 @@
       <Filter>Source\Engine\External Libraries\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="CameraController.cpp">
-      <Filter>Source\Engine\Tools\Entities</Filter>
+      <Filter>Source\Engine\Game Entities</Filter>
     </ClCompile>
     <ClCompile Include="UI_Button.cpp">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+      <Filter>Source\Engine\Game Entities\UI</Filter>
     </ClCompile>
     <ClCompile Include="ButtonGrid.cpp">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+      <Filter>Source\Engine\Game Entities\UI</Filter>
     </ClCompile>
     <ClCompile Include="UI_Element.cpp">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+      <Filter>Source\Engine\Game Entities\UI</Filter>
     </ClCompile>
     <ClCompile Include="PCG\pcg_basic.c">
       <Filter>Source\Engine\External Libraries\PCG</Filter>
     </ClCompile>
     <ClCompile Include="PerfTimer.cpp">
-      <Filter>Source\Engine\Utils</Filter>
+      <Filter>Source\Engine\Tools\Utils</Filter>
     </ClCompile>
     <ClCompile Include="SceneTileManager.cpp">
       <Filter>Source\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTexture.cpp">
+      <Filter>Source\Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceScene.cpp">
+      <Filter>Source\Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceShader.cpp">
+      <Filter>Source\Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFileSystem.cpp">
+      <Filter>Source\Engine\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
