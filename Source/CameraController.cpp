@@ -60,7 +60,6 @@ void CameraController::SetZoom(float value)
 	camera->position.y += mouseY * (camera->zoom - value);
 
 	// Update Camera
-	camera->zoom = value;
-	camera->UpdateProjectionMatrix(0.0f, (float)App->window->GetWidth() * value, (float)App->window->GetHeight() * value, 0.0f);
+	camera->SetZoom(value);
 	camera->UpdateViewMatrix();
 }

@@ -10,6 +10,7 @@ Camera::Camera()
 	position = glm::vec3(0.0f);
 	rotation = 0.0f;
 	zoom = 1.0f;
+
 	UpdateProjectionMatrix(0, (float)App->window->GetWidth() * zoom, (float)App->window->GetHeight() * zoom, 0);
 	UpdateViewMatrix();
 }

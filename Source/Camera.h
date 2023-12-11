@@ -25,7 +25,7 @@ public:
 	const glm::mat4& GetProjectionMatrix() const { return ProjectionMatrix; }
 	const glm::mat4& GetViewProjMatrix() const { return ViewProjMatrix; }
 
-	void UpdateProjectionMatrix(float left, float right, float top, float bottom);
+	void UpdateProjectionMatrix(float left, float right, float top, float bottom); //*** should be protected (event OnResize)
 
 protected:
 	void UpdateViewMatrix();

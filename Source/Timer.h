@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SDL\include\SDL_timer.h"
+#include "SDL\include\SDL_timer.h" //*** SHOULD BE IN .CPP FILE
 
 class Timer
 {

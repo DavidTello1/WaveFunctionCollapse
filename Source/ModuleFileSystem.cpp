@@ -2,8 +2,9 @@
 #include "Globals.h"
 
 #include "SDL/include/SDL_filesystem.h"
+
 #include "PhysFS/include/physfs.h"
-#pragma comment(lib, "PhysFS/libx86/physfs.lib")
+#pragma comment(lib, "PhysFS/libx64/physfs.lib")
 
 #include "mmgr/mmgr.h"
 
@@ -151,7 +152,7 @@ bool ModuleFileSystem::Import(const char* filepath, const char* destination)
 
 	if (!source || !dest)
 	{
-		LOG("Error while copy from [%s] to [%s]", filepath, destination);
+		LOG("Error while importing from [%s] to [%s]", filepath, destination);
 		return false;
 	}
 
@@ -347,27 +348,4 @@ const char* ModuleFileSystem::GetReadPaths() const
 const char* ModuleFileSystem::GetUserPath() const
 {
 	return PHYSFS_getUserDir();
-}
-
-const char* ModuleFileSystem::NormalizePath(const char* filepath) const
-{
-	std::string path = filepath;
-
-	for (std::string::iterator it = path.begin(); it != path.end(); ++it)
-	{
-		if (*it == '\\')
-			*it = '/';
-	}
-
-	return path.c_str();
-}
-
-const char* ModuleFileSystem::ToLower(const char* string) const
-{
-	std::string str = string;
-
-	for (std::string::iterator it = str.begin(); it != str.end(); ++it)
-		*it = tolower(*it);
-
-	return str.c_str();
 }

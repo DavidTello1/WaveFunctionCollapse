@@ -1,7 +1,6 @@
 #pragma once
 #include "Module.h"
 
-#define TITLE "Wave Function Collapse"
 #define DEFAULT_WIDTH 1024
 #define DEFAULT_HEIGHT 768
 
@@ -22,7 +21,6 @@ public:
 
 	unsigned int GetWidth() const { return width; }
 	unsigned int GetHeight() const { return height; }
-	unsigned int GetZoom() const { return zoom; }
 
 	void SetWidth(unsigned int width, bool update_size = true);
 	void SetHeigth(unsigned int height, bool update_size = true);
@@ -37,5 +35,4 @@ private:
 
 	unsigned int width = DEFAULT_WIDTH;
 	unsigned int height = DEFAULT_HEIGHT;
-	unsigned int zoom = 1; //Scaling factor
 };

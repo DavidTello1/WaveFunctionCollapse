@@ -38,8 +38,4 @@ public:
 	const char* GetWritePath() const;
 	const char* GetReadPaths() const;
 	const char* GetUserPath() const;
-
-private:
-	const char* NormalizePath(const char* filepath) const;
-	const char* ToLower(const char* string) const;
 };

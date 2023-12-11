@@ -13,7 +13,4 @@ public:
 	bool CleanUp() override;
 
 	void Draw();
-
-private:
-	void Dockspace();
 };
