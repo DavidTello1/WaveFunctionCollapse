@@ -352,8 +352,8 @@ bool SceneTileManagerUI::NeighbourCombo(const char* name, bool* selected, float 
 		ImVec2 pMin = ImVec2(p.x + offset, p.y + padding);
 		ImVec2 pMax = ImVec2(pMin.x + texSize, pMin.y + texSize);
 
-		draw_list->AddImage((ImTextureID)tex1, pMin, pMax);
-		draw_list->AddImage((ImTextureID)tex2, ImVec2(pMin.x, pMax.y + spacing), ImVec2(pMax.x, pMax.y + spacing + texSize));
+		draw_list->AddImage((ImTextureID)tex2, pMin, pMax);
+		draw_list->AddImage((ImTextureID)tex1, ImVec2(pMin.x, pMax.y + spacing), ImVec2(pMax.x, pMax.y + spacing + texSize));
 	}
 	else if (orientation == 1) // left
 	{
@@ -376,8 +376,8 @@ bool SceneTileManagerUI::NeighbourCombo(const char* name, bool* selected, float 
 		ImVec2 pMin = ImVec2(p.x + offset, p.y + padding);
 		ImVec2 pMax = ImVec2(pMin.x + texSize, pMin.y + texSize);
 
-		draw_list->AddImage((ImTextureID)tex2, pMin, pMax);
-		draw_list->AddImage((ImTextureID)tex1, ImVec2(pMin.x, pMax.y + spacing), ImVec2(pMax.x, pMax.y + + spacing + texSize));
+		draw_list->AddImage((ImTextureID)tex1, pMin, pMax);
+		draw_list->AddImage((ImTextureID)tex2, ImVec2(pMin.x, pMax.y + spacing), ImVec2(pMax.x, pMax.y + + spacing + texSize));
 	}
 
 	return ret;
