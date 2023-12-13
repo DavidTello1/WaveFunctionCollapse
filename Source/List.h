@@ -511,6 +511,9 @@ public:
 	// Erase Element by element
 	bool erase(const T& element)
 	{
+		if (numElements == 0)
+			return false;
+
 		for (Iterator it = first; it != last->next; ++it)
 		{
 			if ((*it) == element)

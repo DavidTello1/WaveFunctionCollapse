@@ -46,6 +46,9 @@ void UI_Button::Draw()
 		color = hoverColor;
 
 	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
+	if (camera == nullptr)
+		return;
+
 	float zoom = camera->GetZoom();
 
 	glm::vec4 rect = glm::vec4(x, y, width, height);

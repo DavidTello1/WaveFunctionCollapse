@@ -24,7 +24,10 @@ public:
 	void Draw() override;
 
 	// --- Getters
+	const unsigned int GetNumColumns() const { return columns; }
+	const unsigned int GetNumRows() const { return rows; }
 	const unsigned int GetSpacing() const { return spacing; }
+	const unsigned int GetButtonSize() const { return buttonSize; }
 	const Type GetSelectionType() const { return type; }
 	const List<unsigned int>& GetSelected() const { return selected; }
 

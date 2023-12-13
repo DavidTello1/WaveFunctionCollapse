@@ -21,8 +21,10 @@ bool UI_Element::IsHovered() const
 	}
 
 	Camera* camera = App->scene->GetCurrentScene()->GetCamera();
-	float zoom = camera->GetZoom();
+	if (camera == nullptr)
+		return false;
 
+	float zoom = camera->GetZoom();
 	glm::vec4 worldPos = camera->GetViewProjMatrix() * glm::vec4(x, y, 0.0f, 1.0f);
 
 	if (worldPos.w == 0.0f)

@@ -1,11 +1,9 @@
 #include "ModuleScene.h"
-
 #include "Globals.h"
 
-#include "SceneMapGenerator.h"
-#include "SceneTileManager.h"
+#include "MainScene.h"
 
-#include <string> //*** DELETE WHEN USING UIDs (used in FindScene)
+#include <string>
 
 #include "mmgr/mmgr.h"
 
@@ -19,9 +17,8 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Start()
 {
-	// Scenes
-	LoadScene(new SceneMapGenerator(), false);
-	LoadScene(new SceneTileManager(), true);
+	// Main Scene
+	LoadScene(new MainScene(), true);
 
 	return true;
 }
@@ -38,10 +35,10 @@ bool ModuleScene::CleanUp()
 {
 	LOG("Deleting scenes");
 
-	for (List<Scene*>::Iterator it = scenes.begin(); it != scenes.end(); ++it)
+	for (size_t i = 0; i < scenes.size(); ++i)
 	{
-		(*it)->CleanUp();
-		delete (*it);
+		scenes[i]->CleanUp();
+		delete scenes[i];
 	}
 	scenes.clear();
 
@@ -62,7 +59,7 @@ bool ModuleScene::LoadScene(Scene* scene, bool active)
 	int index = FindScene(scene->GetName());
 	if (index == -1)
 	{
-		scenes.append(scene);
+		scenes.push_back(scene);
 	}
 
 	ret = scene->Init();
@@ -86,16 +83,13 @@ bool ModuleScene::UnLoadScene(const char* name)
 		return false;
 	}
 
-	Scene* scene = scenes.at(index);
+	Scene* scene = scenes[index];
 	ret = scene->CleanUp();
 
 	if (!ret)
 		LOG("Unable to Unload Scene, error at CleanUp: %s", scene->GetName());
 
-	ret = scenes.erase(scene);
-
-	if (!ret)
-		LOG("Unable to Unload Scene, error erasing from list: %d", index);
+	scenes.erase(scenes.begin() + index);
 
 	return ret;
 }
@@ -109,7 +103,7 @@ void ModuleScene::SetCurrentScene(const char* name)
 		return;
 	}
 
-	currentScene = scenes.at(index);
+	currentScene = scenes[index];
 }
 
 int ModuleScene::FindScene(const char* name)
@@ -118,10 +112,10 @@ int ModuleScene::FindScene(const char* name)
 		return -1;
 
 	int count = 0;
-	for (List<Scene*>::Iterator it = scenes.begin(); it != scenes.end(); ++it)
+	for (size_t i = 0; i < scenes.size(); ++i)
 	{
-		String sceneName = (*it)->GetName();
-		if (sceneName == name) //*** ACCESS BY NAME ? (SHOULD BE UUID)
+		std::string sceneName = scenes[i]->GetName();
+		if (sceneName == name)
 			return count;
 
 		++count;

@@ -1,25 +1,30 @@
 #pragma once
-#include "Scene.h"
-#include "PerfTimer.h"
-
 #include "List.h"
-#include "BitArray.h"
-#include "String.h"
 
-class MapGenerator;
+class Camera;
 class CameraController;
-
 class ButtonGrid;
 class UI_Button;
 
 // --- Events
 struct EventWindowResize;
 struct EventCameraZoom;
+struct EventPanelResize;
+struct EventPlay;
+struct EventStep;
+struct EventStop;
+struct EventFinish;
+struct EventSetCell;
+struct EventPresetCells;
+struct EventResetCells;
+struct EventResetAllCells;
+struct EventMapResize;
+struct EventSpacingChange;
 // ---
 
-class SceneMapGenerator : public Scene
+class SceneMapGenerator
 {
-private:
+public:
 	enum State {
 		STOP = 0,
 		PLAY,
@@ -29,84 +34,51 @@ private:
 
 public:
 	SceneMapGenerator();
-	virtual ~SceneMapGenerator();
+	~SceneMapGenerator();
 
-	bool Init() override;
-	bool Start() override;
-	bool Update(float dt) override;
-	bool CleanUp() override;
+	bool Init();
+	bool Start(int width, int height, int cellSize, int spacing, int panelX, int panelY, int panelWidth, int panelHeight);
+	bool PreUpdate(float dt);
+	bool Update(float dt);
+	bool CleanUp();
 
-	bool Draw() override;
-	bool DrawUI() override;
+	bool Draw();
+
+	// --- Utils
+	Camera* GetCamera() const { return camera; }
+	const State& GetState() const { return state; }
+	const unsigned int GetNumSelected() const;
+	const List<unsigned int> GetSelected() const;
 
 private:
-	// --- Debug Utils
-	void PresetCells(const List<unsigned int>& cells, const unsigned int tileID);
-	void ClearCells(const List<unsigned int>& cells);
 	void UpdateButtonGrid();
-	void MapResized(const int mapWidth, const int mapHeight);
-	void PanelToggled(bool isOpen);
 
-	String MaskToString(const BitArray& mask);
-
-	// --- State Management
-	void Play();
-	void Step();
-	void Stop();
-	void Restart();
-
-	// --- Debug Draw
-	void DrawMenuBar();
-	void DrawPanel();
-	void DrawSectionButtons();
-	void DrawSectionOptions();
-	void DrawSectionResize();
-	void DrawSectionCellPresets();
-	void DrawSectionCellInspector();
-	void DrawCellInspector(const List<unsigned int>& list);
-
-	// --- EVENTS ---
-	void OnResize(EventWindowResize* e);
+	// --- Events
+	void OnWindowResize(EventWindowResize* e);
 	void OnZoom(EventCameraZoom* e);
 
+	void OnPanelResize(EventPanelResize* e);
+
+	void OnPlay(EventPlay* e);
+	void OnStep(EventStep* e);
+	void OnStop(EventStop* e);
+	void OnFinish(EventFinish* e);
+
+	void OnSetCell(EventSetCell* e);
+	void OnPresetCells(EventPresetCells* e);
+	void OnResetCells(EventResetCells* e);
+	void OnResetAllCells(EventResetAllCells* e);
+
+	void OnMapResize(EventMapResize* e);
+	void OnSpacingChange(EventSpacingChange* e);
+
 private:
-	// --- Scene Data
-	MapGenerator* map = nullptr;
-	CameraController* controller = nullptr;
-
-	// --- Map Data
-	static const int numTiles = 7;
-	static const int cellSize = 24;
-	static const int spacing = 2;
-	static const int menuBarHeight = 19;
-	int width = 25;
-	int height = 25;
-
-	// --- Debug
 	State state = State::STOP;
+
+	Camera* camera = nullptr;
+	CameraController* controller = nullptr;
 
 	ButtonGrid* buttonGrid = nullptr;
 	UI_Button* bgButton = nullptr;
 	UI_Button* blockButton = nullptr;
-
-	PerfTimer timer;
-	float stepTime = 0;
-	float totalTime = 0;
-
-	float widthRatio = 1.0f;
-	float heightRatio = 1.0f;
-
-	bool isMapPreset = false;
-	bool isDrawTextures = true;
-	bool isDrawSpaced = true;
-
-	bool isPanelOpen = true;
-	int panelX = 0;
-	int panelWidth = 0;
-	int panelHeight = 0;
-	
-	unsigned int stepIcon = 0;
-	unsigned int playIcon = 0;
-	unsigned int stopIcon = 0;
-	unsigned int restartIcon = 0;
 };

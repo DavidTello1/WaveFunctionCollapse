@@ -152,6 +152,7 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="MainScene.h" />
     <ClInclude Include="ModuleEvent.h" />
     <ClInclude Include="ModuleFileSystem.h" />
     <ClInclude Include="ModuleGUI.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="RandomNumber.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneEvents.h" />
     <ClInclude Include="SceneMapGenerator.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Globals.h" />
@@ -171,7 +173,9 @@
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="SceneMapGeneratorUI.h" />
     <ClInclude Include="SceneTileManager.h" />
+    <ClInclude Include="SceneTileManagerUI.h" />
     <ClInclude Include="SDL2\include\begin_code.h" />
     <ClInclude Include="SDL2\include\close_code.h" />
     <ClInclude Include="SDL2\include\SDL.h" />
@@ -272,6 +276,7 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="mmgr\mmgr.cpp" />
     <ClCompile Include="ModuleFileSystem.cpp" />
@@ -284,7 +289,9 @@
     <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="SceneMapGenerator.cpp" />
+    <ClCompile Include="SceneMapGeneratorUI.cpp" />
     <ClCompile Include="SceneTileManager.cpp" />
+    <ClCompile Include="SceneTileManagerUI.cpp" />
     <ClCompile Include="stb\stb.cpp" />
     <ClCompile Include="UI_Button.cpp" />
     <ClCompile Include="UI_Element.cpp" />

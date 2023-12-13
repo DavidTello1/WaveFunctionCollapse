@@ -1,65 +1,26 @@
 #pragma once
-#include "Scene.h"
-
 #include "DynArray.h"
 
 struct Tile;
 
-struct TileData {
-	//int texture;
-	//StaticArray<BitArray, 4> masks
-
-	const char* name;
-	const char* filepath;
-	int tileIndex;
-
-	bool isSelected;
-	bool isChanged;
-	
-	bool isTopSet;
-	bool isLeftSet;
-	bool isRightSet;
-	bool isBottomSet;
-};
-
-class SceneTileManager : public Scene
+class SceneTileManager
 {
+	friend class SceneTileManagerUI;
+
 public: 
 	SceneTileManager();
 	virtual ~SceneTileManager();
 
-	bool Init() override;
-	bool Start() override;
-	bool Update(float dt) override;
-	bool CleanUp() override;
+	bool Init();
+	bool Start();
+	bool Update(float dt);
+	bool CleanUp();
 
-	bool DrawUI() override;
-
-private:
-	//// --- File Manager
-	//bool Import();
-	//bool Export();
-
-	// --- UI Panels
-	void DrawMenuBar();
-	void DrawToolbar();
-	void DrawHierarchy();
-	void DrawMainPanel();
-	void DrawNeighbours();
-	void DrawTileInfo();
-	void DrawTileList();
+	// --- Utils
+	Tile* GetTile(int index) { return tiles[index]; }
+	DynArray<Tile*> GetTiles() { return tiles; }
 
 private:
-	int currentTile = 0;
-	int currentDir = 0;
 	DynArray<Tile*> tiles;
-	DynArray<TileData*> tileData;
-
-	bool isFilter = false;
-
-	// --- Panel Data
-	static const int menubarHeight = 19;
-	static const int toolbarHeight = 46;
-	static const int hierarchyWidth = 180;
 };
 

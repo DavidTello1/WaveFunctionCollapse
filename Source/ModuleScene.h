@@ -1,7 +1,7 @@
 #pragma once
 #include "Module.h"
 
-#include "List.h"
+#include <vector>
 
 class Scene;
 
@@ -31,5 +31,5 @@ private:
 	
 private:
 	Scene* currentScene = nullptr;
-	List<Scene*> scenes;
+	std::vector<Scene*> scenes;
 };
