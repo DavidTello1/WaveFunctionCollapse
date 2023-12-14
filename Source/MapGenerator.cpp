@@ -17,10 +17,13 @@ MapGenerator::MapGenerator(const int width, const int height, const int cellSize
 	this->height = height;
 	this->cellSize = cellSize;
 
+	// Seed random
+	RNG = RandomNumber();
+
 	// Init Tiles Array
 	for (unsigned int i = 0; i < tiles.size(); ++i)
 	{
-		this->tiles.push_back(tiles[i]);
+		this->tiles.push_back(new Tile(tiles[i]));
 	}
 
 	// Init Cells Array
@@ -28,9 +31,6 @@ MapGenerator::MapGenerator(const int width, const int height, const int cellSize
 	for (int i = 0; i < numCells; ++i) {
 		cells.push_back(new Cell(i, this->tiles.size()));
 	}
-
-	// Seed random
-	RNG = RandomNumber();
 }
 
 MapGenerator::~MapGenerator()
@@ -129,6 +129,34 @@ void MapGenerator::PresetCell(unsigned int index, unsigned int tileID)
 	cells[index]->SetCell(tileID);
 	cells[index]->isPreset = true;
 	presetCells.append(index);
+}
+
+void MapGenerator::SetTileset(const DynArray<Tile*>& tileset)
+{
+	// Reset
+	isFirstStep = true;
+	numCollapsed = 0;
+
+	// Remove Tiles
+	for (unsigned int i = 0; i < tiles.size(); ++i)
+		delete tiles[i];
+	tiles.clear();
+
+	// Init Tiles Array
+	for (unsigned int i = 0; i < tileset.size(); ++i)
+	{
+		tiles.push_back(new Tile(tileset[i]));
+	}
+
+	// Remove Cells
+	for (unsigned int i = 0; i < cells.size(); ++i)
+		delete cells[i];
+	cells.clear();
+
+	// Create Cells Array
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i)
+		cells.push_back(new Cell(i, tileset.size()));
 }
 
 void MapGenerator::SetCell(unsigned int index, unsigned int tileID)

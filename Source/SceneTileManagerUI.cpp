@@ -92,22 +92,18 @@ bool SceneTileManagerUI::Draw()
 	return true;
 }
 
+const DynArray<Tile*>& SceneTileManagerUI::GetTileset() const
+{
+	return tileset->GetAllTiles();
+}
+
+// -----------------------
 void SceneTileManagerUI::DrawMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save Tileset"))
-			{
-				App->event->Publish(new EventExportTileset());
-			}
-			if (ImGui::MenuItem("Save Map"))
-			{
-				App->event->Publish(new EventExportMap());
-			}
-			ImGui::Separator();
-
 			if (ImGui::MenuItem("Import Tile"))
 			{
 				App->event->Publish(new EventOpenImport());
@@ -116,9 +112,10 @@ void SceneTileManagerUI::DrawMenuBar()
 			{
 				App->event->Publish(new EventOpenImport());
 			}
-			if (ImGui::MenuItem("Import Map"))
+			ImGui::Separator();
+			if (ImGui::MenuItem("Export Tileset"))
 			{
-				App->event->Publish(new EventOpenImport());
+				App->event->Publish(new EventExportTileset());
 			}
 
 			ImGui::EndMenu();
@@ -133,7 +130,7 @@ void SceneTileManagerUI::DrawMenuBar()
 	ImGui::EndMainMenuBar();
 }
 
-void SceneTileManagerUI::DrawToolbar() //*** ICONS
+void SceneTileManagerUI::DrawToolbar()
 {
 	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoTitleBar;
@@ -155,16 +152,11 @@ void SceneTileManagerUI::DrawToolbar() //*** ICONS
 
 		if (ImGui::ImageButton((ImTextureID)saveIcon, ImVec2(buttonSize, buttonSize))) // Save
 		{
-			// if (isAppend) //***
-			App->event->Publish(new EventSaveTile(tileset->GetTile(currentTile)));
-			// else
-			// App->event->Publish(new EventUpdateTileset();
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((ImTextureID)saveAllIcon, ImVec2(buttonSize, buttonSize))) // Save All
-		{
-			App->event->Publish(new EventSaveAllTiles());
-			// App->event->Publish(new EventUpdateTileset(); //***
+			if (isChanges)
+			{
+				App->event->Publish(new EventSaveTileset());
+				isChanges = false;
+			}
 		}
 		ImGui::SameLine();
 		if (ImGui::ImageButton((ImTextureID)importIcon, ImVec2(buttonSize, buttonSize))) // Import
@@ -297,6 +289,7 @@ void SceneTileManagerUI::DrawMainPanel()
 			if (NeighbourCombo(label.c_str(), selected, 40, tile->GetTexture(), neighbour->GetTexture(), currentDir))
 			{
 				tileset->UpdateMask(currentTile, currentDir, i, !selected);
+				isChanges = true;
 			}
 			ImGui::SameLine();
 		}

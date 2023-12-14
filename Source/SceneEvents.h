@@ -95,10 +95,4 @@ struct EventTimerChange : public Event
 };
 
 // -------------------------------------
-struct EventSaveAllTiles : public Event {};
-
-struct EventSaveTile : public Event
-{
-	EventSaveTile(Tile* tile) : tile(tile) {}
-	Tile* tile;
-};
+struct EventSaveTileset : public Event {};

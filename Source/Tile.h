@@ -20,6 +20,8 @@ public:
 		masks[3] = BitArray(bottom);
 	}
 
+	Tile(Tile* tile) : id(tile->id), texture(tile->texture), masks(tile->masks) {};
+
 	~Tile() {}
 
 	int GetID() const { return id; }
@@ -38,7 +40,6 @@ class Tileset
 private:
 	DynArray<Tile*> tiles;
 
-
 public:
 	Tileset() 
 	{
@@ -51,38 +52,26 @@ public:
 		tiles.clear();
 	}
 
-	Tile* GetTile(int index)
-	{
-		return tiles[index];
-	}
+	// --- Getters
+	const unsigned int GetSize() const { return tiles.size(); }
+	Tile* GetTile(int index) { return tiles[index]; }
+	const Tile* GetTile(int index) const { return tiles[index]; }
+	const DynArray<Tile*>& GetAllTiles() const { return tiles; }
 
-	const Tile* GetTile(int index) const 
-	{ 
-		return tiles[index];
-	}
-
-	const unsigned int GetSize() const 
-	{
-		return tiles.size(); 
-	}
-
-	void AddTile(Tile* tile)
-	{
+	// --- Management
+	void AddTile(Tile* tile) {
 		tiles.push_back(tile);
 	}
 
-	void RemoveTile(int index)
-	{
+	void RemoveTile(int index) {
 		//tiles.erase(index);
 	}
 
-	void UpdateTile(int index, const Tile& tile)
-	{
+	void UpdateTile(int index, const Tile& tile) {
 		*tiles[index] = tile;
 	}
 
-	void UpdateMask(int index, int dir, int bit, bool value)
-	{
+	void UpdateMask(int index, int dir, int bit, bool value) {
 		if (value)
 			tiles[index]->masks[dir].setBit(bit);
 		else

@@ -10,8 +10,6 @@
 #include "Tile.h"
 #include "Cell.h"
 
-//#include "TileManager.h"
-
 #include "SceneMapGenerator.h"
 #include "SceneMapGeneratorUI.h"
 #include "SceneTileManagerUI.h"
@@ -40,9 +38,6 @@ bool MainScene::Init()
     // --- Create Map Generator
     mapGenerator = new MapGenerator(width, height, cellSize, DynArray<Tile*>()); //*** shared array of tiles?
 
-    //// --- Create Tile Manager
-    //tileManager = new TileManager();
-
     // --- Create Scenes
     sceneMapGenerator = new SceneMapGenerator();
     sceneMapGeneratorUI = new SceneMapGeneratorUI(sceneMapGenerator, DynArray<unsigned int>());
@@ -59,6 +54,7 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnMapResize);
     App->event->Subscribe(this, &MainScene::OnDrawSpaced);
     App->event->Subscribe(this, &MainScene::OnChangeScene);
+    App->event->Subscribe(this, &MainScene::OnSaveTileset);
 
     return true;
 }
@@ -114,7 +110,6 @@ bool MainScene::CleanUp()
     delete sceneTileManagerUI;
 
     delete mapGenerator;
-    //delete tileManager;
 
     return true;
 }
@@ -277,4 +272,17 @@ void MainScene::OnChangeScene(EventChangeScene* e)
     {
         isMapVisible = false;
     }
+}
+
+void MainScene::OnSaveTileset(EventSaveTileset* e)
+{
+    const DynArray<Tile*> tileset = sceneTileManagerUI->GetTileset();
+
+    mapGenerator->SetTileset(tileset);
+
+    DynArray<unsigned int> textures;
+    for (unsigned int i = 0; i < tileset.size(); ++i)
+        textures.push_back(tileset[i]->GetTexture());
+
+    sceneMapGeneratorUI->SetTileTextures(textures);
 }

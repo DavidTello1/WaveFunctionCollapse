@@ -21,6 +21,7 @@ struct EventResetAllCells;
 struct EventMapResize;
 struct EventDrawSpaced;
 struct EventChangeScene;
+struct EventSaveTileset;
 // ---
 
 class MainScene : public Scene
@@ -53,6 +54,8 @@ private:
 	void OnMapResize(EventMapResize* e);
 	void OnDrawSpaced(EventDrawSpaced* e);
 	void OnChangeScene(EventChangeScene* e);
+
+	void OnSaveTileset(EventSaveTileset* e);
 
 public:
 	bool isMapVisible = true;

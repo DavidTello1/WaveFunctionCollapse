@@ -20,6 +20,7 @@ struct EventResetCells;
 struct EventResetAllCells;
 struct EventMapResize;
 struct EventSpacingChange;
+struct EventSaveTileset;
 // ---
 
 class SceneMapGenerator
@@ -71,6 +72,7 @@ private:
 
 	void OnMapResize(EventMapResize* e);
 	void OnSpacingChange(EventSpacingChange* e);
+	void OnSaveTileset(EventSaveTileset* e);
 
 private:
 	State state = State::STOP;

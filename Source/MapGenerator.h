@@ -31,6 +31,7 @@ public:
 	void SetSize(int width, int height) { this->width = width; this->height = height; Resize(); }
 
 	// --- Utils
+	void SetTileset(const DynArray<Tile*>& tileset);
 	bool IsFinished() const { return numCollapsed >= cells.size(); }
 	void SetCell(unsigned int index, unsigned int tileID); // set and propagate cell
 	void ResetCell(unsigned int index);
@@ -57,7 +58,7 @@ private:
 	int numCollapsed = 0;
 
 	DynArray<Cell*> cells;
-	DynArray<Tile*> tiles; // tiles are created outside but they are owned (and deleted) by this class
+	DynArray<Tile*> tiles;
 
 	List<unsigned int> presetCells;
 

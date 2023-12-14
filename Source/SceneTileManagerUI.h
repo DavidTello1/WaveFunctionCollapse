@@ -9,10 +9,7 @@ class Tileset;
 // --- Events
 struct EventImportTile;
 struct EventImportTileset;
-struct EventImportMap;
 struct EventExportTileset;
-struct EventExportMap;
-
 // ---
 
 struct TileData {
@@ -35,6 +32,9 @@ public:
 	bool CleanUp();
 
 	bool Draw();
+
+	// ---
+	const DynArray<Tile*>& GetTileset() const;
 
 private:
 	// --- Draw
@@ -65,6 +65,7 @@ private:
 	DynArray<TileData> tileData;
 
 	// Flags
+	bool isChanges = false;
 	bool isFilter = false;
 
 	// Panel Data

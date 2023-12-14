@@ -80,27 +80,14 @@ void SceneMapGeneratorUI::DrawMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Save Tileset"))
-			{
-				App->event->Publish(new EventExportTileset());
-			}
-			if (ImGui::MenuItem("Save Map"))
-			{
-				App->event->Publish(new EventExportMap());
-			}
-			ImGui::Separator();
-
-			if (ImGui::MenuItem("Import Tile"))
-			{
-				App->event->Publish(new EventOpenImport());
-			}
-			if (ImGui::MenuItem("Import Tileset"))
-			{
-				App->event->Publish(new EventOpenImport());
-			}
 			if (ImGui::MenuItem("Import Map"))
 			{
 				App->event->Publish(new EventOpenImport());
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Export Map"))
+			{
+				App->event->Publish(new EventExportMap());
 			}
 
 			ImGui::EndMenu();

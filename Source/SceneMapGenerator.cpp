@@ -44,6 +44,7 @@ bool SceneMapGenerator::Init()
 	App->event->Subscribe(this, &SceneMapGenerator::OnResetAllCells);
 	App->event->Subscribe(this, &SceneMapGenerator::OnMapResize);
 	App->event->Subscribe(this, &SceneMapGenerator::OnSpacingChange);
+	App->event->Subscribe(this, &SceneMapGenerator::OnSaveTileset);
 
     return true;
 }
@@ -214,6 +215,11 @@ void SceneMapGenerator::OnSpacingChange(EventSpacingChange* e)
 {
 	buttonGrid->SetSpacing(e->spacing);
 	UpdateButtonGrid();
+}
+
+void SceneMapGenerator::OnSaveTileset(EventSaveTileset* e)
+{
+	state = State::STOP;
 }
 
 // -------------------------------
