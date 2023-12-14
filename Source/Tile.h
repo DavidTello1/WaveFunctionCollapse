@@ -77,4 +77,13 @@ public:
 		else
 			tiles[index]->masks[dir].clearBit(bit);
 	}
+
+	bool IsValid(int tileID) {
+		for (unsigned int i = 0; i < tiles.size(); ++i)
+		{
+			if (tiles[i]->id == tileID)
+				return true;
+		}
+		return false;
+	}
 };

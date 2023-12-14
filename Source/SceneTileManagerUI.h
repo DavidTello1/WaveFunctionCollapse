@@ -34,6 +34,7 @@ public:
 
 	// ---
 	const DynArray<Tile*>& GetTileset() const;
+	bool IsTileValid(int tileID) const;
 
 private:
 	// --- Draw
@@ -65,8 +66,8 @@ private:
 	DynArray<TileData> tileData;
 
 	// Flags
-	bool isChanges = false;
 	bool isFilter = false;
+	bool isChanges = false;
 	bool isRenameFocus = false;
 
 	// Panel Data

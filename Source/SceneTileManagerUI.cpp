@@ -30,6 +30,7 @@ bool SceneTileManagerUI::Init()
 	currentTile = 0;
 	currentDir = 0;
 	isFilter = false;
+	isChanges = false;
 
 	// --- Events
 	App->event->Subscribe(this, &SceneTileManagerUI::OnImportTile);
@@ -92,9 +93,15 @@ bool SceneTileManagerUI::Draw()
 	return true;
 }
 
+// -----------------------
 const DynArray<Tile*>& SceneTileManagerUI::GetTileset() const
 {
 	return tileset->GetAllTiles();
+}
+
+bool SceneTileManagerUI::IsTileValid(int tileID) const
+{
+	return tileset->IsValid(tileID);
 }
 
 // -----------------------
@@ -262,7 +269,8 @@ void SceneTileManagerUI::DrawHierarchy()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Delete"))
 			{
-				// Delete
+				isChanges = true;
+				//*** Delete
 			}
 			ImGui::EndPopup();
 		}
@@ -324,6 +332,7 @@ void SceneTileManagerUI::OnImportTile(EventImportTile* e)
 	tileset->AddTile(e->tile);
 
 	CreateTileData(e->tile);
+	isChanges = true;
 }
 
 // -----------------------------

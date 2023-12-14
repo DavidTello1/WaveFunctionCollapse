@@ -276,13 +276,33 @@ void MainScene::OnChangeScene(EventChangeScene* e)
 
 void MainScene::OnSaveTileset(EventSaveTileset* e)
 {
+    // Get the new Tileset
     const DynArray<Tile*> tileset = sceneTileManagerUI->GetTileset();
 
+    // Save the preset cells
+    int numCells = width * height;
+    DynArray<Cell> cells = DynArray<Cell>(numCells);
+    for (unsigned int i = 0; i < numCells; ++i)
+    {
+        Cell* cell = mapGenerator->GetCell(i);
+        if (cell->isPreset)
+            cells.push_back(*cell);
+    }
+
+    // Update Tileset
     mapGenerator->SetTileset(tileset);
 
+    // Apply preset Cells
+    for (unsigned int i = 0; i < cells.size(); ++i)
+    {
+        int id = cells[i].tileID;
+        if (sceneTileManagerUI->IsTileValid(id))
+            mapGenerator->PresetCell(cells[i].index, id);
+    }
+
+    // Set Tile Textures for cell inspection
     DynArray<unsigned int> textures;
     for (unsigned int i = 0; i < tileset.size(); ++i)
         textures.push_back(tileset[i]->GetTexture());
-
     sceneMapGeneratorUI->SetTileTextures(textures);
 }

@@ -320,7 +320,7 @@ void SceneMapGeneratorUI::DrawSectionCellInspector(int width, Cell* cell)
 	ImGui::Columns(1);
 
 	// Inspector
-	if (sceneMap->GetState() == SceneMapGenerator::State::FINISHED)
+	if (cell->isCollapsed || sceneMap->GetState() == SceneMapGenerator::State::FINISHED)
 		return;
 
 	DynArray<unsigned int> tileIDs;
