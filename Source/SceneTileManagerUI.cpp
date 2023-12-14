@@ -285,13 +285,15 @@ void SceneTileManagerUI::DrawMainPanel()
 	if (ImGui::Begin("Neighbours", NULL, flags))
 	{
 		// Tile Mask
-
 		const Tile* tile = tileset->GetTile(currentTile);
 		const BitArray mask = tile->GetMasks()[currentDir];
 
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", MaskToString(mask).c_str());
 
 		// Neighbours
+		static const int textureSize = 40;
+		static const float itemSize = (textureSize + 8.0f) * 2.0f + 4.0f + 9.0f; // values from NeighbourCombo (padding & spacing)
+		int columns =  (int)((float)mainPanelWidth / itemSize);
 		for (unsigned int i = 0; i < tileset->GetSize(); ++i)
 		{
 			bool selected = mask.getBit(i);
@@ -302,12 +304,14 @@ void SceneTileManagerUI::DrawMainPanel()
 			const Tile* neighbour = tileset->GetTile(i);
 
 			String label = String("###%d", i);
-			if (NeighbourCombo(label.c_str(), selected, 40, tile->GetTexture(), neighbour->GetTexture(), currentDir))
+			if (NeighbourCombo(label.c_str(), selected, textureSize, tile->GetTexture(), neighbour->GetTexture(), currentDir))
 			{
 				tileset->UpdateMask(currentTile, currentDir, i, !selected);
 				isChanges = true;
 			}
-			ImGui::SameLine();
+
+			if (columns > 0 && (i + 1) % columns != 0)
+				ImGui::SameLine();
 		}
 	}
 	ImGui::End();
