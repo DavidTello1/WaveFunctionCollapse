@@ -49,7 +49,7 @@ bool SceneMapGenerator::Init()
     return true;
 }
 
-bool SceneMapGenerator::Start(int width, int height, int cellSize, int spacing, int panelX, int panelY, int panelWidth, int panelHeight)
+bool SceneMapGenerator::Start(int width, int height, int cellSize, int spacing, int panelX, int panelY)
 {
 	// --- Button Grid --- 
 	buttonGrid = new ButtonGrid(0, 0, width, height, cellSize, spacing, ButtonGrid::Type::MULTIPLE_SELECTION);
@@ -58,9 +58,6 @@ bool SceneMapGenerator::Start(int width, int height, int cellSize, int spacing, 
 	// --- Background Button ---
 	Color transparent = { 0,0,0,0 };
 	bgButton = new UI_Button(0, panelY, panelX, App->window->GetHeight(), transparent, transparent, transparent, true);
-
-	// --- Block Button for Panel ---
-	blockButton = new UI_Button(panelX, panelY, panelWidth, panelHeight, transparent, transparent, transparent, true);
 
 	return true;
 }
@@ -91,9 +88,7 @@ bool SceneMapGenerator::Update(float dt)
 {
 	controller->Update(dt);
 
-	if (!blockButton->IsHovered())
-		buttonGrid->Update(dt);
-
+	buttonGrid->Update(dt);
 	bgButton->Update(dt);
 
 	if (!buttonGrid->IsHovered() && bgButton->IsClicked() &&
@@ -113,7 +108,6 @@ bool SceneMapGenerator::CleanUp()
 
 	delete buttonGrid;
 	delete bgButton;
-	delete blockButton;
 
     return true;
 }
@@ -145,9 +139,6 @@ void SceneMapGenerator::OnZoom(EventCameraZoom* e)
 void SceneMapGenerator::OnPanelResize(EventPanelResize* e)
 {
 	bgButton->SetSize(e->x, e->height);
-
-	blockButton->SetPosX(e->x);
-	blockButton->SetSize(e->width, e->height);
 }
 
 void SceneMapGenerator::OnPlay(EventPlay* e)

@@ -38,7 +38,7 @@ public:
 	~SceneMapGenerator();
 
 	bool Init();
-	bool Start(int width, int height, int cellSize, int spacing, int panelX, int panelY, int panelWidth, int panelHeight);
+	bool Start(int width, int height, int cellSize, int spacing, int panelX, int panelY);
 	bool PreUpdate(float dt);
 	bool Update(float dt);
 	bool CleanUp();
@@ -82,5 +82,4 @@ private:
 
 	ButtonGrid* buttonGrid = nullptr;
 	UI_Button* bgButton = nullptr;
-	UI_Button* blockButton = nullptr;
 };

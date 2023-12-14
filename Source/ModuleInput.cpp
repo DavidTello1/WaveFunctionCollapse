@@ -78,8 +78,9 @@ bool ModuleInput::PreUpdate(float dt)
 		}
 	}
 
-	// Mouse events
+	// Input events
 	static SDL_Event e;
+	auto& io = ImGui::GetIO();
 	while (SDL_PollEvent(&e))
 	{
 		ImGui_ImplSDL2_ProcessEvent(&e); // Process Input for Imgui Widgets
@@ -87,11 +88,13 @@ bool ModuleInput::PreUpdate(float dt)
 		switch (e.type)
 		{
 		case SDL_MOUSEBUTTONDOWN:
-			mouseButtons[e.button.button - 1] = KEY_DOWN;
+			if (!io.WantCaptureMouse)
+				mouseButtons[e.button.button - 1] = KEY_DOWN;
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			mouseButtons[e.button.button - 1] = KEY_UP;
+			if (!io.WantCaptureMouse)
+				mouseButtons[e.button.button - 1] = KEY_UP;
 			break;
 
 		case SDL_MOUSEMOTION:
@@ -121,6 +124,7 @@ bool ModuleInput::PreUpdate(float dt)
 			break;
 		}
 	}
+
 	return true;
 }
 
