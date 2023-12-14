@@ -129,7 +129,10 @@ void SceneTileManagerUI::DrawMenuBar()
 		}
 
 		ImGui::Text("|");
-		if (ImGui::MenuItem("Map Generator"))
+		String label = "Map Generator";
+		if (isChanges)
+			label += '*';
+		if (ImGui::MenuItem(label.c_str()))
 		{
 			App->event->Publish(new EventChangeScene("MapGenerator"));
 		}
@@ -162,6 +165,9 @@ void SceneTileManagerUI::DrawToolbar()
 			if (isChanges)
 			{
 				App->event->Publish(new EventSaveTileset());
+
+				for (unsigned int i = 0; i < tileData.size(); ++i)
+					tileData[i].isChanged = false;
 				isChanges = false;
 			}
 		}
@@ -254,7 +260,7 @@ void SceneTileManagerUI::DrawHierarchy()
 	{
 		for (unsigned int i = 0; i < tileData.size(); ++i)
 		{
-			if (HierarchyNode(tileData[i].name.c_str(), currentTile == i, renameNode == i))
+			if (HierarchyNode(tileData[i].name.c_str(), currentTile == i, renameNode == i, tileData[i].isChanged))
 				currentTile = i;
 		}
 
@@ -316,6 +322,7 @@ void SceneTileManagerUI::DrawMainPanel()
 			{
 				tileset->UpdateMask(currentTile, currentDir, i, !selected);
 				isChanges = true;
+				tileData[currentTile].isChanged = true;
 			}
 
 			if (columns > 0 && (i + 1) % columns != 0)
@@ -466,7 +473,7 @@ bool SceneTileManagerUI::NeighbourCombo(const char* name, bool selected, float t
 	return ret;
 }
 
-bool SceneTileManagerUI::HierarchyNode(const char* name, bool selected, bool rename)
+bool SceneTileManagerUI::HierarchyNode(const char* name, bool selected, bool rename, bool changes)
 {
 	bool ret = false;
 
@@ -492,7 +499,11 @@ bool SceneTileManagerUI::HierarchyNode(const char* name, bool selected, bool ren
 	{
 		static const ImGuiSelectableFlags flags = ImGuiSelectableFlags_SpanAvailWidth;
 
-		if (ImGui::Selectable(name, selected, flags))
+		String label = name;
+		if (changes)
+			label += '*';
+
+		if (ImGui::Selectable(label.c_str(), selected, flags))
 			ret = true;
 
 		// Right Click

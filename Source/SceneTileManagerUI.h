@@ -53,7 +53,7 @@ private:
 
 	bool TileButton(const char* name, bool selected, float width, float height);
 	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
-	bool HierarchyNode(const char* name, bool selected, bool rename);
+	bool HierarchyNode(const char* name, bool selected, bool rename, bool changes);
 
 private:
 	// Tileset
