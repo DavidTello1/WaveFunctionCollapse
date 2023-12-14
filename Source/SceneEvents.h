@@ -99,6 +99,6 @@ struct EventSaveAllTiles : public Event {};
 
 struct EventSaveTile : public Event
 {
-	EventSaveTile(int tileID) : tileID(tileID) {}
-	int tileID;
+	EventSaveTile(Tile* tile) : tile(tile) {}
+	Tile* tile;
 };

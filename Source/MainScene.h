@@ -8,7 +8,6 @@ class TileManager;
 
 class SceneMapGenerator;
 class SceneMapGeneratorUI;
-class SceneTileManager;
 class SceneTileManagerUI;
 
 // --- Events
@@ -76,6 +75,5 @@ public:
 	// --- SCENES ---
 	SceneMapGenerator* sceneMapGenerator = nullptr;
 	SceneMapGeneratorUI* sceneMapGeneratorUI = nullptr;
-	SceneTileManager* sceneTileManager = nullptr;
 	SceneTileManagerUI* sceneTileManagerUI = nullptr;
 };

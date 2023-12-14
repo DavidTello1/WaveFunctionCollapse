@@ -174,7 +174,6 @@
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="SceneMapGeneratorUI.h" />
-    <ClInclude Include="SceneTileManager.h" />
     <ClInclude Include="SceneTileManagerUI.h" />
     <ClInclude Include="SDL2\include\begin_code.h" />
     <ClInclude Include="SDL2\include\close_code.h" />
@@ -290,7 +289,6 @@
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="SceneMapGenerator.cpp" />
     <ClCompile Include="SceneMapGeneratorUI.cpp" />
-    <ClCompile Include="SceneTileManager.cpp" />
     <ClCompile Include="SceneTileManagerUI.cpp" />
     <ClCompile Include="stb\stb.cpp" />
     <ClCompile Include="UI_Button.cpp" />

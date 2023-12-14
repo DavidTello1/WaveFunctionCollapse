@@ -1,10 +1,10 @@
 #include "SceneTileManagerUI.h"
-#include "SceneTileManager.h"
 #include "SceneEvents.h"
 
 #include "Application.h"
 #include "ModuleEvent.h"
 #include "ModuleWindow.h"
+#include "ModuleResources.h" //***
 
 #include "Tile.h"
 
@@ -15,7 +15,7 @@
 
 #include "mmgr/mmgr.h"
 
-SceneTileManagerUI::SceneTileManagerUI(SceneTileManager* sceneTiles) : sceneTiles(sceneTiles)
+SceneTileManagerUI::SceneTileManagerUI()
 {
 }
 
@@ -25,6 +25,8 @@ SceneTileManagerUI::~SceneTileManagerUI()
 
 bool SceneTileManagerUI::Init()
 {
+	tileset = new Tileset();
+
 	currentTile = 0;
 	currentDir = 0;
 	isFilter = false;
@@ -37,11 +39,45 @@ bool SceneTileManagerUI::Init()
 
 bool SceneTileManagerUI::Start()
 {
+	// --- Icons
+	saveIcon = App->resources->LoadTexture("Assets/Textures/Icons/save.png")->index;
+	saveAllIcon = App->resources->LoadTexture("Assets/Textures/Icons/saveAll.png")->index;
+	importIcon = App->resources->LoadTexture("Assets/Textures/Icons/import.png")->index;
+	filterIcon = App->resources->LoadTexture("Assets/Textures/Icons/filter.png")->index;
+
+	// -----------------------------------------
+	Tile* empty = new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index, "1001111", "1010111", "1101011", "1110011");
+	Tile* topLeft = new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index, "1000000", "1000000", "0010110", "0001101");
+	Tile* topRight = new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index, "1000000", "0101010", "1000000", "0001101");
+	Tile* bottomLeft = new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index, "0110001", "1000000", "0010110", "1000000");
+	Tile* bottomRight = new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
+	Tile* horizontal = new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index, "1000000", "1101010", "1010110", "1000000");
+	Tile* vertical = new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index, "1110001", "1000000", "1000000", "1001101");
+
+	tileset->AddTile(empty);
+	tileset->AddTile(topLeft);
+	tileset->AddTile(topRight);
+	tileset->AddTile(bottomLeft);
+	tileset->AddTile(bottomRight);
+	tileset->AddTile(horizontal);
+	tileset->AddTile(vertical);
+
+	CreateTileData(empty);
+	CreateTileData(topLeft);
+	CreateTileData(topRight);
+	CreateTileData(bottomLeft);
+	CreateTileData(bottomRight);
+	CreateTileData(horizontal);
+	CreateTileData(vertical);
+	//----------------------------------------
+
 	return true;
 }
 
 bool SceneTileManagerUI::CleanUp()
 {
+	delete tileset;
+
 	return true;
 }
 
@@ -113,30 +149,43 @@ void SceneTileManagerUI::DrawToolbar() //*** ICONS
 
 	if (ImGui::Begin("Toolbar", NULL, flags))
 	{
-		if (ImGui::ImageButton(NULL, ImVec2(buttonSize, buttonSize))) // Save
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4());
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5, 0.5f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 0.7f));
+
+		if (ImGui::ImageButton((ImTextureID)saveIcon, ImVec2(buttonSize, buttonSize))) // Save
 		{
 			// if (isAppend) //***
-			App->event->Publish(new EventSaveTile(tileData[currentTile].tileID));
+			App->event->Publish(new EventSaveTile(tileset->GetTile(currentTile)));
 			// else
 			// App->event->Publish(new EventUpdateTileset();
 		}
 		ImGui::SameLine();
-		if (ImGui::ImageButton(NULL, ImVec2(buttonSize, buttonSize))) // Save All
+		if (ImGui::ImageButton((ImTextureID)saveAllIcon, ImVec2(buttonSize, buttonSize))) // Save All
 		{
 			App->event->Publish(new EventSaveAllTiles());
 			// App->event->Publish(new EventUpdateTileset(); //***
 		}
 		ImGui::SameLine();
-		if (ImGui::ImageButton(NULL, ImVec2(buttonSize, buttonSize))) // Import
+		if (ImGui::ImageButton((ImTextureID)importIcon, ImVec2(buttonSize, buttonSize))) // Import
 		{
 			App->event->Publish(new EventOpenImport());
 		}
 		ImGui::SameLine();
-		if (ImGui::ImageButton(NULL, ImVec2(buttonSize, buttonSize))) // Filter
+
+		bool filter = isFilter;
+		if (filter)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5, 0.5, 0.5, 0.4f));
+
+		if (ImGui::ImageButton((ImTextureID)filterIcon, ImVec2(buttonSize, buttonSize))) // Filter
 		{
 			isFilter = !isFilter;
 		}
-		ImGui::SameLine();
+
+		if (filter)
+			ImGui::PopStyleColor();
+
+		ImGui::PopStyleColor(3);
 	}
 	ImGui::End();
 }
@@ -171,8 +220,8 @@ void SceneTileManagerUI::DrawTile()
 
 		ImGui::SameLine();
 		ImTextureID tileTexture = 0;
-		if (!tileData.empty())
-			tileTexture = (ImTextureID)tileData[currentTile].texture;
+		if (tileset->GetSize() > 0)
+			tileTexture = (ImTextureID)tileset->GetTile(currentTile)->GetTexture();
 		ImGui::Image(tileTexture, ImVec2(buttonSize, buttonSize));
 		ImGui::SameLine();
 
@@ -228,18 +277,26 @@ void SceneTileManagerUI::DrawMainPanel()
 	if (ImGui::Begin("Neighbours", NULL, flags))
 	{
 		// Tile Mask
-		BitArray mask = sceneTiles->GetTile(currentTile)->GetMasks()[currentDir];
+
+		const Tile* tile = tileset->GetTile(currentTile);
+		const BitArray mask = tile->GetMasks()[currentDir];
+
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", MaskToString(mask).c_str());
 
 		// Neighbours
-		for (unsigned int i = 0; i < tileData.size(); ++i)
+		for (unsigned int i = 0; i < tileset->GetSize(); ++i)
 		{
-			TileData tile = tileData[currentTile];
-			TileData* neighbour = &tileData[i];
+			bool selected = mask.getBit(i);
 
-			if (NeighbourCombo(neighbour->name.c_str(), &neighbour->isSelected, 40, tile.texture, neighbour->texture, currentDir))
+			if (isFilter && !selected)
+				continue;
+
+			const Tile* neighbour = tileset->GetTile(i);
+
+			String label = String("###%d", i);
+			if (NeighbourCombo(label.c_str(), selected, 40, tile->GetTexture(), neighbour->GetTexture(), currentDir))
 			{
-				//neighbour->isSelected = true;
+				tileset->UpdateMask(currentTile, currentDir, i, !selected);
 			}
 			ImGui::SameLine();
 		}
@@ -251,19 +308,25 @@ void SceneTileManagerUI::DrawMainPanel()
 // --- EVENTS ---
 void SceneTileManagerUI::OnImportTile(EventImportTile* e)
 {
+	tileset->AddTile(e->tile);
+
+	CreateTileData(e->tile);
+}
+
+// -----------------------------
+// --- UTILS ---
+void SceneTileManagerUI::CreateTileData(Tile* tile)
+{
 	TileData data;
 	data.name = String("Tile %d", tileData.size());
 	data.filepath = ""; //***
-	data.tileID = e->tile->GetID();
-	data.texture = e->tile->GetTexture();
+	data.tileID = tile->GetID();
 	data.isSelected = false;
 	data.isChanged = false;
 
 	tileData.push_back(data);
 }
 
-// -----------------------------
-// --- UTILS ---
 String SceneTileManagerUI::MaskToString(const BitArray& mask)
 {
 	String string = String(mask.size());
@@ -305,7 +368,7 @@ bool SceneTileManagerUI::TileButton(const char* name, bool selected, float width
 	return ret;
 }
 
-bool SceneTileManagerUI::NeighbourCombo(const char* name, bool* selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation)
+bool SceneTileManagerUI::NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation)
 {
 	static const int rounding = 3.0f;
 	static const int padding = 8.0f;
@@ -329,17 +392,16 @@ bool SceneTileManagerUI::NeighbourCombo(const char* name, bool* selected, float 
 	float height = width;
 	if (ImGui::InvisibleButton(name, ImVec2(width, height)))
 	{
-		*selected = !*selected;
 		ret = true;
 	}
 
 	ImU32 bgColor;
 	if (ImGui::IsItemHovered())
-		bgColor = *selected ? selectedHoveredColor : idleHoveredColor;
+		bgColor = selected ? selectedHoveredColor : idleHoveredColor;
 	else
-		bgColor = *selected ? selectedColor : idleColor;
+		bgColor = selected ? selectedColor : idleColor;
 
-	ImU32 borderColor = *selected ? borderHoveredColor : idleColor;
+	ImU32 borderColor = selected ? borderHoveredColor : idleColor;
 
 	draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), bgColor, rounding);
 	draw_list->AddRect(p, ImVec2(p.x + width, p.y + height), borderColor, rounding, ImDrawCornerFlags_All, 2.0f);

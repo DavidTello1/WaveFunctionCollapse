@@ -288,7 +288,7 @@ void SceneMapGeneratorUI::DrawSectionCellPresets()
 	}
 
 	// Tile Picker
-	if (sceneMap->GetSelected().empty())
+	if (sceneMap->GetNumSelected() == 0)
 		return;
 
 	DynArray<unsigned int> tileIDs;
@@ -302,7 +302,7 @@ void SceneMapGeneratorUI::DrawSectionCellInspector(int width, Cell* cell)
 {
 	static const ImVec4 yellow = { 1, 1, 0, 1 };
 
-	if (sceneMap->GetSelected().empty())
+	if (sceneMap->GetNumSelected() == 0)
 		return;
 
 	// Texture

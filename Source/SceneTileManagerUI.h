@@ -3,7 +3,8 @@
 #include "BitArray.h"
 #include "String.h"
 
-class SceneTileManager;
+struct Tile;
+class Tileset;
 
 // --- Events
 struct EventImportTile;
@@ -18,7 +19,6 @@ struct TileData {
 	String name;
 	String filepath;
 	int tileID;
-	unsigned int texture;
 
 	bool isSelected;
 	bool isChanged;
@@ -27,7 +27,7 @@ struct TileData {
 class SceneTileManagerUI
 {
 public:
-	SceneTileManagerUI(SceneTileManager* sceneTiles);
+	SceneTileManagerUI();
 	~SceneTileManagerUI();
 
 	bool Init();
@@ -48,17 +48,18 @@ private:
 	void OnImportTile(EventImportTile* e);
 
 	//--- Utils
+	void CreateTileData(Tile* tile);
 	String MaskToString(const BitArray& mask);
 
 	bool TileButton(const char* name, bool selected, float width, float height);
-	bool NeighbourCombo(const char* name, bool* selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
+	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
 	void HierarchyNode();
 
-
 private:
-	SceneTileManager* sceneTiles; // owned by MainScene (shared_ptr)
+	// Tileset
+	Tileset* tileset;
 
-	// Tiles
+	// Tiles Data
 	int currentTile = 0;
 	int currentDir = 0;
 	DynArray<TileData> tileData;
@@ -71,4 +72,10 @@ private:
 	static const int toolbarHeight = 46;
 	static const int tileHeight = 136;
 	static const int hierarchyWidth = 180;
+
+	// Icons
+	unsigned int saveIcon = 0;
+	unsigned int saveAllIcon = 0;
+	unsigned int importIcon = 0;
+	unsigned int filterIcon = 0;
 };

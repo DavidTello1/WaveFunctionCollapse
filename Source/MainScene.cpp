@@ -14,7 +14,6 @@
 
 #include "SceneMapGenerator.h"
 #include "SceneMapGeneratorUI.h"
-#include "SceneTileManager.h"
 #include "SceneTileManagerUI.h"
 
 #include "Color.h"
@@ -47,8 +46,7 @@ bool MainScene::Init()
     // --- Create Scenes
     sceneMapGenerator = new SceneMapGenerator();
     sceneMapGeneratorUI = new SceneMapGeneratorUI(sceneMapGenerator, DynArray<unsigned int>());
-    sceneTileManager = new SceneTileManager();
-    sceneTileManagerUI = new SceneTileManagerUI(sceneTileManager);
+    sceneTileManagerUI = new SceneTileManagerUI();
 
     // --- Events
     App->event->Subscribe(this, &MainScene::OnPlay);
@@ -70,13 +68,11 @@ bool MainScene::Start()
     // --- Init Scenes
     sceneMapGenerator->Init();
     sceneMapGeneratorUI->Init();
-    sceneTileManager->Init();
     sceneTileManagerUI->Init();
 
     // --- Start Scenes
     sceneMapGenerator->Start(width, height, cellSize, spacing, sceneMapGeneratorUI->GetPanelX(), sceneMapGeneratorUI->GetPanelY(), sceneMapGeneratorUI->GetPanelWidth(), sceneMapGeneratorUI->GetPanelHeight());
     sceneMapGeneratorUI->Start();
-    sceneTileManager->Start();
     sceneTileManagerUI->Start();
 
     // Set Scene Camera (created in sceneMapGenerator->Init())
@@ -100,11 +96,8 @@ bool MainScene::Update(float dt)
     else
     {
         // Update Scenes
-        //sceneTileManager->PreUpdate(dt);
         //sceneTileManagerUI->PreUpdate(dt);
-        sceneTileManager->Update(dt);
         //sceneTileManagerUI->Update(dt);
-        //sceneTileManager->PostUpdate(dt);
         //sceneTileManagerUI->PostUpdate(dt);
     }
     return true;
@@ -114,12 +107,10 @@ bool MainScene::CleanUp()
 {
     sceneMapGenerator->CleanUp();
     sceneMapGeneratorUI->CleanUp();
-    sceneTileManager->CleanUp();
     sceneTileManagerUI->CleanUp();
 
     delete sceneMapGenerator;
     delete sceneMapGeneratorUI;
-    delete sceneTileManager;
     delete sceneTileManagerUI;
 
     delete mapGenerator;
