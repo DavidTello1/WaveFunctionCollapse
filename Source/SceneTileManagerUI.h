@@ -17,7 +17,6 @@ struct TileData {
 	String filepath;
 	int tileID;
 
-	bool isSelected;
 	bool isChanged;
 };
 
@@ -53,7 +52,7 @@ private:
 
 	bool TileButton(const char* name, bool selected, float width, float height);
 	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
-	void HierarchyNode();
+	bool HierarchyNode(const char* name, bool selected, bool rename);
 
 private:
 	// Tileset
@@ -62,11 +61,13 @@ private:
 	// Tiles Data
 	int currentTile = 0;
 	int currentDir = 0;
+	int renameNode = -1;
 	DynArray<TileData> tileData;
 
 	// Flags
 	bool isChanges = false;
 	bool isFilter = false;
+	bool isRenameFocus = false;
 
 	// Panel Data
 	static const int menubarHeight = 19;

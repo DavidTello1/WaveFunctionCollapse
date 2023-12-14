@@ -125,7 +125,16 @@ public:
 		if (*this == other)
 			return (*this);
 
-		(*this) = String(other);
+		if (strlen(other) + 1 > size)
+		{
+			delete[] str;
+			Alloc(strlen(other) + 1);
+		}
+		else
+			clear();
+
+		strcpy_s(str, size, other);
+
 		return (*this);
 	}
 

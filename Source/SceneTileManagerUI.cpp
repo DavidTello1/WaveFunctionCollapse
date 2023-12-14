@@ -247,8 +247,24 @@ void SceneTileManagerUI::DrawHierarchy()
 	{
 		for (unsigned int i = 0; i < tileData.size(); ++i)
 		{
-			if (ImGui::Selectable(tileData[i].name.c_str(), currentTile == i, ImGuiSelectableFlags_SpanAvailWidth))
+			if (HierarchyNode(tileData[i].name.c_str(), currentTile == i, renameNode == i))
 				currentTile = i;
+		}
+
+		// Right Click
+		if (ImGui::BeginPopup("TileOptions"))
+		{
+			if (ImGui::MenuItem("Rename"))
+			{
+				renameNode = currentTile;
+				isRenameFocus = true;
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Delete"))
+			{
+				// Delete
+			}
+			ImGui::EndPopup();
 		}
 	}
 	ImGui::End();
@@ -314,7 +330,6 @@ void SceneTileManagerUI::CreateTileData(Tile* tile)
 	data.name = String("Tile %d", tileData.size());
 	data.filepath = ""; //***
 	data.tileID = tile->GetID();
-	data.isSelected = false;
 	data.isChanged = false;
 
 	tileData.push_back(data);
@@ -438,6 +453,39 @@ bool SceneTileManagerUI::NeighbourCombo(const char* name, bool selected, float t
 	return ret;
 }
 
-void SceneTileManagerUI::HierarchyNode()
+bool SceneTileManagerUI::HierarchyNode(const char* name, bool selected, bool rename)
 {
+	bool ret = false;
+
+	if (rename)
+	{
+		char buffer[128];
+		sprintf_s(buffer, 128, "%s", name);
+
+		if (ImGui::InputText("##RenameNode", buffer, 128, ImGuiInputTextFlags_AutoSelectAll))
+		{
+			tileData[currentTile].name = buffer;
+		}
+
+		if (isRenameFocus)
+		{
+			ImGui::SetKeyboardFocusHere(-1);
+			isRenameFocus = false;
+		}
+		else if (!ImGui::IsItemActive())
+			renameNode = -1;
+	}
+	else
+	{
+		static const ImGuiSelectableFlags flags = ImGuiSelectableFlags_SpanAvailWidth;
+
+		if (ImGui::Selectable(name, selected, flags))
+			ret = true;
+
+		// Right Click
+		if (ImGui::OpenPopupOnItemClick("TileOptions"))
+			ret = true;
+	}
+
+	return ret;
 }

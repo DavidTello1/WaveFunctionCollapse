@@ -67,7 +67,7 @@ bool MainScene::Start()
     sceneTileManagerUI->Init();
 
     // --- Start Scenes
-    sceneMapGenerator->Start(width, height, cellSize, spacing, sceneMapGeneratorUI->GetPanelX(), sceneMapGeneratorUI->GetPanelY(), sceneMapGeneratorUI->GetPanelWidth(), sceneMapGeneratorUI->GetPanelHeight());
+    sceneMapGenerator->Start(width, height, cellSize, spacing, sceneMapGeneratorUI->GetPanelX(), sceneMapGeneratorUI->GetPanelY());
     sceneMapGeneratorUI->Start();
     sceneTileManagerUI->Start();
 
