@@ -21,7 +21,7 @@ public:
 	}
 
 	// --- Collapse Cell
-	void Observe(int id) {
+	void Observe(int id, int bit) {
 		tileID = id;
 		isCollapsed = true;
 
@@ -30,7 +30,7 @@ public:
 		if (tileID == -1)
 			isInvalid = true;
 		else
-			mask.setBit(id);
+			mask.setBit(bit);
 	}
 
 	// --- Utils
@@ -46,15 +46,12 @@ public:
 		mask.setAll();
 	}
 	
-	void SetCell(int tileID) {
-		if (tileID < 0 || tileID > mask.size())
-			return;
-
-		this->tileID = tileID;
+	void SetCell(int id, int bit) {
+		tileID = id;
 		isCollapsed = true;
 		isInvalid = false;
 		mask.clearAll();
-		mask.setBit(tileID);
+		mask.setBit(bit);
 	}
 
 public:

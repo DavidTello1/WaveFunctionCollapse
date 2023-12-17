@@ -1,73 +1,86 @@
 #pragma once
 #include "DynArray.h"
-#include "BitArray.h"
-#include "String.h"
 
-struct Cell;
-class SceneMapGenerator;
+class MapGenerator;
+class Tile;
 
-// --- Events
-struct EventWindowResize;
-struct EventMapResize;
-struct EventPanelToggled;
-// ---
+class Camera;
+class CameraController;
+class ButtonGrid;
+class UI_Button;
 
 class SceneMapGeneratorUI
 {
 public:
-	SceneMapGeneratorUI(SceneMapGenerator* mapGenerator, const DynArray<unsigned int>& tileTextures);
+	enum State {
+		STOP = 0,
+		PLAY,
+		PAUSE,
+		FINISHED
+	};
+
+public:
+	SceneMapGeneratorUI();
 	~SceneMapGeneratorUI();
 
-	bool Init();
-	bool Start();
+	bool Init(const MapGenerator* map);
+	bool Update(float dt);
 	bool CleanUp();
 
-	bool Draw(int width, int height, Cell* cell);
+	bool Draw(const MapGenerator* map);
+	bool DrawUI(const MapGenerator* map);
 
-	// --- Getters
-	bool IsDrawTextures() const { return isDrawTextures; }
-	int GetPanelX() const { return panelX; }
-	int GetPanelY() const { return panelY; }
-	int GetPanelWidth() const { return panelWidth; }
-	int GetPanelHeight() const { return panelHeight; }
+	// ---
+	Camera* GetCamera() const { return camera; }
+	void SetState(State state) { this->state = state; }
+	void UnselectAllCells();
 
-	// --- Setters
-	void SetTileTextures(const DynArray<unsigned int>& textures) { tileTextures = textures; }
 	void AddTime(float time) { totalTime += time; }
 	void SetStepTime(float time) { stepTime = time; }
 	void SetTotalTime(float time) { totalTime = time; }
 
+	void OnWindowResize(int width, int height);
+	void OnZoom(float zoom);
+	void OnMapResize(float width, float height);
+	void OnPlay();
+	void OnStep();
+	void OnStop();
+
 private:
+	// ---
+	void Shortcuts();
+	void DrawSpaced();
+	void PanelToggled(bool isOpen);
+	void UpdateButtonGrid();
+	void DrawMap(const MapGenerator* map);
+
 	// --- Draw
 	void DrawMenuBar();
-	void DrawPanel(int width, int height, Cell* cell);
+	void DrawPanel(const MapGenerator* map);
 	void DrawSectionButtons();
 	void DrawSectionOptions();
 	void DrawSectionResize(int width, int height);
-	void DrawSectionCellPresets();
-	void DrawSectionCellInspector(int width, Cell* cell);
-	void DrawCellInspector(const DynArray<unsigned int>& tileIDs);
-
-	// --- Events
-	void OnWindowResize(EventWindowResize* e);
-	void OnMapResize(EventMapResize* e);
-	void OnPanelToggled(EventPanelToggled* e);
-
-	//--- Utils
-	String MaskToString(const BitArray& mask);
+	void DrawSectionCellPresets(const MapGenerator* map);
+	void DrawSectionCellInspector(const MapGenerator* map);
+	void DrawCellInspector(const DynArray<Tile*>& tiles);
 
 private:
-	SceneMapGenerator* sceneMap; // owned by MainScene (shared_ptr)
+	// State
+	State state = State::STOP;
 
-	// Timer
+	// Entities
+	Camera* camera = nullptr;
+	CameraController* controller = nullptr;
+	ButtonGrid* buttonGrid = nullptr;
+	UI_Button* bgButton = nullptr;
+
+	//  UI Variables
+	static const int defaultSpacing = 2;
 	float stepTime = 0;
 	float totalTime = 0;
-
-	// Size
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
-
-	// Flags
+	int spacing = 0;
 	bool isDrawTextures = true;
 	bool isDrawSpaced = true;
 
@@ -86,7 +99,4 @@ private:
 	unsigned int playIcon = 0;
 	unsigned int stopIcon = 0;
 	unsigned int restartIcon = 0;
-
-	// Tile Textures
-	DynArray<unsigned int> tileTextures;
 };

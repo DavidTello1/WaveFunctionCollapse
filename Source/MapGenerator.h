@@ -1,15 +1,16 @@
 #pragma once
-#include "RandomNumber.h"
 
 #include "List.h"
 #include "DynArray.h"
 
 struct Tile;
 struct Cell;
+class RandomNumber;
 
 class MapGenerator
 {
 public:
+	MapGenerator(const int width, const int height, const int cellSize);
 	MapGenerator(const int width, const int height, const int cellSize, const DynArray<Tile*>& tiles);
 	~MapGenerator();
 
@@ -17,25 +18,30 @@ public:
 	void ResetMap();
 	void Step();
 
+	void SetTileset(const DynArray<Tile*>& tileset);
+
 	// --- Getters
 	int GetWidth() const { return width; }
 	int GetHeight() const { return height; }
+	int GetCellSize() const { return cellSize; }
 	Cell* GetCell(unsigned int index) { return cells[index]; }
 	Cell* GetCell(unsigned int index) const { return cells[index]; }
 	Tile* GetTile(unsigned int index) { return tiles[index]; }
 	Tile* GetTile(unsigned int index) const { return tiles[index]; }
+	Tile* GetTileByID(int tileID) const;
+	const DynArray<Tile*>& GetAllTiles() const { return tiles; }
 
 	// --- Setters
 	void SetWidth(int width) { this->width = width; Resize(); }
 	void SetHeight(int height) { this->height = height; Resize(); }
+	void SetCellSize(int size) { cellSize = size; } //*** Resize()?
 	void SetSize(int width, int height) { this->width = width; this->height = height; Resize(); }
 
 	// --- Utils
-	void SetTileset(const DynArray<Tile*>& tileset);
 	bool IsFinished() const { return numCollapsed >= cells.size(); }
-	void SetCell(unsigned int index, unsigned int tileID); // set and propagate cell
+	void SetCell(unsigned int index, int tileID); // set and propagate cell
 	void ResetCell(unsigned int index);
-	void PresetCell(unsigned int index, unsigned int tileID); // sets a cell to the specified tile but does not propagate
+	void PresetCell(unsigned int index, int tileID); // sets a cell to the specified tile but does not propagate
 	void ClearPresetCells();
 
 private:
@@ -46,6 +52,7 @@ private:
 	void FirstStep(); // propagate preset cells
 	
 	// --- Utils
+	int FindTile(int tileID) const;
 	int CheckNeighbour(int index, int direction);
 	void Resize();
 
@@ -62,5 +69,5 @@ private:
 
 	List<unsigned int> presetCells;
 
-	RandomNumber RNG;
+	RandomNumber* RNG;
 };

@@ -1,24 +1,24 @@
 #include "MapGenerator.h"
 
-#include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleRenderer.h"
-
 #include "Cell.h"
 #include "Tile.h"
-
 #include "RandomNumber.h"
 
 #include "mmgr/mmgr.h"
 
-MapGenerator::MapGenerator(const int width, const int height, const int cellSize, const DynArray<Tile*>& tiles)
+MapGenerator::MapGenerator(const int width, const int height, const int cellSize)
 {
 	this->width = width;
 	this->height = height;
 	this->cellSize = cellSize;
 
 	// Seed random
-	RNG = RandomNumber();
+	RNG = new RandomNumber();
+}
+
+MapGenerator::MapGenerator(const int width, const int height, const int cellSize, const DynArray<Tile*>& tiles)
+{
+	*this = MapGenerator(width, height, cellSize);
 
 	// Init Tiles Array
 	for (unsigned int i = 0; i < tiles.size(); ++i)
@@ -35,6 +35,8 @@ MapGenerator::MapGenerator(const int width, const int height, const int cellSize
 
 MapGenerator::~MapGenerator()
 {
+	delete RNG;
+
 	presetCells.clear();
 
 	for (unsigned int i = 0; i < cells.size(); ++i)
@@ -81,54 +83,14 @@ void MapGenerator::Step()
 	PropagateCell(index);
 }
 
-void MapGenerator::ResetMap()
+Tile* MapGenerator::GetTileByID(int tileID) const
 {
-	isFirstStep = true;
-	numCollapsed = 0;
-
-	// Reset all not preset cells
-	for (unsigned int i = 0; i < cells.size(); ++i)
+	for (unsigned int i = 0; i < tiles.size(); ++i)
 	{
-		if (!cells[i]->isPreset)
-			cells[i]->Reset();
+		if (tiles[i]->GetID() == tileID)
+			return tiles[i];
 	}
-}
-
-void MapGenerator::Resize()
-{
-	// Clear preset cells list
-	presetCells.clear();
-
-	// Remove cells
-	for (unsigned int i = 0; i < cells.size(); ++i)
-		delete cells[i];
-	cells.clear();
-
-	// Create new cell array with updated size
-	int numCells = width * height;
-	for (int i = 0; i < numCells; ++i) {
-		cells.push_back(new Cell(i, this->tiles.size()));
-	}
-}
-
-void MapGenerator::ClearPresetCells()
-{
-	for (unsigned int i = 0; i < presetCells.size(); ++i)
-	{
-		unsigned int index = presetCells.at(i);
-		cells[index]->Reset();
-	}
-	presetCells.clear();
-}
-
-void MapGenerator::PresetCell(unsigned int index, unsigned int tileID)
-{
-	if (index > cells.size() || tileID > tiles.size())
-		return;
-
-	cells[index]->SetCell(tileID);
-	cells[index]->isPreset = true;
-	presetCells.append(index);
+	return nullptr;
 }
 
 void MapGenerator::SetTileset(const DynArray<Tile*>& tileset)
@@ -159,12 +121,64 @@ void MapGenerator::SetTileset(const DynArray<Tile*>& tileset)
 		cells.push_back(new Cell(i, tileset.size()));
 }
 
-void MapGenerator::SetCell(unsigned int index, unsigned int tileID)
+void MapGenerator::ResetMap()
 {
-	if (index > cells.size() || tileID > tiles.size())
+	isFirstStep = true;
+	numCollapsed = 0;
+
+	// Reset all not preset cells
+	for (unsigned int i = 0; i < cells.size(); ++i)
+	{
+		if (!cells[i]->isPreset)
+			cells[i]->Reset();
+	}
+}
+
+void MapGenerator::Resize() //*** maintain preset cells?
+{
+	// Clear preset cells list
+	presetCells.clear();
+
+	// Remove cells
+	for (unsigned int i = 0; i < cells.size(); ++i)
+		delete cells[i];
+	cells.clear();
+
+	// Create new cell array with updated size
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i) {
+		cells.push_back(new Cell(i, this->tiles.size()));
+	}
+}
+
+void MapGenerator::ClearPresetCells()
+{
+	for (unsigned int i = 0; i < presetCells.size(); ++i)
+	{
+		unsigned int index = presetCells.at(i);
+		cells[index]->Reset();
+	}
+	presetCells.clear();
+}
+
+void MapGenerator::PresetCell(unsigned int index, int tileID)
+{
+	int bit = FindTile(tileID);
+	if (bit == -1)
 		return;
 
-	cells[index]->SetCell(tileID);
+	cells[index]->SetCell(tileID, bit);
+	cells[index]->isPreset = true;
+	presetCells.append(index);
+}
+
+void MapGenerator::SetCell(unsigned int index, int tileID)
+{
+	int bit = FindTile(tileID);
+	if (bit == -1)
+		return;
+
+	cells[index]->SetCell(tileID, bit);
 	PropagateCell(index);
 }
 
@@ -178,7 +192,7 @@ void MapGenerator::ResetCell(unsigned int index)
 int MapGenerator::HeuristicPick()
 {
 	// Get Cells with minimum entropy
-	List<Cell*> possibleCells;
+	DynArray<Cell*> possibleCells;
 	int minEntropy = cells.front()->mask.size();
 	for (unsigned int i = 0; i < cells.size(); ++i)
 	{
@@ -192,7 +206,7 @@ int MapGenerator::HeuristicPick()
 			minEntropy = cell->GetEntropy();
 		}
 
-		possibleCells.append(cell);
+		possibleCells.push_back(cell);
 	}
 
 	// If no possible cells -> Map is Collapsed
@@ -203,9 +217,9 @@ int MapGenerator::HeuristicPick()
 	}
 
 	// Pick cell randomly from list of possible cells
-	int index = RNG.GenerateBoundedInt(possibleCells.size());
+	int index = RNG->GenerateBoundedInt(possibleCells.size());
 
-	return possibleCells.at(index)->index;
+	return possibleCells[index]->index;
 }
 
 void MapGenerator::CollapseCell(unsigned int index)
@@ -222,11 +236,11 @@ void MapGenerator::CollapseCell(unsigned int index)
 		return;
 
 	// Pick a tile from array
-	uint32_t tile = RNG.GenerateBoundedInt(possibleTiles.size());
-	int tileID = possibleTiles[tile];
+	uint32_t tile = RNG->GenerateBoundedInt(possibleTiles.size());
+	int bit = possibleTiles[tile];
 
 	// Set Cell to Tile
-	cells[index]->Observe(tileID);
+	cells[index]->Observe(tiles[bit]->GetID(), bit);
 	numCollapsed++;
 }
 
@@ -267,8 +281,7 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 		Cell* cell = cells[index];
 		if (cell->isCollapsed)
 		{
-			int tileIndex = cell->tileID;
-			Tile* tile = tiles[tileIndex];
+			Tile* tile = GetTileByID(cell->tileID);
 			BitArray tileMask = tile->GetMasks()[dir];
 
 			neighbour->mask &= tileMask; // Compare (bitwise And) both masks
@@ -311,6 +324,22 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 	return list;
 }
 
+void MapGenerator::FirstStep()
+{
+	for (unsigned int i = 0; i < presetCells.size(); ++i)
+	{
+		unsigned int index = presetCells.at(i);
+		PropagateCell(index);
+	}
+
+	isFirstStep = false;
+}
+
+int MapGenerator::FindTile(int tileID) const
+{
+	return 0;
+}
+
 int MapGenerator::CheckNeighbour(int index, int direction)
 {
 	if (index < 0 || index >= (int)cells.size())
@@ -340,15 +369,4 @@ int MapGenerator::CheckNeighbour(int index, int direction)
 	}
 
 	return -1;
-}
-
-void MapGenerator::FirstStep()
-{
-	for (unsigned int i = 0; i < presetCells.size(); ++i)
-	{
-		unsigned int index = presetCells.at(i);
-		PropagateCell(index);
-	}
-
-	isFirstStep = false;
 }

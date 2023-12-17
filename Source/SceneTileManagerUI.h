@@ -1,20 +1,12 @@
 #pragma once
 #include "DynArray.h"
-#include "BitArray.h"
 #include "String.h"
 
-struct Tile;
 class Tileset;
-
-// --- Events
-struct EventImportTile;
-struct EventImportTileset;
-struct EventExportTileset;
-// ---
 
 struct TileData {
 	String name;
-	String filepath;
+	String texturePath;
 	int tileID;
 
 	bool isChanged;
@@ -27,43 +19,32 @@ public:
 	~SceneTileManagerUI();
 
 	bool Init();
-	bool Start();
 	bool CleanUp();
 
-	bool Draw();
+	bool DrawUI(const Tileset* tileset);
 
 	// ---
-	const DynArray<Tile*>& GetTileset() const;
-	bool IsTileValid(int tileID) const;
+	void ImportTile(unsigned int tileID, const char* name, const char* texturePath);
 
 private:
 	// --- Draw
 	void DrawMenuBar();
 	void DrawToolbar();
 	void DrawHierarchy();
-	void DrawTile();
-	void DrawMainPanel();
-
-	// --- Events
-	void OnImportTile(EventImportTile* e);
+	void DrawTile(unsigned int texture);
+	void DrawMainPanel(const Tileset* tileset);
 
 	//--- Utils
-	void CreateTileData(Tile* tile);
-	String MaskToString(const BitArray& mask);
-
 	bool TileButton(const char* name, bool selected, float width, float height);
 	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
 	bool HierarchyNode(const char* name, bool selected, bool rename, bool changes);
 
 private:
-	// Tileset
-	Tileset* tileset;
-
 	// Tiles Data
+	DynArray<TileData> tileData;
 	int currentTile = 0;
 	int currentDir = 0;
 	int renameNode = -1;
-	DynArray<TileData> tileData;
 
 	// Flags
 	bool isFilter = false;

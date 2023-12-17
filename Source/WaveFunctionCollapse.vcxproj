@@ -161,7 +161,6 @@
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneEvents.h" />
-    <ClInclude Include="SceneMapGenerator.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="MapGenerator.h" />
@@ -261,6 +260,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UI_Button.h" />
     <ClInclude Include="UI_Element.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -287,12 +287,12 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="PerfTimer.cpp" />
-    <ClCompile Include="SceneMapGenerator.cpp" />
     <ClCompile Include="SceneMapGeneratorUI.cpp" />
     <ClCompile Include="SceneTileManagerUI.cpp" />
     <ClCompile Include="stb\stb.cpp" />
     <ClCompile Include="UI_Button.cpp" />
     <ClCompile Include="UI_Element.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Game\Assets\Shaders\shaders.glsl" />

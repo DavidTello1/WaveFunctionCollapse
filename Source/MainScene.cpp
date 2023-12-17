@@ -5,12 +5,12 @@
 #include "ModuleEvent.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
+#include "ModuleResources.h" //***
 
 #include "MapGenerator.h"
 #include "Tile.h"
 #include "Cell.h"
 
-#include "SceneMapGenerator.h"
 #include "SceneMapGeneratorUI.h"
 #include "SceneTileManagerUI.h"
 
@@ -28,33 +28,47 @@ MainScene::~MainScene()
 
 bool MainScene::Init()
 {
-    isMapVisible = false;
+    isSceneMap = false;
 
     // --- Init Map Data
     width = 25;
     height = 25;
-    spacing = 2;
+    cellSize = 24;
+
+    // --- Create Tileset
+    tileset = new Tileset();
 
     // --- Create Map Generator
-    mapGenerator = new MapGenerator(width, height, cellSize, DynArray<Tile*>()); //*** shared array of tiles?
+    mapGenerator = new MapGenerator(width, height, cellSize);
 
     // --- Create Scenes
-    sceneMapGenerator = new SceneMapGenerator();
-    sceneMapGeneratorUI = new SceneMapGeneratorUI(sceneMapGenerator, DynArray<unsigned int>());
+    sceneMapGeneratorUI = new SceneMapGeneratorUI();
     sceneTileManagerUI = new SceneTileManagerUI();
 
     // --- Events
+    App->event->Subscribe(this, &MainScene::OnWindowResize);
+    App->event->Subscribe(this, &MainScene::OnZoom);
+
+    App->event->Subscribe(this, &MainScene::OnImportTile);
+    App->event->Subscribe(this, &MainScene::OnImportTileset);
+    App->event->Subscribe(this, &MainScene::OnImportMap);
+    App->event->Subscribe(this, &MainScene::OnExportTileset);
+    App->event->Subscribe(this, &MainScene::OnExportMap);
+
     App->event->Subscribe(this, &MainScene::OnPlay);
     App->event->Subscribe(this, &MainScene::OnStep);
     App->event->Subscribe(this, &MainScene::OnStop);
+
     App->event->Subscribe(this, &MainScene::OnSetCell);
     App->event->Subscribe(this, &MainScene::OnPresetCells);
     App->event->Subscribe(this, &MainScene::OnResetCells);
     App->event->Subscribe(this, &MainScene::OnResetAllCells);
+
     App->event->Subscribe(this, &MainScene::OnMapResize);
-    App->event->Subscribe(this, &MainScene::OnDrawSpaced);
     App->event->Subscribe(this, &MainScene::OnChangeScene);
+
     App->event->Subscribe(this, &MainScene::OnSaveTileset);
+    App->event->Subscribe(this, &MainScene::OnUpdateMask);
 
     return true;
 }
@@ -62,53 +76,65 @@ bool MainScene::Init()
 bool MainScene::Start()
 {
     // --- Init Scenes
-    sceneMapGenerator->Init();
-    sceneMapGeneratorUI->Init();
+    sceneMapGeneratorUI->Init(mapGenerator);
     sceneTileManagerUI->Init();
 
-    // --- Start Scenes
-    sceneMapGenerator->Start(width, height, cellSize, spacing, sceneMapGeneratorUI->GetPanelX(), sceneMapGeneratorUI->GetPanelY());
-    sceneMapGeneratorUI->Start();
-    sceneTileManagerUI->Start();
+    // Set Scene Camera (created in sceneMap->Init())
+    this->camera = sceneMapGeneratorUI->GetCamera();
 
-    // Set Scene Camera (created in sceneMapGenerator->Init())
-    this->camera = sceneMapGenerator->GetCamera();
+    //***
+    // -----------------------------------------
+    Tile* empty = new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index, "1001111", "1010111", "1101011", "1110011");
+    Tile* topLeft = new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index, "1000000", "1000000", "0010110", "0001101");
+    Tile* topRight = new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index, "1000000", "0101010", "1000000", "0001101");
+    Tile* bottomLeft = new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index, "0110001", "1000000", "0010110", "1000000");
+    Tile* bottomRight = new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
+    Tile* horizontal = new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index, "1000000", "1101010", "1010110", "1000000");
+    Tile* vertical = new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index, "1110001", "1000000", "1000000", "1001101");
+
+    tileset->AddTile(empty);
+    tileset->AddTile(topLeft);
+    tileset->AddTile(topRight);
+    tileset->AddTile(bottomLeft);
+    tileset->AddTile(bottomRight);
+    tileset->AddTile(horizontal);
+    tileset->AddTile(vertical);
+
+    sceneTileManagerUI->ImportTile(0, "Empty", "Assets/Textures/empty.png");
+    sceneTileManagerUI->ImportTile(1, "TopLeft", "Assets/Textures/topLeft.png");
+    sceneTileManagerUI->ImportTile(2, "TopRight", "Assets/Textures/topRight.png");
+    sceneTileManagerUI->ImportTile(3, "BottomLeft", "Assets/Textures/bottomLeft.png");
+    sceneTileManagerUI->ImportTile(4, "BottomRight", "Assets/Textures/bottomRight.png");
+    sceneTileManagerUI->ImportTile(5, "Horizontal", "Assets/Textures/horizontal.png");
+    sceneTileManagerUI->ImportTile(6, "Vertical", "Assets/Textures/vertical.png");
+    //----------------------------------------
 
     return true;
 }
 
 bool MainScene::Update(float dt)
 {
-    if (isMapVisible)
+    if (isSceneMap)
     {
         if (mapGenerator->IsFinished())
-            App->event->Publish(new EventFinish());
+            sceneMapGeneratorUI->SetState(SceneMapGeneratorUI::State::FINISHED);
 
         // Update Scenes
-        sceneMapGenerator->PreUpdate(dt);
-        sceneMapGenerator->Update(dt);
-        //sceneMapGenerator->PostUpdate(dt);
+        sceneMapGeneratorUI->Update(dt);
     }
-    else
-    {
-        // Update Scenes
-        //sceneTileManagerUI->PreUpdate(dt);
-        //sceneTileManagerUI->Update(dt);
-        //sceneTileManagerUI->PostUpdate(dt);
-    }
+
     return true;
 }
 
 bool MainScene::CleanUp()
 {
-    sceneMapGenerator->CleanUp();
     sceneMapGeneratorUI->CleanUp();
     sceneTileManagerUI->CleanUp();
 
-    delete sceneMapGenerator;
     delete sceneMapGeneratorUI;
     delete sceneTileManagerUI;
 
+    delete tileset;
     delete mapGenerator;
 
     return true;
@@ -116,80 +142,150 @@ bool MainScene::CleanUp()
 
 bool MainScene::Draw()
 {
-    // --- Map Generator
-    if (isMapVisible)
-    {
-        DrawMap();
-        sceneMapGenerator->Draw();
-    }
+    if (isSceneMap)
+        sceneMapGeneratorUI->Draw(mapGenerator);
 
     return true;
 }
 
 bool MainScene::DrawUI()
 {
-    // --- Map Generator
-    if (isMapVisible)
-    {
-        Cell* cell = nullptr;
-        if (!sceneMapGenerator->GetSelected().empty())
-        {
-            int index = sceneMapGenerator->GetSelected().front();
-            cell = mapGenerator->GetCell(index);
-        }
+    if (isSceneMap)
+        sceneMapGeneratorUI->DrawUI(mapGenerator);
+    else
+        sceneTileManagerUI->DrawUI(tileset);
 
-        sceneMapGeneratorUI->Draw(width, height, cell);
-        return true;
-    }
-
-    // --- Tile Manager
-    sceneTileManagerUI->Draw();
     return true;
-}
-
-void MainScene::DrawMap()
-{
-    static const Color black = { 0.0f, 0.0f, 0.0f, 1.0f };
-    static const Color gray = { 0.5f, 0.5f, 0.5f, 1.0f };
-    static const Color red = { 1.0f, 0.0f, 0.0f, 1.0f };
-    static const Color green = { 0.0f, 1.0f, 0.0f, 1.0f };
-
-    // Offset
-    int offsetX = ((int)App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
-    int offsetY = ((int)App->window->GetHeight() - ((height + spacing) * cellSize)) / 2;
-
-    // --- Draw Map ---
-    int numCells = width * height;
-    for (unsigned int i = 0; i < numCells; ++i)
-    {
-        // Cell
-        Cell* cell = mapGenerator->GetCell(i);
-        int x = cell->index % width;
-        int y = cell->index / width;
-
-        // Position & Size
-        glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
-        glm::vec2 size = { cellSize, cellSize };
-
-        // Draw Texture
-        if (sceneMapGeneratorUI->IsDrawTextures() && !cell->isInvalid && (cell->isCollapsed || cell->isPreset))
-        {
-            Tile* tile = mapGenerator->GetTile(cell->tileID);
-            App->renderer->DrawQuad(position, size, tile->GetTexture());
-            continue;
-        }
-
-        // Draw Color
-        Color color = (cell->isInvalid) ? red : gray;
-        if (!sceneMapGeneratorUI->IsDrawTextures() && cell->isCollapsed && cell->tileID != 0)
-            color = black;
-
-        App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
-    }
 }
 
 // -------------------------------
 // --- EVENTS ---
+void MainScene::OnWindowResize(EventWindowResize* e)
+{
+    sceneMapGeneratorUI->OnWindowResize(e->width, e->height);
+}
+
+void MainScene::OnZoom(EventCameraZoom* e)
+{
+    sceneMapGeneratorUI->OnZoom(e->zoom);
+}
+
+void MainScene::OnImportTile(EventImportTile* e)
+{
+    //***
+}
+
+void MainScene::OnImportTileset(EventImportTileset* e)
+{
+    //json file = App->resources->LoadJson(e->filepath);
+
+    //if (file.find("Tileset") == file.end())
+    //{
+    //    LOG("Error importing tileset, not found in json file");
+    //}
+
+    //json tileset = file["Tileset"];
+    //for (json::iterator it = tileset.begin(); it != tileset.end(); ++it)
+    //{
+    //    json name = tileset[it.key()]["name"];
+    //    json id = tileset[it.key()]["ID"];
+    //    json texturePath = tileset[it.key()]["texturePath"];
+    //    json topMask = tileset[it.key()]["topMask"];
+    //    json leftMask = tileset[it.key()]["leftMask"];
+    //    json rightMask = tileset[it.key()]["rightMask"];
+    //    json bottomMask = tileset[it.key()]["bottomMask"];
+
+    //    unsigned int texture = App->resources->LoadTexture(texturePath)->index;
+    //    Tile* tile = new Tile(id, texture, topMask, leftMask, rightMask, bottomMask);
+    //    this->tileset->AddTile(tile);
+    //    OnImportTile(&EventImportTile(name, texturePath, id));
+    //}
+}
+
+void MainScene::OnImportMap(EventImportMap* e)
+{
+    //// --- Import Tileset
+    //App->event->Publish(new EventImportTileset(e->filepath));
+    //const DynArray<Tile*> tileset = sceneTileManagerUI->GetTileset();
+    //mapGenerator->SetTileset(tileset);
+
+    //// --- Import Map
+    //json file = App->resources->LoadJson(e->filepath);
+
+    //if (file.find("Map") == file.end())
+    //{
+    //    LOG("Error importing map, not found in json file");
+    //    return;
+    //}
+    //json map = file["Map"];
+
+    //// Map Data
+    //width    = map["data"]["width"];
+    //height   = map["data"]["height"];
+    //cellSize = map["data"]["cellSize"];
+    //mapGenerator->SetSize(width, height);
+    //mapGenerator->SetCellSize(cellSize); //***
+
+    //// Preset Cells
+    //json cells = map["cells"];
+    //for (json::iterator it = cells.begin(); it != cells.end(); ++it)
+    //{
+    //    json tile   = cells[it.key()]["tileID"];
+    //    json index  = cells[it.key()]["index"];
+
+    //    mapGenerator->PresetCell(index, tile);
+    //}
+}
+
+void MainScene::OnExportTileset(EventExportTileset* e)
+{
+    //json file;
+
+    //for (int i = 0; i < tileData.size(); ++i)
+    //{
+    //    Tile* tile = tileset->GetTile(i);
+
+    //    file["Tileset"][tileData[i].name]["name"] = tileData[i].name;
+    //    file["Tileset"][tileData[i].name]["ID"] = tileData[i].tileID;
+    //    file["Tileset"][tileData[i].name]["texturePath"] = tileData[i].texturePath;
+    //    file["Tileset"][tileData[i].name]["topMask"] = tile->GetMasks()[0];
+    //    file["Tileset"][tileData[i].name]["leftMask"] = tile->GetMasks()[1];
+    //    file["Tileset"][tileData[i].name]["rightMask"] = tile->GetMasks()[2];
+    //    file["Tileset"][tileData[i].name]["bottomMask"] = tile->GetMasks()[3];
+    //}
+
+    //// --- Serialize JSON to string ---
+    //App->resources->SaveJson(e->filepath, file);
+}
+
+void MainScene::OnExportMap(EventExportMap* e)
+{
+    ////json node;
+
+    ////Tileset* tileset = sceneTileManagerUI->GetTileset();
+
+    ////for (int i = 0; i < animator->animations.size(); ++i)
+    ////{
+    ////    node[animator->animations[i]->name]["name"] = animator->animations[i]->name;
+    ////    node[animator->animations[i]->name]["start_frame"] = std::to_string(animator->animations[i]->start);
+    ////    node[animator->animations[i]->name]["end_frame"] = std::to_string(animator->animations[i]->end);
+    ////    node[animator->animations[i]->name]["loop"] = animator->animations[i]->loop;
+    ////    node[animator->animations[i]->name]["default"] = animator->animations[i]->Default;
+    ////    //node[animator->animations[i]->name]["speed"] = animator->animations[i]->speed;
+    ////}
+
+    ////// --- Serialize JSON to string ---
+    ////std::string data;
+    ////App->filesystem->Serialize(node, data);
+
+    ////// --- Finally Save to file ---
+    ////char* buffer = (char*)data.data();
+    ////unsigned int size = data.length();
+
+    ////String path = "";
+    ////App->filesystem->Save(path, buffer, size);
+}
+
 void MainScene::OnPlay(EventPlay* e)
 {
     timer.Start();
@@ -197,6 +293,8 @@ void MainScene::OnPlay(EventPlay* e)
     mapGenerator->GenerateMap();
 
     sceneMapGeneratorUI->AddTime(timer.ReadMs());
+
+    sceneMapGeneratorUI->OnPlay();
 }
 
 void MainScene::OnStep(EventStep* e)
@@ -208,6 +306,8 @@ void MainScene::OnStep(EventStep* e)
     float time = timer.ReadMs();
     sceneMapGeneratorUI->SetStepTime(time);
     sceneMapGeneratorUI->AddTime(time);
+
+    sceneMapGeneratorUI->OnStep();
 }
 
 void MainScene::OnStop(EventStop* e)
@@ -216,11 +316,15 @@ void MainScene::OnStop(EventStop* e)
 
     sceneMapGeneratorUI->SetStepTime(0.0f);
     sceneMapGeneratorUI->SetTotalTime(0.0f);
+
+    sceneMapGeneratorUI->OnStop();
 }
 
 void MainScene::OnSetCell(EventSetCell* e)
 {
     mapGenerator->SetCell(e->cell, e->tileID);
+
+    sceneMapGeneratorUI->UnselectAllCells();
 }
 
 void MainScene::OnPresetCells(EventPresetCells* e)
@@ -230,6 +334,8 @@ void MainScene::OnPresetCells(EventPresetCells* e)
         int index = e->cells.at(i);
         mapGenerator->PresetCell(index, e->tileID);
     }
+
+    sceneMapGeneratorUI->UnselectAllCells();
 }
 
 void MainScene::OnResetCells(EventResetCells* e)
@@ -239,11 +345,15 @@ void MainScene::OnResetCells(EventResetCells* e)
         int index = e->cells.at(i);
         mapGenerator->ResetCell(index);
     }
+
+    sceneMapGeneratorUI->UnselectAllCells();
 }
 
 void MainScene::OnResetAllCells(EventResetAllCells* e)
 {
     mapGenerator->ClearPresetCells();
+
+    sceneMapGeneratorUI->UnselectAllCells();
 }
 
 void MainScene::OnMapResize(EventMapResize* e)
@@ -252,32 +362,25 @@ void MainScene::OnMapResize(EventMapResize* e)
     height = e->height;
 
     mapGenerator->SetSize(e->width, e->height);
-}
 
-void MainScene::OnDrawSpaced(EventDrawSpaced* e)
-{
-    static const int defaultSpacing = 2;
-    spacing = (e->value) ? defaultSpacing : 0;
-
-    App->event->Publish(new EventSpacingChange(spacing));
+    sceneMapGeneratorUI->OnMapResize(e->width, e->height);
 }
 
 void MainScene::OnChangeScene(EventChangeScene* e)
 {
     if (e->scene == "MapGenerator")
     {
-        isMapVisible = true;
+        isSceneMap = true;
     }
     else if (e->scene == "TileManager")
     {
-        isMapVisible = false;
+        isSceneMap = false;
     }
 }
 
-void MainScene::OnSaveTileset(EventSaveTileset* e)
+void MainScene::OnSaveTileset(EventSaveTileset* e) //***
 {
-    // Get the new Tileset
-    const DynArray<Tile*> tileset = sceneTileManagerUI->GetTileset();
+    sceneMapGeneratorUI->SetState(SceneMapGeneratorUI::State::STOP);
 
     // Save the preset cells
     int numCells = width * height;
@@ -290,19 +393,18 @@ void MainScene::OnSaveTileset(EventSaveTileset* e)
     }
 
     // Update Tileset
-    mapGenerator->SetTileset(tileset);
+    mapGenerator->SetTileset(tileset->GetAllTiles());
 
     // Apply preset Cells
     for (unsigned int i = 0; i < cells.size(); ++i)
     {
         int id = cells[i].tileID;
-        if (sceneTileManagerUI->IsTileValid(id))
+        if (tileset->IsValid(id))
             mapGenerator->PresetCell(cells[i].index, id);
     }
+}
 
-    // Set Tile Textures for cell inspection
-    DynArray<unsigned int> textures;
-    for (unsigned int i = 0; i < tileset.size(); ++i)
-        textures.push_back(tileset[i]->GetTexture());
-    sceneMapGeneratorUI->SetTileTextures(textures);
+void MainScene::OnUpdateMask(EventUpdateMask* e)
+{
+    tileset->UpdateMask(e->index, e->dir, e->bit, e->value);
 }

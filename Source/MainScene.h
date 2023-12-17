@@ -4,13 +4,21 @@
 #include "PerfTimer.h"
 
 class MapGenerator;
-class TileManager;
+class Tileset;
 
-class SceneMapGenerator;
 class SceneMapGeneratorUI;
 class SceneTileManagerUI;
 
 // --- Events
+struct EventWindowResize;
+struct EventCameraZoom;
+
+struct EventImportTile;
+struct EventImportTileset;
+struct EventImportMap;
+struct EventExportTileset;
+struct EventExportMap;
+
 struct EventPlay;
 struct EventStep;
 struct EventStop;
@@ -19,9 +27,10 @@ struct EventPresetCells;
 struct EventResetCells;
 struct EventResetAllCells;
 struct EventMapResize;
-struct EventDrawSpaced;
 struct EventChangeScene;
+
 struct EventSaveTileset;
+struct EventUpdateMask;
 // ---
 
 class MainScene : public Scene
@@ -39,9 +48,16 @@ public:
 	bool DrawUI() override;
 
 private:
-	void DrawMap();
-
 	// --- EVENTS ---
+	void OnWindowResize(EventWindowResize* e);
+	void OnZoom(EventCameraZoom* e);
+
+	void OnImportTile(EventImportTile* e);
+	void OnImportTileset(EventImportTileset* e);
+	void OnImportMap(EventImportMap* e);
+	void OnExportTileset(EventExportTileset* e);
+	void OnExportMap(EventExportMap* e);
+
 	void OnPlay(EventPlay* e);
 	void OnStep(EventStep* e);
 	void OnStop(EventStop* e);
@@ -52,31 +68,25 @@ private:
 	void OnResetAllCells(EventResetAllCells* e);
 
 	void OnMapResize(EventMapResize* e);
-	void OnDrawSpaced(EventDrawSpaced* e);
 	void OnChangeScene(EventChangeScene* e);
 
 	void OnSaveTileset(EventSaveTileset* e);
+	void OnUpdateMask(EventUpdateMask* e);
 
 public:
-	bool isMapVisible = true;
+	bool isSceneMap = true;
 
-	// --- MAP GENERATOR ---
+	// --- Map Generator
 	MapGenerator* mapGenerator = nullptr;
 	int width = 25;
 	int height = 25;
-
-	// --- Map Drawing
 	int cellSize = 24;
-	int spacing = 2;
-
-	// --- Timer
 	PerfTimer timer;
 
-	// --- TILE MANAGER ---
-	TileManager* tileManager = nullptr;
+	// --- Tile Manager
+	Tileset* tileset = nullptr;
 
-	// --- SCENES ---
-	SceneMapGenerator* sceneMapGenerator = nullptr;
+	// --- Scenes
 	SceneMapGeneratorUI* sceneMapGeneratorUI = nullptr;
 	SceneTileManagerUI* sceneTileManagerUI = nullptr;
 };
