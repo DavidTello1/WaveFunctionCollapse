@@ -24,6 +24,7 @@ public:
 	bool DrawUI(const Tileset* tileset);
 
 	// ---
+	const TileData& GetTileData(int index) const { return tileData[index]; }
 	void ImportTile(unsigned int tileID, const char* name, const char* texturePath);
 
 private:
@@ -38,6 +39,8 @@ private:
 	bool TileButton(const char* name, bool selected, float width, float height);
 	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
 	bool HierarchyNode(const char* name, bool selected, bool rename, bool changes);
+	String CreateName();
+	bool ExistsName(const char* name);
 
 private:
 	// Tiles Data
