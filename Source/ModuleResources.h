@@ -1,13 +1,15 @@
 #pragma once
 #include "Module.h"
 
+#include "json/json.hpp"
 #include "glm/include/glm/glm.hpp"
 
-#include <vector> //***
-#include <string> //***
+#include <vector>
+#include <string>
 
 typedef unsigned int GLuint;
 typedef unsigned long long u64;
+typedef nlohmann::json json;
 
 // --- Shader ---
 struct VertexShaderAttribute
@@ -47,7 +49,7 @@ struct Texture
 };
 
 // -------------------------------------------
-class ModuleResources : public Module //*** Consider abstracting resource creation to each resource type (also separate with FileManager)
+class ModuleResources : public Module
 {
 public:
 	ModuleResources(bool start_enabled = true);
@@ -71,6 +73,10 @@ public:
 	// --- Textures
 	static GLuint CreateTexture(Image image);
 	Texture* LoadTexture(const char* filepath);
+
+	// --- Jsons
+	void SaveJson(const char* filepath, json& data);
+	json LoadJson(const char* filepath);
 
 public:
 	std::vector<Texture*> textures;

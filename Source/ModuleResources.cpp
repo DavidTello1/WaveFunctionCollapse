@@ -1,6 +1,7 @@
 #include "ModuleResources.h"
 
-#include "Globals.h"
+#include "Application.h"
+#include "ModuleFileSystem.h"
 
 #include "stb/stb_image.h"
 #include "Glew/include/glew.h"
@@ -280,4 +281,52 @@ Texture* ModuleResources::LoadTexture(const char* filepath)
 
     LOG("Texture could not be loaded: %s", filepath);
     return nullptr;
+}
+
+void ModuleResources::SaveJson(const char* filepath, json& data)
+{
+    if (filepath == nullptr)
+    {
+        LOG("Error saving json file %s", filepath);
+        return;
+    }
+
+    std::string file = data.dump(4); // serialize json
+
+    char* buffer = (char*)file.data();
+    uint size = file.length();
+
+    App->filesystem->Save(filepath, buffer, size);
+}
+
+json ModuleResources::LoadJson(const char* filepath)
+{
+    json file;
+    if (filepath == nullptr)
+    {
+        LOG("Error creating json file %s", filepath);
+        return file;
+    }
+
+    std::ifstream ifs;
+    ifs.open(filepath); // open file
+
+    if (!ifs.is_open())
+    {
+        LOG("Error unable to open json file %s", filepath);
+        return file;
+    }
+
+    try
+    {
+        file = json::parse(ifs); // parse file
+    }
+    catch (json::parse_error& e)
+    {
+        LOG("Error parsing json file: %s", e.what());
+    }
+
+    ifs.close(); // close file
+
+    return file;
 }

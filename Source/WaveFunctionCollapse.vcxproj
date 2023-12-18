@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BitArray.h" />
+    <ClInclude Include="json\json.hpp" />
     <ClInclude Include="UI_ButtonGroup.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
