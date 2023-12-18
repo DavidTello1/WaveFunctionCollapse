@@ -206,6 +206,8 @@ public:
 	// Get Bit
 	bool getBit(const unsigned int index) const
 	{
+		assert(index < numBits);
+
 		int word = index / WORD_SIZE;
 		int bit = index % WORD_SIZE;
 
@@ -270,6 +272,47 @@ public:
 		}
 
 		return -1;
+	}
+
+	void addBit() //*** needs testing
+	{
+		BitArray tmp = (*this);
+
+		if (data != nullptr)
+		{
+			delete[] data;
+		}
+
+		Alloc(numBits + 1);
+
+		for (unsigned int i = 0; i < tmp.numBits; ++i)
+		{
+			tmp.getBit(i) ? setBit(i) : clearBit(i);
+		}
+		clearBit(numBits - 1);
+	}
+
+	void eraseBit(int index) //*** needs testing
+	{
+		assert(index >= 0 && index < numBits);
+
+		BitArray tmp = (*this);
+
+		if (data != nullptr)
+		{
+			delete[] data;
+		}
+
+		Alloc(numBits - 1);
+
+		for (unsigned int i = 0; i < tmp.numBits; ++i)
+		{
+			if (i == index)
+				continue;
+
+			int bit = (i < index) ? i : i - 1;
+			tmp.getBit(i) ? setBit(bit) : clearBit(bit);
+		}
 	}
 
 private:

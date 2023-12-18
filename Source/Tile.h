@@ -19,6 +19,14 @@ public:
 		masks[3] = BitArray(bottom);
 	}
 
+	Tile(const int id, unsigned int texture, const unsigned int maskSize) : id(id), texture(texture)
+	{
+		masks[0] = BitArray(maskSize);
+		masks[1] = BitArray(maskSize);
+		masks[2] = BitArray(maskSize);
+		masks[3] = BitArray(maskSize);
+	}
+
 	Tile(Tile* tile) : id(tile->id), texture(tile->texture), masks(tile->masks) {};
 
 	~Tile() {}
@@ -26,6 +34,8 @@ public:
 	int GetID() const { return id; }
 	unsigned int GetTexture() const { return texture; }
 	StaticArray<BitArray, NUM_NEIGHBOURS> GetMasks() const { return masks; }
+
+	void SetMask(int dir, BitArray mask) { masks[dir] = mask; }
 
 protected:
 	int id = -1;

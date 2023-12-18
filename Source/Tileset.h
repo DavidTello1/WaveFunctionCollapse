@@ -1,5 +1,6 @@
 #pragma once
 #include "DynArray.h"
+#include "BitArray.h"
 
 struct Tile;
 
@@ -17,10 +18,12 @@ public:
 
 	bool IsValid(int tileID);
 
-	void AddTile(Tile* tile);
+	void AddTile(int tileID, unsigned int texture);
+	void AddTile(const Tile& tile); //adds a tile without resizing masks
 	void RemoveTile(int index);
 
-	void UpdateTile(int index, const Tile& tile);
+	void SetTile(int index, const Tile& tile);
+	void SetMask(int index, int dir, const BitArray& mask);
 	void UpdateMask(int index, int dir, int bit, bool value);
 
 private:
