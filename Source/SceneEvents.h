@@ -4,18 +4,9 @@
 #include "String.h"
 #include "List.h"
 
-struct Tile;
-
 // -------------------------------------
-struct EventOpenImport : public Event {};
-
-struct EventImportTile : public Event {
-	EventImportTile(const char* name, const char* filepath, unsigned int tileID) : name(name), filepath(filepath), tileID(tileID) {}
-	String name;
-	String filepath;
-	unsigned int tileID;
-};
-
+struct EventImportAny : public Event {};
+struct EventImportTile : public Event {};
 struct EventImportTileset : public Event {};
 struct EventImportMap : public Event {};
 struct EventExportTileset : public Event {};
@@ -57,6 +48,11 @@ struct EventChangeScene : public Event {
 
 // -------------------------------------
 struct EventSaveTileset : public Event {};
+
+struct EventRemoveTile : public Event {
+	EventRemoveTile(int index) : index(index) {}
+	int index;
+};
 
 struct EventUpdateMask : public Event {
 	EventUpdateMask(int index, int dir, int bit, bool value) : index(index), dir(dir), bit(bit), value(value) {}

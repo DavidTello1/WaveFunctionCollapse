@@ -152,6 +152,27 @@ public:
 		Alloc(size);
 	}
 
+	// Erase
+	void erase(int index) //*** needs testing
+	{
+		assert(index >= 0 && index < numElements);
+
+		DynArray<T> tmp = DynArray<T>(memCapacity);
+
+		for (unsigned int i = 0; i < numElements; ++i)
+		{
+			if (i == index)
+			{
+				data[i].~T();
+				continue;
+			}
+
+			tmp.push_back(data[i]);
+		}
+
+		(*this).swap(tmp);
+	}
+
 	// Erase All Elements
 	void clear()
 	{
@@ -174,7 +195,7 @@ public:
 	}
 
 	// Swap
-	void swap(DynArray<T>& other)
+	void swap(DynArray<T>& other) //*** std::move without rvalue
 	{
 		DynArray<T> tmp = std::move(*this);
 		*this = std::move(other);

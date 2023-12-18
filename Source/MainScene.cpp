@@ -5,7 +5,8 @@
 #include "ModuleEvent.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
-#include "ModuleResources.h" //***
+#include "ModuleResources.h"
+#include "ModuleFileSystem.h"
 
 #include "MapGenerator.h"
 #include "Tileset.h"
@@ -15,6 +16,8 @@
 #include "SceneMap.h"
 #include "SceneTiles.h"
 
+#include "FileDialog.h"
+#include "Utils.h"
 #include "Color.h"
 
 #include "mmgr/mmgr.h"
@@ -50,10 +53,11 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnWindowResize);
     App->event->Subscribe(this, &MainScene::OnZoom);
 
+    App->event->Subscribe(this, &MainScene::OnImportAny);
     App->event->Subscribe(this, &MainScene::OnImportTile);
     App->event->Subscribe(this, &MainScene::OnImportTileset);
-    App->event->Subscribe(this, &MainScene::OnImportMap);
     App->event->Subscribe(this, &MainScene::OnExportTileset);
+    App->event->Subscribe(this, &MainScene::OnImportMap);
     App->event->Subscribe(this, &MainScene::OnExportMap);
 
     App->event->Subscribe(this, &MainScene::OnPlay);
@@ -69,6 +73,7 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnChangeScene);
 
     App->event->Subscribe(this, &MainScene::OnSaveTileset);
+    App->event->Subscribe(this, &MainScene::OnRemoveTile);
     App->event->Subscribe(this, &MainScene::OnUpdateMask);
 
     return true;
@@ -85,13 +90,13 @@ bool MainScene::Start()
 
     //***
     // -----------------------------------------
-    Tile* empty = new Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index, "1001111", "1010111", "1101011", "1110011");
-    Tile* topLeft = new Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index, "1000000", "1000000", "0010110", "0001101");
-    Tile* topRight = new Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index, "1000000", "0101010", "1000000", "0001101");
-    Tile* bottomLeft = new Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index, "0110001", "1000000", "0010110", "1000000");
-    Tile* bottomRight = new Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
-    Tile* horizontal = new Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index, "1000000", "1101010", "1010110", "1000000");
-    Tile* vertical = new Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index, "1110001", "1000000", "1000000", "1001101");
+    Tile empty       = Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,       "1001111", "1010111", "1101011", "1110011");
+    Tile topLeft     = Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,     "1000000", "1000000", "0010110", "0001101");
+    Tile topRight    = Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,    "1000000", "0101010", "1000000", "0001101");
+    Tile bottomLeft  = Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,  "0110001", "1000000", "0010110", "1000000");
+    Tile bottomRight = Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
+    Tile horizontal  = Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,  "1000000", "1101010", "1010110", "1000000");
+    Tile vertical    = Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,    "1110001", "1000000", "1000000", "1001101");
 
     tileset->AddTile(empty);
     tileset->AddTile(topLeft);
@@ -160,6 +165,116 @@ bool MainScene::DrawUI()
 }
 
 // -------------------------------
+void MainScene::ImportTile(const char* path)
+{
+    int tileID = App->GenerateID();
+    unsigned int texture = App->resources->LoadTexture(path)->index;
+    std::string name = App->filesystem->GetFileName(path, false);
+
+    tileset->AddTile(tileID, texture);
+    sceneTiles->ImportTile(tileID, name.c_str(), path);
+}
+
+void MainScene::ImportTileset(json& file)
+{
+    if (file.find("tileset") == file.end())
+    {
+        LOG("Error importing tileset, not found in json file");
+        return;
+    }
+
+    for (json::iterator it = file["tileset"].begin(); it != file["tileset"].end(); ++it)
+    {
+        // Read Tile
+        std::string name        = file["tileset"][it.key()]["name"];
+        int id                  = file["tileset"][it.key()]["ID"];
+        std::string texturePath = file["tileset"][it.key()]["texturePath"];
+        std::string topMask     = file["tileset"][it.key()]["topMask"];
+        std::string leftMask    = file["tileset"][it.key()]["leftMask"];
+        std::string rightMask   = file["tileset"][it.key()]["rightMask"];
+        std::string bottomMask  = file["tileset"][it.key()]["bottomMask"];
+
+        // Create Tile
+        unsigned int texture = App->resources->LoadTexture(texturePath.c_str())->index;
+        Tile tile = Tile(id, texture, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
+
+        tileset->AddTile(tile);
+        sceneTiles->ImportTile(id, name.c_str(), texturePath.c_str());
+    }
+}
+
+void MainScene::ExportTileset(json& file)
+{
+    for (int i = 0; i < tileset->GetSize(); ++i)
+    {
+        const Tile* tile = tileset->GetTile(i);
+        const TileData data = sceneTiles->GetTileData(i);
+
+        file["tileset"][data.name.c_str()]["name"]        = data.name.c_str();
+        file["tileset"][data.name.c_str()]["ID"]          = tile->GetID();
+        file["tileset"][data.name.c_str()]["texturePath"] = data.texturePath.c_str();
+        file["tileset"][data.name.c_str()]["topMask"]     = Utils::MaskToString(tile->GetMasks()[0]).c_str();
+        file["tileset"][data.name.c_str()]["leftMask"]    = Utils::MaskToString(tile->GetMasks()[1]).c_str();
+        file["tileset"][data.name.c_str()]["rightMask"]   = Utils::MaskToString(tile->GetMasks()[2]).c_str();
+        file["tileset"][data.name.c_str()]["bottomMask"]  = Utils::MaskToString(tile->GetMasks()[3]).c_str();
+    }
+}
+
+void MainScene::ImportMap(json& file)
+{
+    // --- Import Tileset
+    ImportTileset(file);
+
+    // --- Import Map
+    if (file.find("map") == file.end())
+    {
+        LOG("Error importing map, not found in json file");
+        return;
+    }
+
+    // Map Data
+    width = file["map"]["data"]["width"];
+    height = file["map"]["data"]["height"];
+    cellSize = file["map"]["data"]["cellSize"];
+
+    mapGenerator->SetSize(width, height);
+    mapGenerator->SetCellSize(cellSize);
+
+    // Preset Cells
+    for (json::iterator it = file["cells"].begin(); it != file["cells"].end(); ++it)
+    {
+        json tile = file["map"]["cells"][it.key()]["tileID"];
+        json index = file["map"]["cells"][it.key()]["index"];
+
+        mapGenerator->PresetCell(index, tile);
+    }
+}
+
+void MainScene::ExportMap(json& file)
+{
+    // --- Export Tileset
+    ExportTileset(file);
+
+    // --- Export Map
+    // Map Data
+    file["map"]["data"]["width"] = width;
+    file["map"]["data"]["height"] = height;
+    file["map"]["data"]["cellSize"] = cellSize;
+
+    // Preset Cells
+    int numCells = width * height;
+    for (int i = 0; i < numCells; ++i)
+    {
+        Cell* cell = mapGenerator->GetCell(i);
+        if (!cell->isPreset)
+            continue;
+
+        file["cells"][i]["tileID"] = cell->tileID;
+        file["cells"][i]["index"] = cell->index;
+    }
+}
+
+// -------------------------------
 // --- EVENTS ---
 void MainScene::OnWindowResize(EventWindowResize* e)
 {
@@ -171,120 +286,107 @@ void MainScene::OnZoom(EventCameraZoom* e)
     sceneMap->OnZoom(e->zoom);
 }
 
+void MainScene::OnImportAny(EventImportAny* e)
+{
+    wchar_t  filepath[MAX_PATH];
+    filepath[0] = 0;
+    COMDLG_FILTERSPEC filters[2] = {
+        {L"Files", L"*.json;*.jpg;*.png;*.bmp;*.tif"},
+        {L"All Files", L"*.*"}
+    };
+
+    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
+    if (path == "")
+        return;
+    App->filesystem->NormalizePath(path);
+
+    std::string extension = App->filesystem->GetExtension(path.c_str());
+    if (extension == "json")
+    {
+        json file = App->resources->LoadJson(path.c_str());
+        ImportMap(file);
+    }
+    else if (extension == "jpg" || extension == "png" || extension == "bmp" || extension == "tif")
+    {
+        ImportTile(path.c_str());
+    }
+}
+
 void MainScene::OnImportTile(EventImportTile* e)
 {
-    //***
+    wchar_t  filepath[MAX_PATH];
+    filepath[0] = 0;
+    COMDLG_FILTERSPEC filters[2] = {
+        {L"Image Files", L"*.jpg;*.png;*.bmp;*.tif"},
+        {L"All Files", L"*.*"}
+    };
+
+    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
+    if (path == "")
+        return;
+    App->filesystem->NormalizePath(path);
+
+    ImportTile(path.c_str());
 }
 
 void MainScene::OnImportTileset(EventImportTileset* e)
 {
-    //json file = App->resources->LoadJson(e->filepath);
+    wchar_t  filepath[MAX_PATH];
+    filepath[0] = 0;
+    COMDLG_FILTERSPEC filters[2] = {
+        {L"Json Files", L"*.json"},
+        {L"All Files", L"*.*"}
+    };
 
-    //if (file.find("Tileset") == file.end())
-    //{
-    //    LOG("Error importing tileset, not found in json file");
-    //}
+    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
+    if (path == "")
+        return;
+    App->filesystem->NormalizePath(path);
 
-    //json tileset = file["Tileset"];
-    //for (json::iterator it = tileset.begin(); it != tileset.end(); ++it)
-    //{
-    //    json name = tileset[it.key()]["name"];
-    //    json id = tileset[it.key()]["ID"];
-    //    json texturePath = tileset[it.key()]["texturePath"];
-    //    json topMask = tileset[it.key()]["topMask"];
-    //    json leftMask = tileset[it.key()]["leftMask"];
-    //    json rightMask = tileset[it.key()]["rightMask"];
-    //    json bottomMask = tileset[it.key()]["bottomMask"];
-
-    //    unsigned int texture = App->resources->LoadTexture(texturePath)->index;
-    //    Tile* tile = new Tile(id, texture, topMask, leftMask, rightMask, bottomMask);
-    //    this->tileset->AddTile(tile);
-    //    OnImportTile(&EventImportTile(name, texturePath, id));
-    //}
+    // ---
+    json file = App->resources->LoadJson(path.c_str());
+    ImportTileset(file);
 }
 
 void MainScene::OnImportMap(EventImportMap* e)
 {
-    //// --- Import Tileset
-    //App->event->Publish(new EventImportTileset(e->filepath));
-    //const DynArray<Tile*> tileset = sceneTileManagerUI->GetTileset();
-    //mapGenerator->SetTileset(tileset);
+    wchar_t  filepath[MAX_PATH];
+    filepath[0] = 0;
+    COMDLG_FILTERSPEC filters[2] = {
+        {L"Json Files", L"*.json"},
+        {L"All Files",L"*.*"}
+    };
 
-    //// --- Import Map
-    //json file = App->resources->LoadJson(e->filepath);
+    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
+    if (path == "")
+        return;
+    App->filesystem->NormalizePath(path);
 
-    //if (file.find("Map") == file.end())
-    //{
-    //    LOG("Error importing map, not found in json file");
-    //    return;
-    //}
-    //json map = file["Map"];
-
-    //// Map Data
-    //width    = map["data"]["width"];
-    //height   = map["data"]["height"];
-    //cellSize = map["data"]["cellSize"];
-    //mapGenerator->SetSize(width, height);
-    //mapGenerator->SetCellSize(cellSize); //***
-
-    //// Preset Cells
-    //json cells = map["cells"];
-    //for (json::iterator it = cells.begin(); it != cells.end(); ++it)
-    //{
-    //    json tile   = cells[it.key()]["tileID"];
-    //    json index  = cells[it.key()]["index"];
-
-    //    mapGenerator->PresetCell(index, tile);
-    //}
+    // ---
+    json file = App->resources->LoadJson(path.c_str());
+    ImportMap(file);
 }
 
 void MainScene::OnExportTileset(EventExportTileset* e)
 {
+    ////FileDialog::SaveFileDialog();
+    //String path = "";
+
     //json file;
+    //ExportTileset(file);
 
-    //for (int i = 0; i < tileData.size(); ++i)
-    //{
-    //    Tile* tile = tileset->GetTile(i);
-
-    //    file["Tileset"][tileData[i].name]["name"] = tileData[i].name;
-    //    file["Tileset"][tileData[i].name]["ID"] = tileData[i].tileID;
-    //    file["Tileset"][tileData[i].name]["texturePath"] = tileData[i].texturePath;
-    //    file["Tileset"][tileData[i].name]["topMask"] = tile->GetMasks()[0];
-    //    file["Tileset"][tileData[i].name]["leftMask"] = tile->GetMasks()[1];
-    //    file["Tileset"][tileData[i].name]["rightMask"] = tile->GetMasks()[2];
-    //    file["Tileset"][tileData[i].name]["bottomMask"] = tile->GetMasks()[3];
-    //}
-
-    //// --- Serialize JSON to string ---
-    //App->resources->SaveJson(e->filepath, file);
+    //App->resources->SaveJson(path.c_str(), file);
 }
 
 void MainScene::OnExportMap(EventExportMap* e)
 {
-    ////json node;
+    ////FileDialog::SaveFileDialog();
+    //String path = "";
 
-    ////Tileset* tileset = sceneTileManagerUI->GetTileset();
+    //json file;
+    //ExportMap(file);
 
-    ////for (int i = 0; i < animator->animations.size(); ++i)
-    ////{
-    ////    node[animator->animations[i]->name]["name"] = animator->animations[i]->name;
-    ////    node[animator->animations[i]->name]["start_frame"] = std::to_string(animator->animations[i]->start);
-    ////    node[animator->animations[i]->name]["end_frame"] = std::to_string(animator->animations[i]->end);
-    ////    node[animator->animations[i]->name]["loop"] = animator->animations[i]->loop;
-    ////    node[animator->animations[i]->name]["default"] = animator->animations[i]->Default;
-    ////    //node[animator->animations[i]->name]["speed"] = animator->animations[i]->speed;
-    ////}
-
-    ////// --- Serialize JSON to string ---
-    ////std::string data;
-    ////App->filesystem->Serialize(node, data);
-
-    ////// --- Finally Save to file ---
-    ////char* buffer = (char*)data.data();
-    ////unsigned int size = data.length();
-
-    ////String path = "";
-    ////App->filesystem->Save(path, buffer, size);
+    //App->resources->SaveJson(path.c_str(), file);
 }
 
 void MainScene::OnPlay(EventPlay* e)
@@ -386,7 +488,7 @@ void MainScene::OnSaveTileset(EventSaveTileset* e) //***
     // Save the preset cells
     int numCells = width * height;
     DynArray<Cell> cells = DynArray<Cell>(numCells);
-    for (unsigned int i = 0; i < numCells; ++i)
+    for (int i = 0; i < numCells; ++i)
     {
         Cell* cell = mapGenerator->GetCell(i);
         if (cell->isPreset)
@@ -403,6 +505,11 @@ void MainScene::OnSaveTileset(EventSaveTileset* e) //***
         if (tileset->IsValid(id))
             mapGenerator->PresetCell(cells[i].index, id);
     }
+}
+
+void MainScene::OnRemoveTile(EventRemoveTile* e)
+{
+    tileset->RemoveTile(e->index);
 }
 
 void MainScene::OnUpdateMask(EventUpdateMask* e)

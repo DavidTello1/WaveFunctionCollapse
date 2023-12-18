@@ -29,6 +29,7 @@ bool SceneTiles::Init()
 {
 	currentTile = 0;
 	currentDir = 0;
+	renameNode = -1;
 	isFilter = false;
 	isChanges = false;
 
@@ -60,8 +61,12 @@ bool SceneTiles::DrawUI(const Tileset* tileset)
 // -----------------------
 void SceneTiles::ImportTile(unsigned int tileID, const char* name, const char* texturePath)
 {
+	String tileName(name);
+	if (ExistsName(name) || tileName == "")
+		tileName = CreateName();
+
 	TileData data;
-	data.name = name;
+	data.name = tileName;
 	data.texturePath = texturePath;
 	data.tileID = tileID;
 	data.isChanged = false;
@@ -79,11 +84,11 @@ void SceneTiles::DrawMenuBar()
 		{
 			if (ImGui::MenuItem("Import Tile"))
 			{
-				App->event->Publish(new EventOpenImport());
+				App->event->Publish(new EventImportTile());
 			}
 			if (ImGui::MenuItem("Import Tileset"))
 			{
-				App->event->Publish(new EventOpenImport());
+				App->event->Publish(new EventImportTileset());
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Export Tileset"))
@@ -140,7 +145,7 @@ void SceneTiles::DrawToolbar()
 		ImGui::SameLine();
 		if (ImGui::ImageButton((ImTextureID)importIcon, ImVec2(buttonSize, buttonSize))) // Import
 		{
-			App->event->Publish(new EventOpenImport());
+			App->event->Publish(new EventImportAny());
 		}
 		ImGui::SameLine();
 
@@ -241,8 +246,9 @@ void SceneTiles::DrawHierarchy()
 			ImGui::Separator();
 			if (ImGui::MenuItem("Delete"))
 			{
+				App->event->Publish(new EventRemoveTile(currentTile));
+				tileData.erase(currentTile); //***
 				isChanges = true;
-				//*** Delete
 			}
 			ImGui::EndPopup();
 		}
@@ -444,4 +450,28 @@ bool SceneTiles::HierarchyNode(const char* name, bool selected, bool rename, boo
 	}
 
 	return ret;
+}
+
+String SceneTiles::CreateName()
+{
+	int nameCount = 1;
+	String name = String("Tile %d", nameCount);
+	
+	while (ExistsName(name.c_str()))
+	{
+		nameCount++;
+		name = String("Tile %d", nameCount);
+	}
+
+	return name;
+}
+
+bool SceneTiles::ExistsName(const char* name)
+{
+	for (unsigned int i = 0; i < tileData.size(); ++i)
+	{
+		if (tileData[i].name == name)
+			return true;
+	}
+	return false;
 }

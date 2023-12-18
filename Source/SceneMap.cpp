@@ -261,7 +261,7 @@ void SceneMap::DrawMap(const MapGenerator* map)
 		// Draw Texture
 		if (isDrawTextures && !cell->isInvalid && (cell->isCollapsed || cell->isPreset))
 		{
-			Tile* tile = map->GetTile(cell->tileID);
+			Tile* tile = map->GetTileByID(cell->tileID);
 			App->renderer->DrawQuad(position, size, tile->GetTexture());
 			continue;
 		}
@@ -285,7 +285,7 @@ void SceneMap::DrawMenuBar()
 		{
 			if (ImGui::MenuItem("Import Map"))
 			{
-				App->event->Publish(new EventOpenImport());
+				App->event->Publish(new EventImportMap());
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Export Map"))
