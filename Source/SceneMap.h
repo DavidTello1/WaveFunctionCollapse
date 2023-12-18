@@ -2,7 +2,7 @@
 #include "DynArray.h"
 
 class MapGenerator;
-class Tile;
+struct Tile;
 
 class Camera;
 class CameraController;

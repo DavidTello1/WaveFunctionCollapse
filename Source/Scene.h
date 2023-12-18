@@ -1,5 +1,5 @@
 #pragma once
-#include <string> //***
+#include <string>
 
 #define MODULE_NAME_LENGTH 25
 

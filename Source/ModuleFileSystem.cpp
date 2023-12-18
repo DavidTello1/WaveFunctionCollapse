@@ -253,33 +253,36 @@ bool ModuleFileSystem::IsFolder(const char* filepath) const
 	return (PHYSFS_isDirectory(filepath) != 0);
 }
 
-// Get the file name from path (baker_house.fbx)
-const char* ModuleFileSystem::GetFileName(const char* filepath) const
+// 
+void ModuleFileSystem::NormalizePath(std::string& filepath) const
 {
-	static const int maxSize = 128;
+	for (std::string::iterator it = filepath.begin(); it != filepath.end(); ++it)
+	{
+		if (*it == '\\')
+			*it = '/';
+	}
+}
 
-	const char* name = strrchr(filepath, maxSize);
-	if (name == nullptr)
-		name = (strrchr(filepath, '/') != nullptr) ? strrchr(filepath, '/') : "";
+// Get the file name from path (baker_house.fbx)
+std::string ModuleFileSystem::GetFileName(const char* filepath, bool extension) const
+{
+	std::string name = filepath;
 
-	if (name != "")
-		name++;
+	name = name.substr(name.find_last_of('/') + 1);
+
+	if (extension == false)
+		name = name.substr(0, name.find_first_of('.'));
 
 	return name;
 }
 
 // Get the extension from path (fbx)
-const char* ModuleFileSystem::GetExtension(const char* filepath) const
+std::string ModuleFileSystem::GetExtension(const char* filepath) const
 {
-	static const int maxSize = 32;
+	std::string name = filepath;
+	name = name.substr(name.find_first_of('.') + 1);
 
-	char buffer[maxSize] = "";
-	const char* last_dot = strrchr(filepath, '.');
-	if (last_dot != nullptr)
-		strcpy_s(buffer, last_dot + 1);
-
-	const char* extension = buffer;
-	return extension;
+	return name;
 }
 
 // Get the files and folders inside a directory

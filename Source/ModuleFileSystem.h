@@ -26,10 +26,11 @@ public:
 	// Utility functions
 	bool Exists(const char* filepath) const;
 	bool IsFolder(const char* filepath) const;
+	void NormalizePath(std::string& filepath) const;
 
 	// Getters
-	const char* GetFileName(const char* filepath) const;
-	const char* GetExtension(const char* filepath) const;
+	std::string GetFileName(const char* filepath, bool extension = true) const;
+	std::string GetExtension(const char* filepath) const;
 	void GetFolderContent(const char* filepath, std::vector<std::string>& files, std::vector<std::string>& folders) const;
 	const uint64_t GetLastModTime(const char* filepath) const;
 

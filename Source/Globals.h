@@ -24,6 +24,7 @@ typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 typedef unsigned long long int u64;
+typedef unsigned long long UID;
 
 // Align 16, use if you have math elements in your class like float4x4 or AABB
 #define ALIGN_CLASS_TO_16 \
