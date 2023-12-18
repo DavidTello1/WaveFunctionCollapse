@@ -1,4 +1,4 @@
-#include "SceneTileManagerUI.h"
+#include "SceneTiles.h"
 #include "SceneEvents.h"
 
 #include "Application.h"
@@ -6,6 +6,7 @@
 #include "ModuleWindow.h"
 #include "ModuleResources.h"
 
+#include "Tileset.h"
 #include "Tile.h"
 
 #include "String.h"
@@ -16,15 +17,15 @@
 
 #include "mmgr/mmgr.h"
 
-SceneTileManagerUI::SceneTileManagerUI()
+SceneTiles::SceneTiles()
 {
 }
 
-SceneTileManagerUI::~SceneTileManagerUI()
+SceneTiles::~SceneTiles()
 {
 }
 
-bool SceneTileManagerUI::Init()
+bool SceneTiles::Init()
 {
 	currentTile = 0;
 	currentDir = 0;
@@ -40,12 +41,12 @@ bool SceneTileManagerUI::Init()
 	return true;
 }
 
-bool SceneTileManagerUI::CleanUp()
+bool SceneTiles::CleanUp()
 {
 	return true;
 }
 
-bool SceneTileManagerUI::DrawUI(const Tileset* tileset)
+bool SceneTiles::DrawUI(const Tileset* tileset)
 {
 	DrawMenuBar();
 	DrawToolbar();
@@ -57,7 +58,7 @@ bool SceneTileManagerUI::DrawUI(const Tileset* tileset)
 }
 
 // -----------------------
-void SceneTileManagerUI::ImportTile(unsigned int tileID, const char* name, const char* texturePath)
+void SceneTiles::ImportTile(unsigned int tileID, const char* name, const char* texturePath)
 {
 	TileData data;
 	data.name = name;
@@ -70,7 +71,7 @@ void SceneTileManagerUI::ImportTile(unsigned int tileID, const char* name, const
 }
 
 // -----------------------
-void SceneTileManagerUI::DrawMenuBar()
+void SceneTiles::DrawMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -105,7 +106,7 @@ void SceneTileManagerUI::DrawMenuBar()
 	ImGui::EndMainMenuBar();
 }
 
-void SceneTileManagerUI::DrawToolbar()
+void SceneTiles::DrawToolbar()
 {
 	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
 		ImGuiWindowFlags_NoTitleBar;
@@ -160,7 +161,7 @@ void SceneTileManagerUI::DrawToolbar()
 	ImGui::End();
 }
 
-void SceneTileManagerUI::DrawTile(unsigned int texture)
+void SceneTiles::DrawTile(unsigned int texture)
 {
 	static const int buttonSize = 40;
 	static const int offset = 22; //(hierarchyWidth - (buttonSize * 3) / 2 - 8->padding
@@ -210,7 +211,7 @@ void SceneTileManagerUI::DrawTile(unsigned int texture)
 	ImGui::End();
 }
 
-void SceneTileManagerUI::DrawHierarchy()
+void SceneTiles::DrawHierarchy()
 {
 	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
@@ -249,7 +250,7 @@ void SceneTileManagerUI::DrawHierarchy()
 	ImGui::End();
 }
 
-void SceneTileManagerUI::DrawMainPanel(const Tileset* tileset)
+void SceneTiles::DrawMainPanel(const Tileset* tileset)
 {
 	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
@@ -298,7 +299,7 @@ void SceneTileManagerUI::DrawMainPanel(const Tileset* tileset)
 }
 
 // -----------------------------
-bool SceneTileManagerUI::TileButton(const char* name, bool selected, float width, float height)
+bool SceneTiles::TileButton(const char* name, bool selected, float width, float height)
 {
 	static const ImU32 idleColor			= IM_COL32(110, 110, 110, 255);
 	static const ImU32 idleHoveredColor		= IM_COL32(140, 140, 140, 255);
@@ -327,7 +328,7 @@ bool SceneTileManagerUI::TileButton(const char* name, bool selected, float width
 	return ret;
 }
 
-bool SceneTileManagerUI::NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation)
+bool SceneTiles::NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation)
 {
 	static const int rounding = 3.0f;
 	static const int padding = 8.0f;
@@ -404,7 +405,7 @@ bool SceneTileManagerUI::NeighbourCombo(const char* name, bool selected, float t
 	return ret;
 }
 
-bool SceneTileManagerUI::HierarchyNode(const char* name, bool selected, bool rename, bool changes)
+bool SceneTiles::HierarchyNode(const char* name, bool selected, bool rename, bool changes)
 {
 	bool ret = false;
 

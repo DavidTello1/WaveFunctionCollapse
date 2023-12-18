@@ -133,7 +133,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BitArray.h" />
-    <ClInclude Include="ButtonGrid.h" />
+    <ClInclude Include="UI_ButtonGroup.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Color.h" />
@@ -172,8 +172,8 @@
     <ClInclude Include="ModuleResources.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="SceneMapGeneratorUI.h" />
-    <ClInclude Include="SceneTileManagerUI.h" />
+    <ClInclude Include="SceneMap.h" />
+    <ClInclude Include="SceneTiles.h" />
     <ClInclude Include="SDL2\include\begin_code.h" />
     <ClInclude Include="SDL2\include\close_code.h" />
     <ClInclude Include="SDL2\include\SDL.h" />
@@ -257,6 +257,7 @@
     <ClInclude Include="stb\stb_image_write.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="Tileset.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UI_Button.h" />
     <ClInclude Include="UI_Element.h" />
@@ -264,7 +265,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="ButtonGrid.cpp" />
+    <ClCompile Include="UI_ButtonGroup.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Imgui\imgui.cpp" />
@@ -287,9 +288,10 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="PCG\pcg_basic.c" />
     <ClCompile Include="PerfTimer.cpp" />
-    <ClCompile Include="SceneMapGeneratorUI.cpp" />
-    <ClCompile Include="SceneTileManagerUI.cpp" />
+    <ClCompile Include="SceneMap.cpp" />
+    <ClCompile Include="SceneTiles.cpp" />
     <ClCompile Include="stb\stb.cpp" />
+    <ClCompile Include="Tileset.cpp" />
     <ClCompile Include="UI_Button.cpp" />
     <ClCompile Include="UI_Element.cpp" />
     <ClCompile Include="Utils.cpp" />

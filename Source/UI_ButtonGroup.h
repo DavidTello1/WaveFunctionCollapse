@@ -7,7 +7,7 @@
 
 class UI_Button;
 
-class ButtonGrid : public UI_Element
+class UI_ButtonGroup : public UI_Element
 {
 public:
 	enum Type {
@@ -16,8 +16,8 @@ public:
 	};
 
 public:
-	ButtonGrid(int x, int y, int width, int height, unsigned int buttonSize, unsigned int spacing = 0, Type type = SINGLE_SELECTION);
-	~ButtonGrid();
+	UI_ButtonGroup(int x, int y, int width, int height, unsigned int buttonSize, unsigned int spacing = 0, Type type = SINGLE_SELECTION);
+	~UI_ButtonGroup();
 
 	// --- Logic
 	void Update(float dt) override;

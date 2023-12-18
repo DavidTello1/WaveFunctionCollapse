@@ -1,4 +1,4 @@
-#include "SceneMapGeneratorUI.h"
+#include "SceneMap.h"
 #include "Event.h"
 #include "SceneEvents.h"
 
@@ -15,7 +15,7 @@
 
 #include "Camera.h"
 #include "CameraController.h"
-#include "ButtonGrid.h"
+#include "UI_ButtonGroup.h"
 #include "UI_Button.h"
 
 #include "Utils.h"
@@ -26,27 +26,17 @@
 
 #include "mmgr/mmgr.h"
 
-SceneMapGeneratorUI::SceneMapGeneratorUI()
+SceneMap::SceneMap()
 {
 }
 
-SceneMapGeneratorUI::~SceneMapGeneratorUI()
+SceneMap::~SceneMap()
 {
 }
 
-bool SceneMapGeneratorUI::Init(const MapGenerator* map)
+bool SceneMap::Init(const MapGenerator* map)
 {
 	state = State::STOP;
-
-	// --- Entities
-	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f);
-	controller = new CameraController(camera, 0.3f);
-
-	buttonGrid = new ButtonGrid(0, 0, map->GetWidth(), map->GetHeight(), map->GetCellSize(), defaultSpacing, ButtonGrid::Type::MULTIPLE_SELECTION);
-	UpdateButtonGrid();
-
-	Color transparent = { 0,0,0,0 };
-	bgButton = new UI_Button(0, panelY, panelX, App->window->GetHeight(), transparent, transparent, transparent, true);
 
 	// --- UI Variables
 	stepTime = 0.0f;
@@ -56,6 +46,16 @@ bool SceneMapGeneratorUI::Init(const MapGenerator* map)
 	spacing = defaultSpacing;
 	isDrawTextures = true;
 	isDrawSpaced = true;
+
+	// --- Entities
+	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f);
+	controller = new CameraController(camera, 0.3f);
+
+	buttonGrid = new UI_ButtonGroup(0, 0, map->GetWidth(), map->GetHeight(), map->GetCellSize(), spacing, UI_ButtonGroup::Type::MULTIPLE_SELECTION);
+	UpdateButtonGrid();
+
+	Color transparent = { 0,0,0,0 };
+	bgButton = new UI_Button(0, panelY, panelX, App->window->GetHeight(), transparent, transparent, transparent, true);
 
 	// --- Panel Data
 	isPanelOpen = true;
@@ -73,7 +73,7 @@ bool SceneMapGeneratorUI::Init(const MapGenerator* map)
     return true;
 }
 
-bool SceneMapGeneratorUI::Update(float dt)
+bool SceneMap::Update(float dt)
 {
 	controller->Update(dt);
 
@@ -89,7 +89,7 @@ bool SceneMapGeneratorUI::Update(float dt)
 	return true;
 }
 
-bool SceneMapGeneratorUI::CleanUp()
+bool SceneMap::CleanUp()
 {
 	delete camera;
 	delete controller;
@@ -99,7 +99,7 @@ bool SceneMapGeneratorUI::CleanUp()
     return true;
 }
 
-bool SceneMapGeneratorUI::Draw(const MapGenerator* map)
+bool SceneMap::Draw(const MapGenerator* map)
 {
 	DrawMap(map);
 	buttonGrid->Draw();
@@ -107,7 +107,7 @@ bool SceneMapGeneratorUI::Draw(const MapGenerator* map)
 	return true;
 }
 
-bool SceneMapGeneratorUI::DrawUI(const MapGenerator* map)
+bool SceneMap::DrawUI(const MapGenerator* map)
 {
 	DrawMenuBar();
 	DrawPanel(map);
@@ -116,12 +116,12 @@ bool SceneMapGeneratorUI::DrawUI(const MapGenerator* map)
 }
 
 // -----------------------------
-void SceneMapGeneratorUI::UnselectAllCells()
+void SceneMap::UnselectAllCells()
 {
 	buttonGrid->UnSelectAll();
 }
 
-void SceneMapGeneratorUI::OnWindowResize(int width, int height)
+void SceneMap::OnWindowResize(int width, int height)
 {
 	// Update entities
 	UpdateButtonGrid();
@@ -132,7 +132,7 @@ void SceneMapGeneratorUI::OnWindowResize(int width, int height)
 	panelHeight = height - panelY;
 }
 
-void SceneMapGeneratorUI::OnZoom(float newZoom)
+void SceneMap::OnZoom(float newZoom)
 {
 	float zoom = camera->GetZoom();
 	zoom += (newZoom > 0) ? -controller->GetZoomSpeed() : controller->GetZoomSpeed();
@@ -140,7 +140,7 @@ void SceneMapGeneratorUI::OnZoom(float newZoom)
 	controller->SetZoom(zoom);
 }
 
-void SceneMapGeneratorUI::OnMapResize(float width, float height)
+void SceneMap::OnMapResize(float width, float height)
 {
 	buttonGrid->Resize(width, height);
 	UpdateButtonGrid();
@@ -149,38 +149,38 @@ void SceneMapGeneratorUI::OnMapResize(float width, float height)
 	heightRatio = height / width;
 }
 
-void SceneMapGeneratorUI::OnPlay()
+void SceneMap::OnPlay()
 {
 	if (state != State::STOP && state != State::PAUSE)
 		return;
 	state = State::PLAY;
 
 	buttonGrid->UnSelectAll();
-	buttonGrid->SetSelectionType(ButtonGrid::Type::SINGLE_SELECTION);
+	buttonGrid->SetSelectionType(UI_ButtonGroup::Type::SINGLE_SELECTION);
 }
 
-void SceneMapGeneratorUI::OnStep()
+void SceneMap::OnStep()
 {
 	if (state != State::STOP && state != State::PAUSE)
 		return;
 	state = State::PAUSE;
 
 	buttonGrid->UnSelectAll();
-	buttonGrid->SetSelectionType(ButtonGrid::Type::SINGLE_SELECTION);
+	buttonGrid->SetSelectionType(UI_ButtonGroup::Type::SINGLE_SELECTION);
 }
 
-void SceneMapGeneratorUI::OnStop()
+void SceneMap::OnStop()
 {
 	if (state == State::STOP)
 		return;
 	state = State::STOP;
 
 	buttonGrid->UnSelectAll();
-	buttonGrid->SetSelectionType(ButtonGrid::Type::MULTIPLE_SELECTION);
+	buttonGrid->SetSelectionType(UI_ButtonGroup::Type::MULTIPLE_SELECTION);
 }
 
 // -----------------------------
-void SceneMapGeneratorUI::Shortcuts()
+void SceneMap::Shortcuts()
 {
 	// --- Shortcuts
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) // Step (spacebar)
@@ -200,7 +200,7 @@ void SceneMapGeneratorUI::Shortcuts()
 	}
 }
 
-void SceneMapGeneratorUI::DrawSpaced()
+void SceneMap::DrawSpaced()
 {
 	spacing = (isDrawSpaced) ? defaultSpacing : 0;
 
@@ -208,7 +208,7 @@ void SceneMapGeneratorUI::DrawSpaced()
 	UpdateButtonGrid();
 }
 
-void SceneMapGeneratorUI::PanelToggled(bool isOpen)
+void SceneMap::PanelToggled(bool isOpen)
 {
 	// Update Panel
 	panelWidth = (isOpen) ? widthOpen : widthClosed;
@@ -218,7 +218,7 @@ void SceneMapGeneratorUI::PanelToggled(bool isOpen)
 	bgButton->SetWidth(panelX);
 }
 
-void SceneMapGeneratorUI::UpdateButtonGrid()
+void SceneMap::UpdateButtonGrid()
 {
 	int width = buttonGrid->GetNumColumns();
 	int height = buttonGrid->GetNumRows();
@@ -230,7 +230,7 @@ void SceneMapGeneratorUI::UpdateButtonGrid()
 	buttonGrid->SetPos(offsetX, offsetY);
 }
 
-void SceneMapGeneratorUI::DrawMap(const MapGenerator* map)
+void SceneMap::DrawMap(const MapGenerator* map)
 {
 	static const Color black = { 0.0f, 0.0f, 0.0f, 1.0f };
 	static const Color gray = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -277,7 +277,7 @@ void SceneMapGeneratorUI::DrawMap(const MapGenerator* map)
 
 // -----------------------------
 // --- UI DRAW ---
-void SceneMapGeneratorUI::DrawMenuBar()
+void SceneMap::DrawMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -305,7 +305,7 @@ void SceneMapGeneratorUI::DrawMenuBar()
 	ImGui::EndMainMenuBar();
 }
 
-void SceneMapGeneratorUI::DrawPanel(const MapGenerator* map)
+void SceneMap::DrawPanel(const MapGenerator* map)
 {
 	static const int sectionSpacing = 5;
 	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse;
@@ -368,7 +368,7 @@ void SceneMapGeneratorUI::DrawPanel(const MapGenerator* map)
 		PanelToggled(false);
 }
 
-void SceneMapGeneratorUI::DrawSectionButtons()
+void SceneMap::DrawSectionButtons()
 {
 	static const int buttonSize = 32;
 	static const int paddingX = (ImGui::GetWindowContentRegionWidth() - 3 * (buttonSize + 12)) / 2;
@@ -399,7 +399,7 @@ void SceneMapGeneratorUI::DrawSectionButtons()
 	}
 }
 
-void SceneMapGeneratorUI::DrawSectionOptions()
+void SceneMap::DrawSectionOptions()
 {
 	ImGui::Text("Step Time: ");
 	ImGui::SameLine();
@@ -418,7 +418,7 @@ void SceneMapGeneratorUI::DrawSectionOptions()
 	}
 }
 
-void SceneMapGeneratorUI::DrawSectionResize(int width, int height)
+void SceneMap::DrawSectionResize(int width, int height)
 {
 	static bool isAspectRatio = true;
 	static int mapWidth = width;
@@ -457,7 +457,7 @@ void SceneMapGeneratorUI::DrawSectionResize(int width, int height)
 	}
 }
 
-void SceneMapGeneratorUI::DrawSectionCellPresets(const MapGenerator* map)
+void SceneMap::DrawSectionCellPresets(const MapGenerator* map)
 {
 	// Num Selected
 	ImGui::Text("Selected Cells: %d", buttonGrid->GetSelected().size());
@@ -484,7 +484,7 @@ void SceneMapGeneratorUI::DrawSectionCellPresets(const MapGenerator* map)
 	DrawCellInspector(map->GetAllTiles());
 }
 
-void SceneMapGeneratorUI::DrawSectionCellInspector(const MapGenerator* map)
+void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 {
 	static const ImVec4 yellow = { 1, 1, 0, 1 };
 
@@ -540,7 +540,7 @@ void SceneMapGeneratorUI::DrawSectionCellInspector(const MapGenerator* map)
 	DrawCellInspector(tiles);
 }
 
-void SceneMapGeneratorUI::DrawCellInspector(const DynArray<Tile*>& tiles)
+void SceneMap::DrawCellInspector(const DynArray<Tile*>& tiles)
 {
 	// --- Tiles Selector
 	static const int imageWidth = 30;

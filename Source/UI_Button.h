@@ -5,7 +5,7 @@
 
 class UI_Button : public UI_Element
 {
-	friend class ButtonGrid;
+	friend class UI_ButtonGroup;
 
 public:
 	UI_Button(int x, int y, int width, int height, Color idleColor, Color hoverColor, Color selectedColor, bool isStatic = false) :

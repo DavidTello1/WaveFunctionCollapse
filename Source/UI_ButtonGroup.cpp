@@ -1,4 +1,4 @@
-#include "ButtonGrid.h"
+#include "UI_ButtonGroup.h"
 #include "UI_Button.h"
 
 #include "Application.h"
@@ -10,7 +10,7 @@
 #include "SDL/include/SDL_mouse.h"
 #include "SDL/include/SDL_scancode.h"
 
-ButtonGrid::ButtonGrid(int x, int y, int columns, int rows, unsigned int buttonSize, unsigned int spacing, Type type) : 
+UI_ButtonGroup::UI_ButtonGroup(int x, int y, int columns, int rows, unsigned int buttonSize, unsigned int spacing, Type type) : 
 	UI_Element(x, y, columns * (buttonSize + spacing), rows * (buttonSize + spacing)), 
 	columns(columns), rows(rows), buttonSize(buttonSize), spacing(spacing), type(type)
 {
@@ -33,7 +33,7 @@ ButtonGrid::ButtonGrid(int x, int y, int columns, int rows, unsigned int buttonS
 	selected = List<unsigned int>();
 }
 
-ButtonGrid::~ButtonGrid()
+UI_ButtonGroup::~UI_ButtonGroup()
 {
 	for (unsigned int i = 0; i < buttons.size(); ++i)
 	{
@@ -42,7 +42,7 @@ ButtonGrid::~ButtonGrid()
 	buttons.clear();
 }
 
-void ButtonGrid::Update(float dt)
+void UI_ButtonGroup::Update(float dt)
 {
 	for (unsigned int i = 0; i < buttons.size(); ++i)
 	{
@@ -89,7 +89,7 @@ void ButtonGrid::Update(float dt)
 	}
 }
 
-void ButtonGrid::Draw()
+void UI_ButtonGroup::Draw()
 {
 	for (unsigned int i = 0; i < buttons.size(); ++i)
 	{
@@ -97,7 +97,7 @@ void ButtonGrid::Draw()
 	}
 }
 
-void ButtonGrid::UpdatePositions()
+void UI_ButtonGroup::UpdatePositions()
 {
 	for (int i = 0; i < columns; ++i)
 	{
@@ -114,7 +114,7 @@ void ButtonGrid::UpdatePositions()
 	height = rows * (buttonSize + spacing);
 }
 
-void ButtonGrid::Resize(const int columns, const int rows)
+void UI_ButtonGroup::Resize(const int columns, const int rows)
 {
 	this->columns = columns;
 	this->rows = rows;
@@ -135,7 +135,7 @@ void ButtonGrid::Resize(const int columns, const int rows)
 	UpdatePositions();
 }
 
-void ButtonGrid::UnSelectAll()
+void UI_ButtonGroup::UnSelectAll()
 {
 	for (unsigned int i = 0; i < selected.size(); ++i)
 	{

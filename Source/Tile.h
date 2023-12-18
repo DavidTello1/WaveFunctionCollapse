@@ -1,6 +1,5 @@
 #pragma once
 #include "StaticArray.h"
-#include "DynArray.h"
 #include "BitArray.h"
 
 #define NUM_NEIGHBOURS 4
@@ -32,58 +31,4 @@ protected:
 	int id = -1;
 	unsigned int texture = 0;
 	StaticArray<BitArray, NUM_NEIGHBOURS> masks; // top, left, right, bottom
-};
-
-// -------------------------------
-class Tileset
-{
-private:
-	DynArray<Tile*> tiles;
-
-public:
-	Tileset() 
-	{
-	}
-
-	~Tileset() 
-	{
-		for (unsigned int i = 0; i < tiles.size(); ++i)
-			delete tiles[i];
-		tiles.clear();
-	}
-
-	// --- Getters
-	const unsigned int GetSize() const { return tiles.size(); }
-	Tile* GetTile(int index) { return tiles[index]; }
-	const Tile* GetTile(int index) const { return tiles[index]; }
-	const DynArray<Tile*>& GetAllTiles() const { return tiles; }
-
-	// --- Management
-	void AddTile(Tile* tile) {
-		tiles.push_back(tile);
-	}
-
-	void RemoveTile(int index) {
-		//tiles.erase(index);
-	}
-
-	void UpdateTile(int index, const Tile& tile) {
-		*tiles[index] = tile;
-	}
-
-	void UpdateMask(int index, int dir, int bit, bool value) {
-		if (value)
-			tiles[index]->masks[dir].setBit(bit);
-		else
-			tiles[index]->masks[dir].clearBit(bit);
-	}
-
-	bool IsValid(int tileID) {
-		for (unsigned int i = 0; i < tiles.size(); ++i)
-		{
-			if (tiles[i]->id == tileID)
-				return true;
-		}
-		return false;
-	}
 };

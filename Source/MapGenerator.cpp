@@ -7,19 +7,25 @@
 #include "mmgr/mmgr.h"
 
 MapGenerator::MapGenerator(const int width, const int height, const int cellSize)
+	: width(width), height(height), cellSize(cellSize)
 {
-	this->width = width;
-	this->height = height;
-	this->cellSize = cellSize;
+	// Init Tiles Array (empty)
+	tiles = DynArray<Tile*>();
+
+	// Init Cells Array
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i) 
+	{
+		cells.push_back(new Cell(i, tiles.size()));
+	}
 
 	// Seed random
 	RNG = new RandomNumber();
 }
 
 MapGenerator::MapGenerator(const int width, const int height, const int cellSize, const DynArray<Tile*>& tiles)
+	: width(width), height(height), cellSize(cellSize)
 {
-	*this = MapGenerator(width, height, cellSize);
-
 	// Init Tiles Array
 	for (unsigned int i = 0; i < tiles.size(); ++i)
 	{
@@ -28,9 +34,13 @@ MapGenerator::MapGenerator(const int width, const int height, const int cellSize
 
 	// Init Cells Array
 	int numCells = width * height;
-	for (int i = 0; i < numCells; ++i) {
+	for (int i = 0; i < numCells; ++i)
+	{
 		cells.push_back(new Cell(i, this->tiles.size()));
 	}
+
+	// Seed random
+	RNG = new RandomNumber();
 }
 
 MapGenerator::~MapGenerator()

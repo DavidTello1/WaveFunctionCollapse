@@ -12,11 +12,11 @@ struct TileData {
 	bool isChanged;
 };
 
-class SceneTileManagerUI
+class SceneTiles
 {
 public:
-	SceneTileManagerUI();
-	~SceneTileManagerUI();
+	SceneTiles();
+	~SceneTiles();
 
 	bool Init();
 	bool CleanUp();

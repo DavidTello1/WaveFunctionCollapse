@@ -6,10 +6,10 @@ class Tile;
 
 class Camera;
 class CameraController;
-class ButtonGrid;
+class UI_ButtonGroup;
 class UI_Button;
 
-class SceneMapGeneratorUI
+class SceneMap
 {
 public:
 	enum State {
@@ -20,8 +20,8 @@ public:
 	};
 
 public:
-	SceneMapGeneratorUI();
-	~SceneMapGeneratorUI();
+	SceneMap();
+	~SceneMap();
 
 	bool Init(const MapGenerator* map);
 	bool Update(float dt);
@@ -71,7 +71,7 @@ private:
 	// Entities
 	Camera* camera = nullptr;
 	CameraController* controller = nullptr;
-	ButtonGrid* buttonGrid = nullptr;
+	UI_ButtonGroup* buttonGrid = nullptr;
 	UI_Button* bgButton = nullptr;
 
 	//  UI Variables

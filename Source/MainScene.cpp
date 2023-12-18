@@ -8,11 +8,12 @@
 #include "ModuleResources.h" //***
 
 #include "MapGenerator.h"
+#include "Tileset.h"
 #include "Tile.h"
 #include "Cell.h"
 
-#include "SceneMapGeneratorUI.h"
-#include "SceneTileManagerUI.h"
+#include "SceneMap.h"
+#include "SceneTiles.h"
 
 #include "Color.h"
 
@@ -42,8 +43,8 @@ bool MainScene::Init()
     mapGenerator = new MapGenerator(width, height, cellSize);
 
     // --- Create Scenes
-    sceneMapGeneratorUI = new SceneMapGeneratorUI();
-    sceneTileManagerUI = new SceneTileManagerUI();
+    sceneMap = new SceneMap();
+    sceneTiles = new SceneTiles();
 
     // --- Events
     App->event->Subscribe(this, &MainScene::OnWindowResize);
@@ -76,11 +77,11 @@ bool MainScene::Init()
 bool MainScene::Start()
 {
     // --- Init Scenes
-    sceneMapGeneratorUI->Init(mapGenerator);
-    sceneTileManagerUI->Init();
+    sceneMap->Init(mapGenerator);
+    sceneTiles->Init();
 
     // Set Scene Camera (created in sceneMap->Init())
-    this->camera = sceneMapGeneratorUI->GetCamera();
+    this->camera = sceneMap->GetCamera();
 
     //***
     // -----------------------------------------
@@ -100,13 +101,13 @@ bool MainScene::Start()
     tileset->AddTile(horizontal);
     tileset->AddTile(vertical);
 
-    sceneTileManagerUI->ImportTile(0, "Empty", "Assets/Textures/empty.png");
-    sceneTileManagerUI->ImportTile(1, "TopLeft", "Assets/Textures/topLeft.png");
-    sceneTileManagerUI->ImportTile(2, "TopRight", "Assets/Textures/topRight.png");
-    sceneTileManagerUI->ImportTile(3, "BottomLeft", "Assets/Textures/bottomLeft.png");
-    sceneTileManagerUI->ImportTile(4, "BottomRight", "Assets/Textures/bottomRight.png");
-    sceneTileManagerUI->ImportTile(5, "Horizontal", "Assets/Textures/horizontal.png");
-    sceneTileManagerUI->ImportTile(6, "Vertical", "Assets/Textures/vertical.png");
+    sceneTiles->ImportTile(0, "Empty", "Assets/Textures/empty.png");
+    sceneTiles->ImportTile(1, "TopLeft", "Assets/Textures/topLeft.png");
+    sceneTiles->ImportTile(2, "TopRight", "Assets/Textures/topRight.png");
+    sceneTiles->ImportTile(3, "BottomLeft", "Assets/Textures/bottomLeft.png");
+    sceneTiles->ImportTile(4, "BottomRight", "Assets/Textures/bottomRight.png");
+    sceneTiles->ImportTile(5, "Horizontal", "Assets/Textures/horizontal.png");
+    sceneTiles->ImportTile(6, "Vertical", "Assets/Textures/vertical.png");
     //----------------------------------------
 
     return true;
@@ -117,10 +118,10 @@ bool MainScene::Update(float dt)
     if (isSceneMap)
     {
         if (mapGenerator->IsFinished())
-            sceneMapGeneratorUI->SetState(SceneMapGeneratorUI::State::FINISHED);
+            sceneMap->SetState(SceneMap::State::FINISHED);
 
         // Update Scenes
-        sceneMapGeneratorUI->Update(dt);
+        sceneMap->Update(dt);
     }
 
     return true;
@@ -128,11 +129,11 @@ bool MainScene::Update(float dt)
 
 bool MainScene::CleanUp()
 {
-    sceneMapGeneratorUI->CleanUp();
-    sceneTileManagerUI->CleanUp();
+    sceneMap->CleanUp();
+    sceneTiles->CleanUp();
 
-    delete sceneMapGeneratorUI;
-    delete sceneTileManagerUI;
+    delete sceneMap;
+    delete sceneTiles;
 
     delete tileset;
     delete mapGenerator;
@@ -143,7 +144,7 @@ bool MainScene::CleanUp()
 bool MainScene::Draw()
 {
     if (isSceneMap)
-        sceneMapGeneratorUI->Draw(mapGenerator);
+        sceneMap->Draw(mapGenerator);
 
     return true;
 }
@@ -151,9 +152,9 @@ bool MainScene::Draw()
 bool MainScene::DrawUI()
 {
     if (isSceneMap)
-        sceneMapGeneratorUI->DrawUI(mapGenerator);
+        sceneMap->DrawUI(mapGenerator);
     else
-        sceneTileManagerUI->DrawUI(tileset);
+        sceneTiles->DrawUI(tileset);
 
     return true;
 }
@@ -162,12 +163,12 @@ bool MainScene::DrawUI()
 // --- EVENTS ---
 void MainScene::OnWindowResize(EventWindowResize* e)
 {
-    sceneMapGeneratorUI->OnWindowResize(e->width, e->height);
+    sceneMap->OnWindowResize(e->width, e->height);
 }
 
 void MainScene::OnZoom(EventCameraZoom* e)
 {
-    sceneMapGeneratorUI->OnZoom(e->zoom);
+    sceneMap->OnZoom(e->zoom);
 }
 
 void MainScene::OnImportTile(EventImportTile* e)
@@ -292,9 +293,9 @@ void MainScene::OnPlay(EventPlay* e)
 
     mapGenerator->GenerateMap();
 
-    sceneMapGeneratorUI->AddTime(timer.ReadMs());
+    sceneMap->AddTime(timer.ReadMs());
 
-    sceneMapGeneratorUI->OnPlay();
+    sceneMap->OnPlay();
 }
 
 void MainScene::OnStep(EventStep* e)
@@ -304,27 +305,27 @@ void MainScene::OnStep(EventStep* e)
     mapGenerator->Step();
 
     float time = timer.ReadMs();
-    sceneMapGeneratorUI->SetStepTime(time);
-    sceneMapGeneratorUI->AddTime(time);
+    sceneMap->SetStepTime(time);
+    sceneMap->AddTime(time);
 
-    sceneMapGeneratorUI->OnStep();
+    sceneMap->OnStep();
 }
 
 void MainScene::OnStop(EventStop* e)
 {
     mapGenerator->ResetMap();
 
-    sceneMapGeneratorUI->SetStepTime(0.0f);
-    sceneMapGeneratorUI->SetTotalTime(0.0f);
+    sceneMap->SetStepTime(0.0f);
+    sceneMap->SetTotalTime(0.0f);
 
-    sceneMapGeneratorUI->OnStop();
+    sceneMap->OnStop();
 }
 
 void MainScene::OnSetCell(EventSetCell* e)
 {
     mapGenerator->SetCell(e->cell, e->tileID);
 
-    sceneMapGeneratorUI->UnselectAllCells();
+    sceneMap->UnselectAllCells();
 }
 
 void MainScene::OnPresetCells(EventPresetCells* e)
@@ -335,7 +336,7 @@ void MainScene::OnPresetCells(EventPresetCells* e)
         mapGenerator->PresetCell(index, e->tileID);
     }
 
-    sceneMapGeneratorUI->UnselectAllCells();
+    sceneMap->UnselectAllCells();
 }
 
 void MainScene::OnResetCells(EventResetCells* e)
@@ -346,14 +347,14 @@ void MainScene::OnResetCells(EventResetCells* e)
         mapGenerator->ResetCell(index);
     }
 
-    sceneMapGeneratorUI->UnselectAllCells();
+    sceneMap->UnselectAllCells();
 }
 
 void MainScene::OnResetAllCells(EventResetAllCells* e)
 {
     mapGenerator->ClearPresetCells();
 
-    sceneMapGeneratorUI->UnselectAllCells();
+    sceneMap->UnselectAllCells();
 }
 
 void MainScene::OnMapResize(EventMapResize* e)
@@ -363,7 +364,7 @@ void MainScene::OnMapResize(EventMapResize* e)
 
     mapGenerator->SetSize(e->width, e->height);
 
-    sceneMapGeneratorUI->OnMapResize(e->width, e->height);
+    sceneMap->OnMapResize(e->width, e->height);
 }
 
 void MainScene::OnChangeScene(EventChangeScene* e)
@@ -380,7 +381,7 @@ void MainScene::OnChangeScene(EventChangeScene* e)
 
 void MainScene::OnSaveTileset(EventSaveTileset* e) //***
 {
-    sceneMapGeneratorUI->SetState(SceneMapGeneratorUI::State::STOP);
+    sceneMap->SetState(SceneMap::State::STOP);
 
     // Save the preset cells
     int numCells = width * height;

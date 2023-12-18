@@ -6,8 +6,8 @@
 class MapGenerator;
 class Tileset;
 
-class SceneMapGeneratorUI;
-class SceneTileManagerUI;
+class SceneMap;
+class SceneTiles;
 
 // --- Events
 struct EventWindowResize;
@@ -87,6 +87,6 @@ public:
 	Tileset* tileset = nullptr;
 
 	// --- Scenes
-	SceneMapGeneratorUI* sceneMapGeneratorUI = nullptr;
-	SceneTileManagerUI* sceneTileManagerUI = nullptr;
+	SceneMap* sceneMap = nullptr;
+	SceneTiles* sceneTiles = nullptr;
 };
