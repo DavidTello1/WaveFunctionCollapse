@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "ModuleEvent.h"
 #include "ModuleWindow.h"
+#include "ModuleInput.h"
 #include "ModuleResources.h"
 
 #include "Tileset.h"
@@ -14,6 +15,7 @@
 
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_internal.h"
+#include "SDL/include/SDL_scancode.h"
 
 #include "mmgr/mmgr.h"
 
@@ -28,16 +30,29 @@ SceneTiles::~SceneTiles()
 bool SceneTiles::Init()
 {
 	currentTile = 0;
-	currentDir = 0;
 	renameNode = -1;
 	isFilter = false;
 	isChanges = false;
+	isTileData = true;
+	isRenameFocus = false;
 
 	// --- Icons
 	saveIcon = App->resources->LoadTexture("Assets/Textures/Icons/save.png")->index;
 	saveAllIcon = App->resources->LoadTexture("Assets/Textures/Icons/saveAll.png")->index;
 	importIcon = App->resources->LoadTexture("Assets/Textures/Icons/import.png")->index;
 	filterIcon = App->resources->LoadTexture("Assets/Textures/Icons/filter.png")->index;
+
+	// ---
+	comboData.dir = -1;
+	comboData.firstIndex = -1;
+	comboData.secondIndex = -1;
+
+	return true;
+}
+
+bool SceneTiles::Update(float dt)
+{
+	Shortcuts();
 
 	return true;
 }
@@ -51,7 +66,6 @@ bool SceneTiles::DrawUI(const Tileset* tileset)
 {
 	DrawMenuBar();
 	DrawToolbar();
-	DrawTile(tileset->GetTile(currentTile)->GetTexture());
 	DrawHierarchy();
 	DrawMainPanel(tileset);
 
@@ -72,7 +86,10 @@ void SceneTiles::ImportTile(unsigned int tileID, const char* name, const char* t
 	data.isChanged = false;
 
 	tileData.push_back(data);
+
 	isChanges = true;
+	isTileData = true;
+	currentTile = tileData.size() - 1;
 }
 
 // -----------------------
@@ -113,8 +130,12 @@ void SceneTiles::DrawMenuBar()
 
 void SceneTiles::DrawToolbar()
 {
-	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoTitleBar;
+	static const ImGuiWindowFlags flags = 
+		ImGuiWindowFlags_NoResize | 
+		ImGuiWindowFlags_NoMove | 
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoNav;
 
 	static const int toolbarX = 0;
 	static const int toolbarY = menubarHeight;
@@ -142,6 +163,13 @@ void SceneTiles::DrawToolbar()
 				isChanges = false;
 			}
 		}
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::BeginTooltip();
+			ImGui::Text("Save Tileset");
+			ImGui::EndTooltip();
+		}
+
 		ImGui::SameLine();
 		if (ImGui::ImageButton((ImTextureID)importIcon, ImVec2(buttonSize, buttonSize))) // Import
 		{
@@ -166,77 +194,34 @@ void SceneTiles::DrawToolbar()
 	ImGui::End();
 }
 
-void SceneTiles::DrawTile(unsigned int texture)
-{
-	static const int buttonSize = 40;
-	static const int offset = 22; //(hierarchyWidth - (buttonSize * 3) / 2 - 8->padding
-
-	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar;
-
-	static const int tileX = 0;
-	static const int tileY = menubarHeight + toolbarHeight;
-
-	ImGui::SetNextWindowPos(ImVec2(tileX, tileY), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(hierarchyWidth, tileHeight), ImGuiCond_Always);
-
-	if (ImGui::Begin("Tile", NULL, flags))
-	{
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(1, 0, 0, 1));
-
-		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
-		ImGui::Dummy(ImVec2(buttonSize, buttonSize));
-		ImGui::SameLine();
-		if (TileButton("###Top", currentDir == 0, buttonSize, buttonSize))
-			currentDir = 0;
-
-		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
-		if (TileButton("###Left", currentDir == 1, buttonSize, buttonSize))
-			currentDir = 1;
-
-		ImGui::SameLine();
-		ImTextureID tileTexture = 0;
-		if (texture != -1)
-			tileTexture = (ImTextureID)texture;
-		ImGui::Image(tileTexture, ImVec2(buttonSize, buttonSize));
-		ImGui::SameLine();
-
-		if (TileButton("###Right", currentDir == 2, buttonSize, buttonSize))
-			currentDir = 2;
-
-		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
-		ImGui::Dummy(ImVec2(buttonSize, buttonSize));
-		ImGui::SameLine();
-		if (TileButton("###Bottom", currentDir == 3, buttonSize, buttonSize))
-			currentDir = 3;
-
-		ImGui::PopStyleColor();
-		ImGui::PopStyleVar();
-	}
-	ImGui::End();
-}
-
 void SceneTiles::DrawHierarchy()
 {
-	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
+	static const ImGuiWindowFlags flags = 
+		ImGuiWindowFlags_NoResize | 
+		ImGuiWindowFlags_NoMove | 
+		ImGuiWindowFlags_NoCollapse | 
+		ImGuiWindowFlags_NoNav;
 
 	static const int hierarchyX = 0;
-	static const int hierarchyY = menubarHeight + toolbarHeight + tileHeight;
+	static const int hierarchyY = menubarHeight + toolbarHeight;
 	int hierarchyHeight = App->window->GetHeight() - hierarchyY;
 
 	ImGui::SetNextWindowPos(ImVec2(hierarchyX, hierarchyY), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(hierarchyWidth, hierarchyHeight), ImGuiCond_Always);
 
-	if (ImGui::Begin("Hierarchy", NULL, flags))
+	if (ImGui::Begin("Tileset", NULL, flags))
 	{
 		for (unsigned int i = 0; i < tileData.size(); ++i)
 		{
 			if (HierarchyNode(tileData[i].name.c_str(), currentTile == i, renameNode == i, tileData[i].isChanged))
+			{
 				currentTile = i;
+				isTileData = true;
+			}
 		}
 
 		// Right Click
-		if (ImGui::BeginPopup("TileOptions"))
+		if (ImGui::BeginPopup("TileOptions", ImGuiWindowFlags_NoMove))
 		{
 			if (ImGui::MenuItem("Rename"))
 			{
@@ -258,87 +243,219 @@ void SceneTiles::DrawHierarchy()
 
 void SceneTiles::DrawMainPanel(const Tileset* tileset)
 {
-	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
+	static const ImGuiWindowFlags flags = 
+		ImGuiWindowFlags_NoResize | 
+		ImGuiWindowFlags_NoMove | 
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoNav;
 
 	static const int mainPanelX = hierarchyWidth;
 	static const int mainPanelY = menubarHeight + toolbarHeight;
 	int mainPanelWidth = App->window->GetWidth() - mainPanelX;
 	int mainPanelHeight = App->window->GetHeight() - mainPanelY;
-
 	ImGui::SetNextWindowPos(ImVec2(mainPanelX, mainPanelY), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(mainPanelWidth, mainPanelHeight), ImGuiCond_Always);
 
+	ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0.0f);
+	ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.35f, 0.35f, 0.35f, 0.7f));
+
 	if (ImGui::Begin("Neighbours", NULL, flags))
 	{
-		// Tile Mask
-		const Tile* tile = tileset->GetTile(currentTile);
-		const BitArray mask = tile->GetMasks()[currentDir];
-
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", Utils::MaskToString(mask).c_str());
-
-		// Neighbours
-		static const int textureSize = 40;
-		static const float itemSize = (textureSize + 8.0f) * 2.0f + 4.0f + 9.0f; // values from NeighbourCombo (padding & spacing)
-		int columns =  (int)((float)mainPanelWidth / itemSize);
-		for (unsigned int i = 0; i < tileset->GetSize(); ++i)
+		if (ImGui::BeginTabBar("TabBar", ImGuiTabBarFlags_NoTooltip))
 		{
-			bool selected = mask.getBit(i);
-
-			if (isFilter && !selected)
-				continue;
-
-			const Tile* neighbour = tileset->GetTile(i);
-
-			String label = String("###%d", i);
-			if (NeighbourCombo(label.c_str(), selected, textureSize, tile->GetTexture(), neighbour->GetTexture(), currentDir))
+			if (ImGui::BeginTabItem("Tile Data", NULL, (isTileData) ? ImGuiTabItemFlags_SetSelected : 0))
 			{
-				App->event->Publish(new EventUpdateMask(currentTile, currentDir, i, !selected));
-				isChanges = true;
-				tileData[currentTile].isChanged = true;
+				DrawTileData(tileset, mainPanelWidth);
+				isTileData = false;
+				ImGui::EndTabItem();
 			}
 
-			if (columns > 0 && (i + 1) % columns != 0)
-				ImGui::SameLine();
+			if (ImGui::BeginTabItem("Combinations", NULL))
+			{
+				DrawCombinations(tileset, mainPanelWidth);
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
 		}
 	}
 	ImGui::End();
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor();
+}
+
+void SceneTiles::DrawTileData(const Tileset* tileset, const float panelWidth)
+{
+	static const int size = 60;
+	static const int neighbourSize = 40;
+	static const ImVec4 yellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+
+	static bool topOpen = true;
+	static bool leftOpen = true;
+	static bool rightOpen = true;
+	static bool bottomOpen = true;
+
+	const Tile* tile = tileset->GetTile(currentTile);
+	TileData data = tileData[currentTile];
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
+	ImGui::Columns(3, "Columns", false);
+	ImGui::SetColumnWidth(0, size + 8);
+	ImGui::Image((ImTextureID)tile->GetTexture(), ImVec2(size, size));
+
+	ImGui::NextColumn();
+	ImGui::SetColumnWidth(1, 64);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
+	ImGui::Text("Name:");
+	ImGui::Text("Tile ID:");
+	ImGui::Text("Texture: ");
+
+	ImGui::NextColumn();
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
+	ImGui::TextColored(yellow, data.name.c_str());
+	ImGui::TextColored(yellow, "%d", data.tileID);
+	ImGui::TextColored(yellow, data.texturePath.c_str());
+	ImGui::EndColumns();
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 12);
+	DrawMask("Top Mask:    ", &topOpen,	   0, tileset, neighbourSize, panelWidth);
+	DrawMask("Left Mask:   ", &leftOpen,   1, tileset, neighbourSize, panelWidth);
+	DrawMask("Right Mask:  ", &rightOpen,  2, tileset, neighbourSize, panelWidth);
+	DrawMask("Bottom Mask: ", &bottomOpen, 3, tileset, neighbourSize, panelWidth);
+}
+
+void SceneTiles::DrawMask(const char* name, bool* selected, const int dir, const Tileset* tileset, const int size, const float panelWidth)
+{
+	static const ImVec4 yellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+	static const int comboSize = 32;
+	static const int itemSize = 64 + 2 + 25; // values from NeighbourCombo (padding & spacing)
+	int columns = (int)(panelWidth / itemSize);
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.2f, 0.2f, 0.5f));
+
+	const Tile* tile = tileset->GetTile(currentTile);
+	const BitArray mask = tile->GetMasks()[dir];
+
+	String arrowLbl = String("%s%d", name, tile->GetID());
+	if (ImGui::ArrowButton(name, (*selected) ? ImGuiDir_Down : ImGuiDir_Right))
+		*selected = !*selected;
+
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::Text(name);
+	ImGui::SameLine(0.0f, 0.0f);
+	ImGui::TextColored(yellow, "%s", Utils::MaskToString(mask).c_str());
+
+	if (!*selected)
+		return;
+
+	int samelineCount = 0;
+	for (int i = 0; i < mask.size(); ++i)
+	{
+		bool isSet = mask.getBit(i);
+
+		if (isFilter && !isSet)
+			continue;
+
+		const Tile* neighbour = tileset->GetTile(i);
+		String label = String("%d%d%d", dir, tile->GetID(), neighbour->GetID());
+
+		if (NeighbourCombo(label.c_str(), isSet, comboSize, tile->GetTexture(), neighbour->GetTexture(), dir))
+		{
+			// Update Masks (currentTile & neighbour)
+			int neighbourDir = NUM_NEIGHBOURS - dir - 1;
+			App->event->Publish(new EventUpdateMask(currentTile, dir, i, !isSet));
+			App->event->Publish(new EventUpdateMask(i, neighbourDir, currentTile, !isSet));
+
+			isChanges = true;
+			tileData[currentTile].isChanged = true;
+			tileData[i].isChanged = true;
+		}
+
+		if (samelineCount > 0)
+			samelineCount--;
+
+		if (columns > 0 && (i + 1) % columns != 0)
+		{
+			ImGui::SameLine();
+			samelineCount++;
+		}
+	}
+
+	if (samelineCount > 0)
+		ImGui::NewLine();
+	ImGui::Separator();
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8);
+}
+
+void SceneTiles::DrawCombinations(const Tileset* tileset, float panelWidth)
+{
+	static const int textureSize = 40;
+	static const float itemSize = (textureSize + 8.0f) * 2.0f + 2.0f + 9.0f; // values from NeighbourCombo (padding & spacing)
+
+	int columns = (int)(panelWidth / itemSize);
+
+	int count = 0;
+	for (int dir = 0; dir < 2; ++dir) //vertical & horizontal
+	{
+		for (unsigned int i = 0; i < tileset->GetSize(); ++i)
+		{
+			const Tile* tile = tileset->GetTile(i);
+			const BitArray mask = tile->GetMasks()[dir];
+
+			for (unsigned int j = 0; j < tileset->GetSize(); ++j)
+			{
+				if (!mask.getBit(j))
+					continue;
+
+				const Tile* neighbour = tileset->GetTile(j);
+
+				String label = String("###%d%d", dir, i);
+				NeighbourCombo(label.c_str(), false, textureSize, tile->GetTexture(), neighbour->GetTexture(), dir);
+
+				count++;
+				if (count < columns)
+					ImGui::SameLine();
+				else
+					count = 0;
+
+				if (ImGui::OpenPopupOnItemClick("Neighbour Options"))
+				{
+					comboData.dir = dir;
+					comboData.firstIndex = i;
+					comboData.secondIndex = j;
+				}
+			}
+		}
+	}
+
+	// Right Click
+	if (ImGui::BeginPopup("Neighbour Options", ImGuiWindowFlags_NoMove))
+	{
+		if (ImGui::MenuItem("Remove"))
+		{
+			// Update Masks (both tiles in combo)
+			int neighbourDir = NUM_NEIGHBOURS - comboData.dir - 1;
+			App->event->Publish(new EventUpdateMask(comboData.firstIndex, comboData.dir, comboData.secondIndex, false));
+			App->event->Publish(new EventUpdateMask(comboData.secondIndex, neighbourDir, comboData.firstIndex, false));
+
+			isChanges = true;
+			tileData[comboData.firstIndex].isChanged = true;
+			tileData[comboData.secondIndex].isChanged = true;
+		}
+		ImGui::EndPopup();
+	}
 }
 
 // -----------------------------
-bool SceneTiles::TileButton(const char* name, bool selected, float width, float height)
-{
-	static const ImU32 idleColor			= IM_COL32(110, 110, 110, 255);
-	static const ImU32 idleHoveredColor		= IM_COL32(140, 140, 140, 255);
-	static const ImU32 selectedColor		= IM_COL32(50, 30, 200, 255);
-	static const ImU32 selectedHoveredColor	= IM_COL32(50, 30, 255, 255);
-
-	bool ret = false;
-
-	ImVec2 p = ImGui::GetCursorScreenPos();
-	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-	if (ImGui::InvisibleButton(name, ImVec2(width, height)))
-	{
-		selected = !selected;
-		ret = true;
-	}
-
-	ImU32 col_bg;
-	if (ImGui::IsItemHovered())
-		col_bg = selected ? selectedHoveredColor : idleHoveredColor;
-	else
-		col_bg = selected ? selectedColor : idleColor;
-
-	draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), col_bg);
-
-	return ret;
-}
-
 bool SceneTiles::NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation)
 {
 	static const int rounding = 3.0f;
 	static const int padding = 8.0f;
-	static const int spacing = 4.0f;
+	static const int spacing = 2.0f;
 
 	ImVec4 bg_color = ImVec4(0.4f, 0.7f, 1.0f, 0.0f);
 	ImVec4 border_color = ImVec4(0.0f, 0.4f, 0.8f, 0.0f);
@@ -474,4 +591,27 @@ bool SceneTiles::ExistsName(const char* name)
 			return true;
 	}
 	return false;
+}
+
+void SceneTiles::Shortcuts()
+{
+	// --- Shortcuts
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) // Next Tile (Up Arrow)
+	{
+		currentTile++;
+		if (currentTile >= tileData.size())
+			currentTile = 0;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN) // Prev Tile (Down Arrow)
+	{
+		currentTile--;
+		if (currentTile < 0)
+			currentTile = tileData.size() - 1;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && // Open MapGenerator (Ctrl+Tab)
+		(App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
+	{
+		App->event->Publish(new EventChangeScene("MapGenerator"));
+	}
 }

@@ -19,6 +19,7 @@ public:
 	~SceneTiles();
 
 	bool Init();
+	bool Update(float dt);
 	bool CleanUp();
 
 	bool DrawUI(const Tileset* tileset);
@@ -32,32 +33,33 @@ private:
 	void DrawMenuBar();
 	void DrawToolbar();
 	void DrawHierarchy();
-	void DrawTile(unsigned int texture);
 	void DrawMainPanel(const Tileset* tileset);
+	void DrawTileData(const Tileset* tilese, const float panelWidth);
+	void DrawMask(const char* name, bool* selected, const int dir, const Tileset* tileset, const int size, const float panelWidth);
+	void DrawCombinations(const Tileset* tileset, const float panelWidth);
 
 	//--- Utils
-	bool TileButton(const char* name, bool selected, float width, float height);
 	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
 	bool HierarchyNode(const char* name, bool selected, bool rename, bool changes);
 	String CreateName();
 	bool ExistsName(const char* name);
+	void Shortcuts();
 
 private:
 	// Tiles Data
 	DynArray<TileData> tileData;
 	int currentTile = 0;
-	int currentDir = 0;
 	int renameNode = -1;
 
 	// Flags
 	bool isFilter = false;
 	bool isChanges = false;
+	bool isTileData = true;
 	bool isRenameFocus = false;
 
 	// Panel Data
 	static const int menubarHeight = 19;
 	static const int toolbarHeight = 46;
-	static const int tileHeight = 136;
 	static const int hierarchyWidth = 180;
 
 	// Icons
@@ -65,4 +67,11 @@ private:
 	unsigned int saveAllIcon = 0;
 	unsigned int importIcon = 0;
 	unsigned int filterIcon = 0;
+
+	// --- (used for right click options in DrawTileData)
+	struct ComboData {
+		int dir = -1;
+		int firstIndex = -1;
+		int secondIndex = -1;
+	} comboData;
 };
