@@ -128,6 +128,10 @@ bool MainScene::Update(float dt)
         // Update Scenes
         sceneMap->Update(dt);
     }
+    else
+    {
+        sceneTiles->Update(dt);
+    }
 
     return true;
 }
@@ -283,6 +287,9 @@ void MainScene::OnWindowResize(EventWindowResize* e)
 
 void MainScene::OnZoom(EventCameraZoom* e)
 {
+    if (!isSceneMap)
+        return;
+
     sceneMap->OnZoom(e->zoom);
 }
 
@@ -483,7 +490,7 @@ void MainScene::OnChangeScene(EventChangeScene* e)
 
 void MainScene::OnSaveTileset(EventSaveTileset* e) //***
 {
-    sceneMap->SetState(SceneMap::State::STOP);
+    sceneMap->OnStop();
 
     // Save the preset cells
     int numCells = width * height;

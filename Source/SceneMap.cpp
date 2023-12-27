@@ -86,6 +86,10 @@ bool SceneMap::Update(float dt)
 	{
 		buttonGrid->UnSelectAll();
 	}
+
+	// --- Shortcuts
+	Shortcuts();
+
 	return true;
 }
 
@@ -198,6 +202,12 @@ void SceneMap::Shortcuts()
 	{
 		App->event->Publish(new EventStop());
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && // Open TileManager (Ctrl+Tab)
+		(App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
+	{
+		App->event->Publish(new EventChangeScene("TileManager"));
+	}
 }
 
 void SceneMap::DrawSpaced()
@@ -308,7 +318,12 @@ void SceneMap::DrawMenuBar()
 void SceneMap::DrawPanel(const MapGenerator* map)
 {
 	static const int sectionSpacing = 5;
-	static const ImGuiWindowFlags flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse;
+	static const ImGuiWindowFlags flags = 
+		ImGuiWindowFlags_NoNav |
+		ImGuiWindowFlags_NoMove | 
+		ImGuiWindowFlags_NoResize | 
+		ImGuiWindowFlags_AlwaysAutoResize | 
+		ImGuiWindowFlags_NoCollapse;
 
 	ImGui::SetNextWindowSize(ImVec2(panelWidth, panelHeight), ImGuiCond_Always);
 	ImGui::SetNextWindowPos(ImVec2(panelX, panelY), ImGuiCond_Always);
