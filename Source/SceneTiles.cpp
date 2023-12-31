@@ -232,7 +232,9 @@ void SceneTiles::DrawHierarchy()
 			if (ImGui::MenuItem("Delete"))
 			{
 				App->event->Publish(new EventRemoveTile(currentTile));
-				tileData.erase(currentTile); //***
+				tileData.erase(currentTile);
+
+				currentTile = 0;
 				isChanges = true;
 			}
 			ImGui::EndPopup();
@@ -294,6 +296,9 @@ void SceneTiles::DrawTileData(const Tileset* tileset, const float panelWidth)
 	static bool leftOpen = true;
 	static bool rightOpen = true;
 	static bool bottomOpen = true;
+
+	if (tileData.empty())
+		return;
 
 	const Tile* tile = tileset->GetTile(currentTile);
 	TileData data = tileData[currentTile];
