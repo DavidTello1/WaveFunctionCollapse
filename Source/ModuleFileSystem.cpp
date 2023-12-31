@@ -105,7 +105,6 @@ unsigned int ModuleFileSystem::Load(const char* filepath, char** buffer) const
 
 // Saves a whole buffer to disk, returns size of data saved or 0 if error has occurred
 // Data from buffer with specified size is saved to filepath
-// Set append to true if you want to append data or set it to false if you want to overwrite file
 unsigned int ModuleFileSystem::Save(const char* filepath, const void* buffer, unsigned int size, bool append) const
 {
 	bool overwrite = PHYSFS_exists(filepath) != 0;
@@ -254,13 +253,15 @@ bool ModuleFileSystem::IsFolder(const char* filepath) const
 }
 
 // 
-void ModuleFileSystem::NormalizePath(std::string& filepath) const
+std::string ModuleFileSystem::NormalizePath(const char* filepath) const
 {
-	for (std::string::iterator it = filepath.begin(); it != filepath.end(); ++it)
+	std::string path = filepath;
+	for (std::string::iterator it = path.begin(); it != path.end(); ++it)
 	{
 		if (*it == '\\')
 			*it = '/';
 	}
+	return path;
 }
 
 // Get the file name from path (baker_house.fbx)

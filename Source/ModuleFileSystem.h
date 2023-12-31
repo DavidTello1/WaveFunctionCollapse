@@ -26,7 +26,7 @@ public:
 	// Utility functions
 	bool Exists(const char* filepath) const;
 	bool IsFolder(const char* filepath) const;
-	void NormalizePath(std::string& filepath) const;
+	std::string NormalizePath(const char* filepath) const;
 
 	// Getters
 	std::string GetFileName(const char* filepath, bool extension = true) const;
