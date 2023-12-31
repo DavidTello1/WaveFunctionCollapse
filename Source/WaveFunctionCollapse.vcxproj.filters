@@ -53,6 +53,15 @@
     <Filter Include="Source\MapGenerator\DataStructures">
       <UniqueIdentifier>{62a293c5-7024-4b31-a429-45ab92908ff4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\External Libraries\Json">
+      <UniqueIdentifier>{9feefc95-fff7-4801-ad40-0d1fc0101f3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scenes\SubScenes">
+      <UniqueIdentifier>{7c76dc6e-cc69-4f1c-a4f4-80a8349649b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\External Libraries\TinyFileDialog">
+      <UniqueIdentifier>{ec4bb4b3-379d-4541-b24a-60e0dbe257e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -346,9 +355,6 @@
     <ClInclude Include="Scene.h">
       <Filter>Source\Engine\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="SceneMapGenerator.h">
-      <Filter>Source\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Source\Engine\Tools\Entities</Filter>
     </ClInclude>
@@ -409,9 +415,6 @@
     <ClInclude Include="UI_Button.h">
       <Filter>Source\Engine\Tools\Entities\UI</Filter>
     </ClInclude>
-    <ClInclude Include="ButtonGrid.h">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
-    </ClInclude>
     <ClInclude Include="UI_Element.h">
       <Filter>Source\Engine\Tools\Entities\UI</Filter>
     </ClInclude>
@@ -430,8 +433,38 @@
     <ClInclude Include="RandomNumber.h">
       <Filter>Source\Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="SceneTileManager.h">
+    <ClInclude Include="json\json.hpp">
+      <Filter>Source\Engine\External Libraries\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFileSystem.h">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source\MapGenerator\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_ButtonGroup.h">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Tileset.h">
+      <Filter>Source\MapGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEvents.h">
+      <Filter>Source\Scenes\SubScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMap.h">
+      <Filter>Source\Scenes\SubScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTiles.h">
+      <Filter>Source\Scenes\SubScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
       <Filter>Source\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDialog.h">
+      <Filter>Source\Engine\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyfiledialogs\tinyfiledialogs.h">
+      <Filter>Source\Engine\External Libraries\TinyFileDialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -468,9 +501,6 @@
     <ClCompile Include="ModuleGUI.cpp">
       <Filter>Source\Engine\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="SceneMapGenerator.cpp">
-      <Filter>Source\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source\Engine\Tools\Entities</Filter>
     </ClCompile>
@@ -501,9 +531,6 @@
     <ClCompile Include="UI_Button.cpp">
       <Filter>Source\Engine\Tools\Entities\UI</Filter>
     </ClCompile>
-    <ClCompile Include="ButtonGrid.cpp">
-      <Filter>Source\Engine\Tools\Entities\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI_Element.cpp">
       <Filter>Source\Engine\Tools\Entities\UI</Filter>
     </ClCompile>
@@ -513,8 +540,29 @@
     <ClCompile Include="PerfTimer.cpp">
       <Filter>Source\Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="SceneTileManager.cpp">
+    <ClCompile Include="ModuleFileSystem.cpp">
+      <Filter>Source\Engine\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source\MapGenerator\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_ButtonGroup.cpp">
+      <Filter>Source\Engine\Tools\Entities\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Tileset.cpp">
+      <Filter>Source\MapGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneMap.cpp">
+      <Filter>Source\Scenes\SubScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTiles.cpp">
+      <Filter>Source\Scenes\SubScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
       <Filter>Source\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyfiledialogs\tinyfiledialogs.c">
+      <Filter>Source\Engine\External Libraries\TinyFileDialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
