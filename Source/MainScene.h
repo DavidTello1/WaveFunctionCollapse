@@ -53,6 +53,8 @@ public:
 	bool DrawUI() override;
 
 private:
+	void OpenFileDialog(const char* title, const char* defaultFolder, const int numFilters, const char** filters, const char* filterDesc, bool isMultiSelect);
+	void ImportFile(const char* filepath);
 	void ImportTile(const char* texturePath);
 	void ImportTileset(json& file);
 	void ExportTileset(json& file);

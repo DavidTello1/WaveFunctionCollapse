@@ -30,6 +30,7 @@ public:
 	Tile* GetTile(unsigned int index) const { return tiles[index]; }
 	Tile* GetTileByID(int tileID) const;
 	const DynArray<Tile*>& GetAllTiles() const { return tiles; }
+	const List<unsigned int>& GetPresetCells() const { return presetCells; }
 
 	// --- Setters
 	void SetWidth(int width) { this->width = width; Resize(); }

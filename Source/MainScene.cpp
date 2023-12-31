@@ -20,6 +20,8 @@
 #include "Utils.h"
 #include "Color.h"
 
+#include "tinyfiledialogs/tinyfiledialogs.h"
+
 #include "mmgr/mmgr.h"
 
 MainScene::MainScene() : Scene("MainScene")
@@ -88,32 +90,32 @@ bool MainScene::Start()
     // Set Scene Camera (created in sceneMap->Init())
     this->camera = sceneMap->GetCamera();
 
-    //***
-    // -----------------------------------------
-    Tile empty       = Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,       "1001111", "1010111", "1101011", "1110011");
-    Tile topLeft     = Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,     "1000000", "1000000", "0010110", "0001101");
-    Tile topRight    = Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,    "1000000", "0101010", "1000000", "0001101");
-    Tile bottomLeft  = Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,  "0110001", "1000000", "0010110", "1000000");
-    Tile bottomRight = Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
-    Tile horizontal  = Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,  "1000000", "1101010", "1010110", "1000000");
-    Tile vertical    = Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,    "1110001", "1000000", "1000000", "1001101");
+    ////***
+    //// -----------------------------------------
+    //Tile empty       = Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,       "1001111", "1010111", "1101011", "1110011");
+    //Tile topLeft     = Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,     "1000000", "1000000", "0010110", "0001101");
+    //Tile topRight    = Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,    "1000000", "0101010", "1000000", "0001101");
+    //Tile bottomLeft  = Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,  "0110001", "1000000", "0010110", "1000000");
+    //Tile bottomRight = Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
+    //Tile horizontal  = Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,  "1000000", "1101010", "1010110", "1000000");
+    //Tile vertical    = Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,    "1110001", "1000000", "1000000", "1001101");
 
-    tileset->AddTile(empty);
-    tileset->AddTile(topLeft);
-    tileset->AddTile(topRight);
-    tileset->AddTile(bottomLeft);
-    tileset->AddTile(bottomRight);
-    tileset->AddTile(horizontal);
-    tileset->AddTile(vertical);
+    //tileset->AddTile(empty);
+    //tileset->AddTile(topLeft);
+    //tileset->AddTile(topRight);
+    //tileset->AddTile(bottomLeft);
+    //tileset->AddTile(bottomRight);
+    //tileset->AddTile(horizontal);
+    //tileset->AddTile(vertical);
 
-    sceneTiles->ImportTile(0, "Empty", "Assets/Textures/empty.png");
-    sceneTiles->ImportTile(1, "TopLeft", "Assets/Textures/topLeft.png");
-    sceneTiles->ImportTile(2, "TopRight", "Assets/Textures/topRight.png");
-    sceneTiles->ImportTile(3, "BottomLeft", "Assets/Textures/bottomLeft.png");
-    sceneTiles->ImportTile(4, "BottomRight", "Assets/Textures/bottomRight.png");
-    sceneTiles->ImportTile(5, "Horizontal", "Assets/Textures/horizontal.png");
-    sceneTiles->ImportTile(6, "Vertical", "Assets/Textures/vertical.png");
-    //----------------------------------------
+    //sceneTiles->ImportTile(0, "Empty", "Assets/Textures/empty.png");
+    //sceneTiles->ImportTile(1, "TopLeft", "Assets/Textures/topLeft.png");
+    //sceneTiles->ImportTile(2, "TopRight", "Assets/Textures/topRight.png");
+    //sceneTiles->ImportTile(3, "BottomLeft", "Assets/Textures/bottomLeft.png");
+    //sceneTiles->ImportTile(4, "BottomRight", "Assets/Textures/bottomRight.png");
+    //sceneTiles->ImportTile(5, "Horizontal", "Assets/Textures/horizontal.png");
+    //sceneTiles->ImportTile(6, "Vertical", "Assets/Textures/vertical.png");
+    ////----------------------------------------
 
     return true;
 }
@@ -168,7 +170,53 @@ bool MainScene::DrawUI()
     return true;
 }
 
+void MainScene::OpenFileDialog(const char* title, const char* defaultFolder, const int numFilters, const char** filters, const char* filterDesc, bool isMultiSelect)
+{
+    String files = tinyfd_openFileDialog(title, defaultFolder, numFilters, filters, filterDesc, isMultiSelect);
+
+    if (files == "") // Cancel pressed
+        return;
+
+    int prevIndex = 0;
+    int index = files.find("|");
+
+    // Multiple files
+    while (index != -1)
+    {
+        String path = files.substr(prevIndex, index - prevIndex);
+        ImportFile(path.c_str());
+
+        prevIndex = index + 1;
+        index = files.find("|", prevIndex);
+    }
+
+    // Single/Last file
+    String path = files.substr(prevIndex, files.length());
+    ImportFile(path.c_str());
+}
+
 // -------------------------------
+void MainScene::ImportFile(const char* filepath)
+{
+    String path = App->filesystem->NormalizePath(filepath).c_str();
+    String extension = App->filesystem->GetExtension(path.c_str()).c_str();
+
+    // Map or Tileset
+    if (extension == "json")
+    {
+        json file = App->resources->LoadJson(path.c_str());
+        ImportMap(file);
+        return;
+    }
+    
+    // Tile
+    if (extension == "jpg" || extension == "png" || extension == "bmp" || extension == "tif")
+    {
+        ImportTile(path.c_str());
+        return;
+    }
+}
+
 void MainScene::ImportTile(const char* path)
 {
     int tileID = App->GenerateID();
@@ -187,16 +235,17 @@ void MainScene::ImportTileset(json& file)
         return;
     }
 
-    for (json::iterator it = file["tileset"].begin(); it != file["tileset"].end(); ++it)
+    int numTiles = file["tileset"]["numTiles"];
+    for (int i = 0; i < numTiles; ++i)
     {
         // Read Tile
-        std::string name        = file["tileset"][it.key()]["name"];
-        int id                  = file["tileset"][it.key()]["ID"];
-        std::string texturePath = file["tileset"][it.key()]["texturePath"];
-        std::string topMask     = file["tileset"][it.key()]["topMask"];
-        std::string leftMask    = file["tileset"][it.key()]["leftMask"];
-        std::string rightMask   = file["tileset"][it.key()]["rightMask"];
-        std::string bottomMask  = file["tileset"][it.key()]["bottomMask"];
+        std::string name        = file["tileset"][std::to_string(i)]["name"];
+        int id                  = file["tileset"][std::to_string(i)]["ID"];
+        std::string texturePath = file["tileset"][std::to_string(i)]["texturePath"];
+        std::string topMask     = file["tileset"][std::to_string(i)]["mask_top"];
+        std::string leftMask    = file["tileset"][std::to_string(i)]["mask_left"];
+        std::string rightMask   = file["tileset"][std::to_string(i)]["mask_right"];
+        std::string bottomMask  = file["tileset"][std::to_string(i)]["mask_bottom"];
 
         // Create Tile
         unsigned int texture = App->resources->LoadTexture(texturePath.c_str())->index;
@@ -209,18 +258,19 @@ void MainScene::ImportTileset(json& file)
 
 void MainScene::ExportTileset(json& file)
 {
+    file["tileset"]["numTiles"] = tileset->GetSize();
     for (int i = 0; i < tileset->GetSize(); ++i)
     {
         const Tile* tile = tileset->GetTile(i);
         const TileData data = sceneTiles->GetTileData(i);
 
-        file["tileset"][data.name.c_str()]["name"]        = data.name.c_str();
-        file["tileset"][data.name.c_str()]["ID"]          = tile->GetID();
-        file["tileset"][data.name.c_str()]["texturePath"] = data.texturePath.c_str();
-        file["tileset"][data.name.c_str()]["topMask"]     = Utils::MaskToString(tile->GetMasks()[0]).c_str();
-        file["tileset"][data.name.c_str()]["leftMask"]    = Utils::MaskToString(tile->GetMasks()[1]).c_str();
-        file["tileset"][data.name.c_str()]["rightMask"]   = Utils::MaskToString(tile->GetMasks()[2]).c_str();
-        file["tileset"][data.name.c_str()]["bottomMask"]  = Utils::MaskToString(tile->GetMasks()[3]).c_str();
+        file["tileset"][std::to_string(i)]["ID"]          = tile->GetID();
+        file["tileset"][std::to_string(i)]["name"]        = data.name.c_str();
+        file["tileset"][std::to_string(i)]["texturePath"] = data.texturePath.c_str();
+        file["tileset"][std::to_string(i)]["mask_top"]    = Utils::MaskToString(tile->GetMasks()[0]).c_str();
+        file["tileset"][std::to_string(i)]["mask_left"]   = Utils::MaskToString(tile->GetMasks()[1]).c_str();
+        file["tileset"][std::to_string(i)]["mask_right"]  = Utils::MaskToString(tile->GetMasks()[2]).c_str();
+        file["tileset"][std::to_string(i)]["mask_bottom"] = Utils::MaskToString(tile->GetMasks()[3]).c_str();
     }
 }
 
@@ -228,6 +278,7 @@ void MainScene::ImportMap(json& file)
 {
     // --- Import Tileset
     ImportTileset(file);
+    mapGenerator->SetTileset(tileset->GetAllTiles());
 
     // --- Import Map
     if (file.find("map") == file.end())
@@ -245,10 +296,11 @@ void MainScene::ImportMap(json& file)
     mapGenerator->SetCellSize(cellSize);
 
     // Preset Cells
-    for (json::iterator it = file["cells"].begin(); it != file["cells"].end(); ++it)
+    int numPreset = file["map"]["numPreset"];
+    for (int i = 0; i < numPreset; ++i)
     {
-        json tile = file["map"]["cells"][it.key()]["tileID"];
-        json index = file["map"]["cells"][it.key()]["index"];
+        int tile  = file["map"]["cells"][std::to_string(i)]["tileID"];
+        int index = file["map"]["cells"][std::to_string(i)]["index"];
 
         mapGenerator->PresetCell(index, tile);
     }
@@ -266,15 +318,19 @@ void MainScene::ExportMap(json& file)
     file["map"]["data"]["cellSize"] = cellSize;
 
     // Preset Cells
-    int numCells = width * height;
-    for (int i = 0; i < numCells; ++i)
+    List<unsigned int> presetCells = mapGenerator->GetPresetCells();
+    int numPreset = mapGenerator->GetPresetCells().size();
+
+    file["map"]["numPreset"] = numPreset;
+    for (int i = 0; i < numPreset; ++i)
     {
-        Cell* cell = mapGenerator->GetCell(i);
+        int index = presetCells.at(i);
+        Cell* cell = mapGenerator->GetCell(index);
         if (!cell->isPreset)
             continue;
 
-        file["cells"][i]["tileID"] = cell->tileID;
-        file["cells"][i]["index"] = cell->index;
+        file["map"]["cells"][std::to_string(i)]["tileID"] = cell->tileID;
+        file["map"]["cells"][std::to_string(i)]["index"] = cell->index;
     }
 }
 
@@ -295,105 +351,66 @@ void MainScene::OnZoom(EventCameraZoom* e)
 
 void MainScene::OnImportAny(EventImportAny* e)
 {
-    wchar_t  filepath[MAX_PATH];
-    filepath[0] = 0;
-    COMDLG_FILTERSPEC filters[2] = {
-        {L"Files", L"*.json;*.jpg;*.png;*.bmp;*.tif"},
-        {L"All Files", L"*.*"}
-    };
+    const char* filters[5] = {"*.json", "*.jpg", "*.png", "*.bmp", "*.tif"};
+    const char* filterDesc = "Files (*.json, *.jpg, *.png, *.bmp, *.tif)";
 
-    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
-    if (path == "")
-        return;
-    App->filesystem->NormalizePath(path);
-
-    std::string extension = App->filesystem->GetExtension(path.c_str());
-    if (extension == "json")
-    {
-        json file = App->resources->LoadJson(path.c_str());
-        ImportMap(file);
-    }
-    else if (extension == "jpg" || extension == "png" || extension == "bmp" || extension == "tif")
-    {
-        ImportTile(path.c_str());
-    }
+    OpenFileDialog("Import File", FOLDER_ASSETS, 5, filters, filterDesc, true);
 }
 
 void MainScene::OnImportTile(EventImportTile* e)
 {
-    wchar_t  filepath[MAX_PATH];
-    filepath[0] = 0;
-    COMDLG_FILTERSPEC filters[2] = {
-        {L"Image Files", L"*.jpg;*.png;*.bmp;*.tif"},
-        {L"All Files", L"*.*"}
-    };
+    const char* filters[4] = { "*.jpg", "*.png", "*.bmp", "*.tif" };
+    const char* filterDesc = "Image Files (*.jpg, *.png, *.bmp, *.tif)";
 
-    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
-    if (path == "")
-        return;
-    App->filesystem->NormalizePath(path);
-
-    ImportTile(path.c_str());
+    OpenFileDialog("Import Tile", FOLDER_ASSETS, 4, filters, filterDesc, true);
 }
 
 void MainScene::OnImportTileset(EventImportTileset* e)
 {
-    wchar_t  filepath[MAX_PATH];
-    filepath[0] = 0;
-    COMDLG_FILTERSPEC filters[2] = {
-        {L"Json Files", L"*.json"},
-        {L"All Files", L"*.*"}
-    };
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json Files (*.json)";
 
-    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
-    if (path == "")
-        return;
-    App->filesystem->NormalizePath(path);
-
-    // ---
-    json file = App->resources->LoadJson(path.c_str());
-    ImportTileset(file);
+    OpenFileDialog("Import Tileset", FOLDER_ASSETS, 1, filters, filterDesc, false);
 }
 
 void MainScene::OnImportMap(EventImportMap* e)
 {
-    wchar_t  filepath[MAX_PATH];
-    filepath[0] = 0;
-    COMDLG_FILTERSPEC filters[2] = {
-        {L"Json Files", L"*.json"},
-        {L"All Files",L"*.*"}
-    };
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json Files (*.json)";
 
-    std::string path = FileDialog::OpenFileDialog(filepath, 2, filters);
-    if (path == "")
-        return;
-    App->filesystem->NormalizePath(path);
-
-    // ---
-    json file = App->resources->LoadJson(path.c_str());
-    ImportMap(file);
+    OpenFileDialog("Import Map", FOLDER_ASSETS, 1, filters, filterDesc, false);
 }
 
 void MainScene::OnExportTileset(EventExportTileset* e)
 {
-    ////FileDialog::SaveFileDialog();
-    //String path = "";
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json File (*.json)";
 
-    //json file;
-    //ExportTileset(file);
+    String path = tinyfd_saveFileDialog("Save Tileset", FOLDER_ASSETS, 1, filters, filterDesc);
 
-    //App->resources->SaveJson(path.c_str(), file);
+    if (path == "") // Cancel pressed
+        return;
+
+    json file;
+    ExportTileset(file);
+
+    App->resources->SaveJson(path.c_str(), file);
 }
 
 void MainScene::OnExportMap(EventExportMap* e)
 {
-    ////FileDialog::SaveFileDialog();
-    //String path = "";
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json File (*.json)";
 
-    //json file;
-    //ExportMap(file);
+    String path = tinyfd_saveFileDialog("Save Map", FOLDER_ASSETS, 1, filters, filterDesc);
 
-    //App->resources->SaveJson(path.c_str(), file);
+    if (path == "") // Cancel pressed
+        return;
+
+    json file;
+    ExportMap(file);
+
+    App->resources->SaveJson(path.c_str(), file);
 }
 
 void MainScene::OnPlay(EventPlay* e)
