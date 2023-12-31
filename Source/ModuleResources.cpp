@@ -8,6 +8,7 @@
 
 #include <windows.h>
 #include <fstream>
+#include <iomanip>
 
 #include "mmgr/mmgr.h"
 
@@ -285,18 +286,17 @@ Texture* ModuleResources::LoadTexture(const char* filepath)
 
 void ModuleResources::SaveJson(const char* filepath, json& data)
 {
-    if (filepath == nullptr)
+    std::ofstream file;
+    file.open(filepath);
+
+    if (!file.is_open())
     {
         LOG("Error saving json file %s", filepath);
         return;
     }
 
-    std::string file = data.dump(4); // serialize json
-
-    char* buffer = (char*)file.data();
-    uint size = file.length();
-
-    App->filesystem->Save(filepath, buffer, size);
+    file << std::setw(4) << data << std::endl;
+    file.close();
 }
 
 json ModuleResources::LoadJson(const char* filepath)
