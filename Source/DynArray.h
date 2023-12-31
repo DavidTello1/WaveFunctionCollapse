@@ -162,15 +162,12 @@ public:
 		for (unsigned int i = 0; i < numElements; ++i)
 		{
 			if (i == index)
-			{
-				data[i].~T();
 				continue;
-			}
 
 			tmp.push_back(data[i]);
 		}
 
-		(*this).swap(tmp);
+		(*this) = tmp;
 	}
 
 	// Erase All Elements
@@ -195,11 +192,11 @@ public:
 	}
 
 	// Swap
-	void swap(DynArray<T>& other) //*** std::move without rvalue
+	void swap(DynArray<T>& other)
 	{
-		DynArray<T> tmp = std::move(*this);
-		*this = std::move(other);
-		other = std::move(tmp);
+		DynArray<T> tmp = (*this);
+		*this = other;
+		other = tmp;
 	}
 	
 	// Fill
