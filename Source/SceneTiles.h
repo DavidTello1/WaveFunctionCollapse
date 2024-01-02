@@ -27,6 +27,7 @@ public:
 	// ---
 	const TileData& GetTileData(int index) const { return tileData[index]; }
 	void ImportTile(unsigned int tileID, const char* name, const char* texturePath);
+	void ClearTileData();
 
 private:
 	// --- Draw

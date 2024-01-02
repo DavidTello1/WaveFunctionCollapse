@@ -9,9 +9,7 @@ Tileset::Tileset()
 
 Tileset::~Tileset()
 {
-	for (unsigned int i = 0; i < tiles.size(); ++i)
-		delete tiles[i];
-	tiles.clear();
+	Clear();
 }
 
 void Tileset::AddTile(int tileID, unsigned int texture)
@@ -55,6 +53,13 @@ void Tileset::RemoveTile(int index)
 			tiles[i]->SetMask(dir, mask);
 		}
 	}
+}
+
+void Tileset::Clear()
+{
+	for (unsigned int i = 0; i < tiles.size(); ++i)
+		delete tiles[i];
+	tiles.clear();
 }
 
 void Tileset::SetTile(int index, const Tile& tile)

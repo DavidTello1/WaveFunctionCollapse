@@ -170,6 +170,7 @@ bool MainScene::DrawUI()
     return true;
 }
 
+// -------------------------------
 void MainScene::OpenFileDialog(const char* title, const char* defaultFolder, const int numFilters, const char** filters, const char* filterDesc, bool isMultiSelect)
 {
     String files = tinyfd_openFileDialog(title, defaultFolder, numFilters, filters, filterDesc, isMultiSelect);
@@ -195,7 +196,6 @@ void MainScene::OpenFileDialog(const char* title, const char* defaultFolder, con
     ImportFile(path.c_str());
 }
 
-// -------------------------------
 void MainScene::ImportFile(const char* filepath)
 {
     String path = App->filesystem->NormalizePath(filepath).c_str();
@@ -234,6 +234,10 @@ void MainScene::ImportTileset(json& file)
         LOG("Error importing tileset, not found in json file");
         return;
     }
+
+    // Clear tileset
+    tileset->Clear();
+    sceneTiles->ClearTileData();
 
     int numTiles = file["tileset"]["numTiles"];
     for (int i = 0; i < numTiles; ++i)

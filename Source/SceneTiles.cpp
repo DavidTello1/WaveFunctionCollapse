@@ -92,6 +92,11 @@ void SceneTiles::ImportTile(unsigned int tileID, const char* name, const char* t
 	currentTile = tileData.size() - 1;
 }
 
+void SceneTiles::ClearTileData()
+{
+	tileData.clear();
+}
+
 // -----------------------
 void SceneTiles::DrawMenuBar()
 {
