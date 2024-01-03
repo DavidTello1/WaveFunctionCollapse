@@ -55,7 +55,6 @@ private:
 	void DrawMap(const MapGenerator* map);
 
 	// --- Draw
-	void DrawMenuBar();
 	void DrawPanel(const MapGenerator* map);
 	void DrawSectionButtons();
 	void DrawSectionOptions();

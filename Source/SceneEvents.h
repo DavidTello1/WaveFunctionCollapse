@@ -5,14 +5,6 @@
 #include "List.h"
 
 // -------------------------------------
-struct EventImportAny : public Event {};
-struct EventImportTile : public Event {};
-struct EventImportTileset : public Event {};
-struct EventImportMap : public Event {};
-struct EventExportTileset : public Event {};
-struct EventExportMap : public Event {};
-
-// -------------------------------------
 struct EventPlay : public Event {};
 struct EventStep : public Event {};
 struct EventStop : public Event {};
@@ -41,12 +33,8 @@ struct EventMapResize : public Event {
 	int width, height;
 };
 
-struct EventChangeScene : public Event {
-	EventChangeScene(const char* scene) : scene(scene) {}
-	String scene;
-};
-
 // -------------------------------------
+struct EventImport : public Event {};
 struct EventSaveTileset : public Event {};
 
 struct EventRemoveTile : public Event {

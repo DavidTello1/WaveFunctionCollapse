@@ -28,10 +28,11 @@ public:
 	const TileData& GetTileData(int index) const { return tileData[index]; }
 	void ImportTile(unsigned int tileID, const char* name, const char* texturePath);
 	void ClearTileData();
+	bool HasChanges() const { return isChanges; }
+	void SetChanges(bool value) { isChanges = value; }
 
 private:
 	// --- Draw
-	void DrawMenuBar();
 	void DrawToolbar();
 	void DrawHierarchy();
 	void DrawMainPanel(const Tileset* tileset);

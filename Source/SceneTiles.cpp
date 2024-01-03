@@ -64,7 +64,6 @@ bool SceneTiles::CleanUp()
 
 bool SceneTiles::DrawUI(const Tileset* tileset)
 {
-	DrawMenuBar();
 	DrawToolbar();
 	DrawHierarchy();
 	DrawMainPanel(tileset);
@@ -98,41 +97,6 @@ void SceneTiles::ClearTileData()
 }
 
 // -----------------------
-void SceneTiles::DrawMenuBar()
-{
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Import Tile"))
-			{
-				App->event->Publish(new EventImportTile());
-			}
-			if (ImGui::MenuItem("Import Tileset"))
-			{
-				App->event->Publish(new EventImportTileset());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Export Tileset"))
-			{
-				App->event->Publish(new EventExportTileset());
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::Text("|");
-		String label = "Map Generator";
-		if (isChanges)
-			label += '*';
-		if (ImGui::MenuItem(label.c_str()))
-		{
-			App->event->Publish(new EventChangeScene("MapGenerator"));
-		}
-	}
-	ImGui::EndMainMenuBar();
-}
-
 void SceneTiles::DrawToolbar()
 {
 	static const ImGuiWindowFlags flags = 
@@ -178,7 +142,7 @@ void SceneTiles::DrawToolbar()
 		ImGui::SameLine();
 		if (ImGui::ImageButton((ImTextureID)importIcon, ImVec2(buttonSize, buttonSize))) // Import
 		{
-			App->event->Publish(new EventImportAny());
+			App->event->Publish(new EventImport());
 		}
 		ImGui::SameLine();
 
@@ -617,11 +581,5 @@ void SceneTiles::Shortcuts()
 		currentTile--;
 		if (currentTile < 0)
 			currentTile = tileData.size() - 1;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && // Open MapGenerator (Ctrl+Tab)
-		(App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
-	{
-		App->event->Publish(new EventChangeScene("MapGenerator"));
 	}
 }

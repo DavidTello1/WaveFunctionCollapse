@@ -113,7 +113,6 @@ bool SceneMap::Draw(const MapGenerator* map)
 
 bool SceneMap::DrawUI(const MapGenerator* map)
 {
-	DrawMenuBar();
 	DrawPanel(map);
 
     return true;
@@ -202,12 +201,6 @@ void SceneMap::Shortcuts()
 	{
 		App->event->Publish(new EventStop());
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && // Open TileManager (Ctrl+Tab)
-		(App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
-	{
-		App->event->Publish(new EventChangeScene("TileManager"));
-	}
 }
 
 void SceneMap::DrawSpaced()
@@ -278,7 +271,7 @@ void SceneMap::DrawMap(const MapGenerator* map)
 
 		// Draw Color
 		Color color = (cell->isInvalid) ? red : gray;
-		if (!isDrawTextures && cell->isCollapsed && cell->tileID != 0)
+		if (!isDrawTextures && cell->isCollapsed && cell->tileID != 0) //*** cell->tileID != empty tiles
 			color = black;
 
 		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
@@ -287,34 +280,6 @@ void SceneMap::DrawMap(const MapGenerator* map)
 
 // -----------------------------
 // --- UI DRAW ---
-void SceneMap::DrawMenuBar()
-{
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Import Map"))
-			{
-				App->event->Publish(new EventImportMap());
-			}
-			ImGui::Separator();
-			if (ImGui::MenuItem("Export Map"))
-			{
-				App->event->Publish(new EventExportMap());
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::Text("|");
-		if (ImGui::MenuItem("Tile Manager"))
-		{
-			App->event->Publish(new EventChangeScene("TileManager"));
-		}
-	}
-	ImGui::EndMainMenuBar();
-}
-
 void SceneMap::DrawPanel(const MapGenerator* map)
 {
 	static const int sectionSpacing = 5;

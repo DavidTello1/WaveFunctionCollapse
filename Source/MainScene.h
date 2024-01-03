@@ -16,13 +16,6 @@ class SceneTiles;
 struct EventWindowResize;
 struct EventCameraZoom;
 
-struct EventImportAny;
-struct EventImportTile;
-struct EventImportTileset;
-struct EventImportMap;
-struct EventExportTileset;
-struct EventExportMap;
-
 struct EventPlay;
 struct EventStep;
 struct EventStop;
@@ -31,8 +24,8 @@ struct EventPresetCells;
 struct EventResetCells;
 struct EventResetAllCells;
 struct EventMapResize;
-struct EventChangeScene;
 
+struct EventImport;
 struct EventSaveTileset;
 struct EventRemoveTile;
 struct EventUpdateMask;
@@ -53,8 +46,17 @@ public:
 	bool DrawUI() override;
 
 private:
+	void DrawMenuBar();
+	void Shortcuts();
+
 	void OpenFileDialog(const char* title, const char* defaultFolder, const int numFilters, const char** filters, const char* filterDesc, bool isMultiSelect);
 	void ImportFile(const char* filepath);
+	void OnImportTile();
+	void OnImportTileset();
+	void OnImportMap();
+	void OnExportTileset();
+	void OnExportMap();
+
 	void ImportTile(const char* texturePath);
 	void ImportTileset(json& file);
 	void ExportTileset(json& file);
@@ -65,12 +67,7 @@ private:
 	void OnWindowResize(EventWindowResize* e);
 	void OnZoom(EventCameraZoom* e);
 
-	void OnImportAny(EventImportAny* e);
-	void OnImportTile(EventImportTile* e);
-	void OnImportTileset(EventImportTileset* e);
-	void OnImportMap(EventImportMap* e);
-	void OnExportTileset(EventExportTileset* e);
-	void OnExportMap(EventExportMap* e);
+	void OnImportAny(EventImport* e);
 
 	void OnPlay(EventPlay* e);
 	void OnStep(EventStep* e);
@@ -82,7 +79,6 @@ private:
 	void OnResetAllCells(EventResetAllCells* e);
 
 	void OnMapResize(EventMapResize* e);
-	void OnChangeScene(EventChangeScene* e);
 
 	void OnSaveTileset(EventSaveTileset* e);
 	void OnRemoveTile(EventRemoveTile* e);

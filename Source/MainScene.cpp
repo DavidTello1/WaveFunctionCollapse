@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "ModuleEvent.h"
 #include "ModuleWindow.h"
+#include "ModuleInput.h"
 #include "ModuleRenderer.h"
 #include "ModuleResources.h"
 #include "ModuleFileSystem.h"
@@ -16,10 +17,11 @@
 #include "SceneMap.h"
 #include "SceneTiles.h"
 
-#include "FileDialog.h"
 #include "Utils.h"
 #include "Color.h"
 
+#include "Imgui/imgui.h"
+#include "SDL/include/SDL_scancode.h"
 #include "tinyfiledialogs/tinyfiledialogs.h"
 
 #include "mmgr/mmgr.h"
@@ -55,13 +57,6 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnWindowResize);
     App->event->Subscribe(this, &MainScene::OnZoom);
 
-    App->event->Subscribe(this, &MainScene::OnImportAny);
-    App->event->Subscribe(this, &MainScene::OnImportTile);
-    App->event->Subscribe(this, &MainScene::OnImportTileset);
-    App->event->Subscribe(this, &MainScene::OnExportTileset);
-    App->event->Subscribe(this, &MainScene::OnImportMap);
-    App->event->Subscribe(this, &MainScene::OnExportMap);
-
     App->event->Subscribe(this, &MainScene::OnPlay);
     App->event->Subscribe(this, &MainScene::OnStep);
     App->event->Subscribe(this, &MainScene::OnStop);
@@ -72,8 +67,8 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnResetAllCells);
 
     App->event->Subscribe(this, &MainScene::OnMapResize);
-    App->event->Subscribe(this, &MainScene::OnChangeScene);
 
+    App->event->Subscribe(this, &MainScene::OnImportAny);
     App->event->Subscribe(this, &MainScene::OnSaveTileset);
     App->event->Subscribe(this, &MainScene::OnRemoveTile);
     App->event->Subscribe(this, &MainScene::OnUpdateMask);
@@ -122,6 +117,8 @@ bool MainScene::Start()
 
 bool MainScene::Update(float dt)
 {
+    Shortcuts();
+
     if (isSceneMap)
     {
         if (mapGenerator->IsFinished())
@@ -162,12 +159,103 @@ bool MainScene::Draw()
 
 bool MainScene::DrawUI()
 {
+    DrawMenuBar();
+
     if (isSceneMap)
         sceneMap->DrawUI(mapGenerator);
     else
         sceneTiles->DrawUI(tileset);
 
     return true;
+}
+
+// -------------------------------
+void MainScene::DrawMenuBar()
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("Save Tileset", "Ctrl+S"))
+            {
+                OnSaveTileset(nullptr);
+            }
+            if (ImGui::MenuItem("Change Scene", "Ctrl+Tab"))
+            {
+                isSceneMap = !isSceneMap;
+            }
+            if (ImGui::MenuItem("Open", "Ctrl+O"))
+            {
+                OnImportAny(nullptr);
+            }
+            ImGui::Separator();
+
+            if (ImGui::BeginMenu("Import"))
+            {
+                if (ImGui::MenuItem("Tile"))
+                {
+                    OnImportTile();
+                }
+                if (ImGui::MenuItem("Tileset"))
+                {
+                    OnImportTileset();
+                }
+                if (ImGui::MenuItem("Map"))
+                {
+                    OnImportMap();
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Export"))
+            {
+                if (ImGui::MenuItem("Tileset"))
+                {
+                    OnExportTileset();
+                }
+                if (ImGui::MenuItem("Map"))
+                {
+                    OnExportMap();
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Close", "Alt+F4"))
+            {
+                App->input->close = true;
+            }
+            ImGui::EndMenu();
+        }
+
+        ImGui::Text("|");
+        String label = (isSceneMap) ? "Tile Manager" : "Map Generator";
+        if (!isSceneMap && sceneTiles->HasChanges())
+            label += '*';
+        if (ImGui::MenuItem(label.c_str()))
+        {
+            isSceneMap = !isSceneMap;
+        }
+    }
+    ImGui::EndMainMenuBar();
+}
+
+void MainScene::Shortcuts()
+{
+    if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && // Change Scene (Ctrl+Tab)
+        (App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
+    {
+        isSceneMap = !isSceneMap;
+    }
+    if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN && // Import (Ctrl+O)
+        (App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
+    {
+        OnImportAny(nullptr);
+    }
+    if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && // Save Tileset (Ctrl+S)
+        (App->input->GetKey(SDL_SCANCODE_RCTRL) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT))
+    {
+        OnSaveTileset(nullptr);
+    }
 }
 
 // -------------------------------
@@ -215,6 +303,62 @@ void MainScene::ImportFile(const char* filepath)
         ImportTile(path.c_str());
         return;
     }
+}
+
+void MainScene::OnImportTile()
+{
+    const char* filters[4] = { "*.jpg", "*.png", "*.bmp", "*.tif" };
+    const char* filterDesc = "Image Files (*.jpg, *.png, *.bmp, *.tif)";
+
+    OpenFileDialog("Import Tile", FOLDER_ASSETS, 4, filters, filterDesc, true);
+}
+
+void MainScene::OnImportTileset()
+{
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json Files (*.json)";
+
+    OpenFileDialog("Import Tileset", FOLDER_ASSETS, 1, filters, filterDesc, false);
+}
+
+void MainScene::OnImportMap()
+{
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json Files (*.json)";
+
+    OpenFileDialog("Import Map", FOLDER_ASSETS, 1, filters, filterDesc, false);
+}
+
+void MainScene::OnExportTileset()
+{
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json File (*.json)";
+
+    String path = tinyfd_saveFileDialog("Save Tileset", FOLDER_ASSETS, 1, filters, filterDesc);
+
+    if (path == "") // Cancel pressed
+        return;
+
+    json file;
+    ExportTileset(file);
+
+    App->resources->SaveJson(path.c_str(), file);
+}
+
+void MainScene::OnExportMap()
+{
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json File (*.json)";
+
+    String path = tinyfd_saveFileDialog("Save Map", FOLDER_ASSETS, 1, filters, filterDesc);
+
+    if (path == "") // Cancel pressed
+        return;
+
+    json file;
+    ExportMap(file);
+
+    App->resources->SaveJson(path.c_str(), file);
 }
 
 void MainScene::ImportTile(const char* path)
@@ -353,68 +497,12 @@ void MainScene::OnZoom(EventCameraZoom* e)
     sceneMap->OnZoom(e->zoom);
 }
 
-void MainScene::OnImportAny(EventImportAny* e)
+void MainScene::OnImportAny(EventImport* e)
 {
     const char* filters[5] = {"*.json", "*.jpg", "*.png", "*.bmp", "*.tif"};
     const char* filterDesc = "Files (*.json, *.jpg, *.png, *.bmp, *.tif)";
 
     OpenFileDialog("Import File", FOLDER_ASSETS, 5, filters, filterDesc, true);
-}
-
-void MainScene::OnImportTile(EventImportTile* e)
-{
-    const char* filters[4] = { "*.jpg", "*.png", "*.bmp", "*.tif" };
-    const char* filterDesc = "Image Files (*.jpg, *.png, *.bmp, *.tif)";
-
-    OpenFileDialog("Import Tile", FOLDER_ASSETS, 4, filters, filterDesc, true);
-}
-
-void MainScene::OnImportTileset(EventImportTileset* e)
-{
-    const char* filters[1] = { "*.json" };
-    const char* filterDesc = "Json Files (*.json)";
-
-    OpenFileDialog("Import Tileset", FOLDER_ASSETS, 1, filters, filterDesc, false);
-}
-
-void MainScene::OnImportMap(EventImportMap* e)
-{
-    const char* filters[1] = { "*.json" };
-    const char* filterDesc = "Json Files (*.json)";
-
-    OpenFileDialog("Import Map", FOLDER_ASSETS, 1, filters, filterDesc, false);
-}
-
-void MainScene::OnExportTileset(EventExportTileset* e)
-{
-    const char* filters[1] = { "*.json" };
-    const char* filterDesc = "Json File (*.json)";
-
-    String path = tinyfd_saveFileDialog("Save Tileset", FOLDER_ASSETS, 1, filters, filterDesc);
-
-    if (path == "") // Cancel pressed
-        return;
-
-    json file;
-    ExportTileset(file);
-
-    App->resources->SaveJson(path.c_str(), file);
-}
-
-void MainScene::OnExportMap(EventExportMap* e)
-{
-    const char* filters[1] = { "*.json" };
-    const char* filterDesc = "Json File (*.json)";
-
-    String path = tinyfd_saveFileDialog("Save Map", FOLDER_ASSETS, 1, filters, filterDesc);
-
-    if (path == "") // Cancel pressed
-        return;
-
-    json file;
-    ExportMap(file);
-
-    App->resources->SaveJson(path.c_str(), file);
 }
 
 void MainScene::OnPlay(EventPlay* e)
@@ -497,21 +585,10 @@ void MainScene::OnMapResize(EventMapResize* e)
     sceneMap->OnMapResize(e->width, e->height);
 }
 
-void MainScene::OnChangeScene(EventChangeScene* e)
-{
-    if (e->scene == "MapGenerator")
-    {
-        isSceneMap = true;
-    }
-    else if (e->scene == "TileManager")
-    {
-        isSceneMap = false;
-    }
-}
-
-void MainScene::OnSaveTileset(EventSaveTileset* e) //***
+void MainScene::OnSaveTileset(EventSaveTileset* e)
 {
     sceneMap->OnStop();
+    sceneTiles->SetChanges(false);
 
     // Save the preset cells
     int numCells = width * height;
