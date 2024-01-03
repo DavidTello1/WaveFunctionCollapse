@@ -63,6 +63,9 @@ private:
 	void DrawSectionCellInspector(const MapGenerator* map);
 	void DrawCellInspector(const DynArray<Tile*>& tiles);
 
+	// --- UI elements
+	void DrawText(const char* label, const int maxSize);
+
 private:
 	// State
 	State state = State::STOP;
@@ -80,12 +83,11 @@ private:
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
 	int spacing = 0;
-	bool isDrawTextures = true;
 	bool isDrawSpaced = true;
 
 	// Panel Data
 	static const int menuBarHeight = 19;
-	static const int widthOpen = 220;
+	static const int widthOpen = 230;
 	static const int widthClosed = 20;
 	bool isPanelOpen = true;
 	int panelX = 0;

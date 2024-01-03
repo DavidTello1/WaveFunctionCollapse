@@ -44,7 +44,6 @@ bool SceneMap::Init(const MapGenerator* map)
 	widthRatio = 1.0f;
 	heightRatio = 1.0f;
 	spacing = defaultSpacing;
-	isDrawTextures = true;
 	isDrawSpaced = true;
 
 	// --- Entities
@@ -262,7 +261,7 @@ void SceneMap::DrawMap(const MapGenerator* map)
 		glm::vec2 size = { cellSize, cellSize };
 
 		// Draw Texture
-		if (isDrawTextures && !cell->isInvalid && (cell->isCollapsed || cell->isPreset))
+		if (!cell->isInvalid && (cell->isCollapsed || cell->isPreset))
 		{
 			Tile* tile = map->GetTileByID(cell->tileID);
 			App->renderer->DrawQuad(position, size, tile->GetTexture());
@@ -271,9 +270,6 @@ void SceneMap::DrawMap(const MapGenerator* map)
 
 		// Draw Color
 		Color color = (cell->isInvalid) ? red : gray;
-		if (!isDrawTextures && cell->isCollapsed && cell->tileID != 0) //*** cell->tileID != empty tiles
-			color = black;
-
 		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
 	}
 }
@@ -390,8 +386,6 @@ void SceneMap::DrawSectionOptions()
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
-	ImGui::Checkbox("Draw Textures", &isDrawTextures);
-
 	if (ImGui::Checkbox("Draw Spacing", &isDrawSpaced))
 	{
 		DrawSpaced();
@@ -466,6 +460,7 @@ void SceneMap::DrawSectionCellPresets(const MapGenerator* map)
 
 void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 {
+	static const int maxTextSize = 105;
 	static const ImVec4 yellow = { 1, 1, 0, 1 };
 
 	if (buttonGrid->GetSelected().size() == 0)
@@ -501,8 +496,8 @@ void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 	ImGui::TextColored(yellow, "%d", cell->index);
 	ImGui::TextColored(yellow, "%d, %d", cell->index % map->GetWidth(), cell->index / map->GetWidth());
 	ImGui::TextColored(yellow, (cell->isCollapsed) ? "true" : "false");
-	ImGui::TextColored(yellow, "%d", cell->tileID);
-	ImGui::TextColored(yellow, Utils::MaskToString(cell->mask).c_str());
+	DrawText(String("%d", cell->tileID).c_str(), maxTextSize);
+	DrawText(Utils::MaskToString(cell->mask).c_str(), maxTextSize);
 	ImGui::Columns(1);
 
 	// Inspector
@@ -570,4 +565,27 @@ void SceneMap::DrawCellInspector(const DynArray<Tile*>& tiles)
 		}
 	}
 	ImGui::EndChild();
+}
+
+void SceneMap::DrawText(const char* label, const int maxSize)
+{
+	static const int maxChars = 8;
+	static const ImVec4 yellow = { 1, 1, 0, 1 };
+
+	String text = label;
+
+	float size = ImGui::CalcTextSize(label).x;
+	if (size > maxSize)
+	{
+		text = text.substr(0, maxChars) + "...";
+	}
+
+	ImGui::TextColored(yellow, text.c_str());
+
+	if (size > maxSize && ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::Text(label);
+		ImGui::EndTooltip();
+	}
 }
