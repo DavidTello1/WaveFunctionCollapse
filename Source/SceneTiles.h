@@ -41,7 +41,8 @@ private:
 	void DrawCombinations(const Tileset* tileset, const float panelWidth);
 
 	//--- Utils
-	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation);
+	bool ToolbarIcon(unsigned int icon, const int buttonSize, const char* tooltip, bool selected = false);
+	bool NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation, bool rclick_hover = false);
 	bool HierarchyNode(const char* name, bool selected, bool rename, bool changes);
 	String CreateName();
 	bool ExistsName(const char* name);
@@ -69,6 +70,7 @@ private:
 	unsigned int saveAllIcon = 0;
 	unsigned int importIcon = 0;
 	unsigned int filterIcon = 0;
+	unsigned int comboIcon = 0;
 
 	// --- (used for right click options in DrawTileData)
 	struct ComboData {

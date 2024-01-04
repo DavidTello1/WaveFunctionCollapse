@@ -41,6 +41,7 @@ bool SceneTiles::Init()
 	saveAllIcon = App->resources->LoadTexture("Assets/Textures/Icons/saveAll.png")->index;
 	importIcon = App->resources->LoadTexture("Assets/Textures/Icons/import.png")->index;
 	filterIcon = App->resources->LoadTexture("Assets/Textures/Icons/filter.png")->index;
+	comboIcon = App->resources->LoadTexture("Assets/Textures/Icons/combo.png")->index;
 
 	// ---
 	comboData.dir = -1;
@@ -117,11 +118,8 @@ void SceneTiles::DrawToolbar()
 
 	if (ImGui::Begin("Toolbar", NULL, flags))
 	{
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4());
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5, 0.5f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 0.7f));
 
-		if (ImGui::ImageButton((ImTextureID)saveIcon, ImVec2(buttonSize, buttonSize))) // Save
+		if (ToolbarIcon(saveIcon, buttonSize, "Save Tileset")) // Save
 		{
 			if (isChanges)
 			{
@@ -132,33 +130,24 @@ void SceneTiles::DrawToolbar()
 				isChanges = false;
 			}
 		}
-		if (ImGui::IsItemHovered())
-		{
-			ImGui::BeginTooltip();
-			ImGui::Text("Save Tileset");
-			ImGui::EndTooltip();
-		}
-
 		ImGui::SameLine();
-		if (ImGui::ImageButton((ImTextureID)importIcon, ImVec2(buttonSize, buttonSize))) // Import
+
+		if (ToolbarIcon(importIcon, buttonSize, "Import File")) // Import
 		{
 			App->event->Publish(new EventImport());
 		}
 		ImGui::SameLine();
 
-		bool filter = isFilter;
-		if (filter)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5, 0.5, 0.5, 0.4f));
-
-		if (ImGui::ImageButton((ImTextureID)filterIcon, ImVec2(buttonSize, buttonSize))) // Filter
+		if (ToolbarIcon(filterIcon, buttonSize, "Filter Selected", isFilter)) // Filter
 		{
 			isFilter = !isFilter;
 		}
+		ImGui::SameLine();
 
-		if (filter)
-			ImGui::PopStyleColor();
-
-		ImGui::PopStyleColor(3);
+		if (ToolbarIcon(comboIcon, buttonSize, "Show Combinations", !isTileData)) // Combinations
+		{
+			isTileData = !isTileData;
+		}
 	}
 	ImGui::End();
 }
@@ -218,7 +207,6 @@ void SceneTiles::DrawMainPanel(const Tileset* tileset)
 		ImGuiWindowFlags_NoResize | 
 		ImGuiWindowFlags_NoMove | 
 		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoTitleBar |
 		ImGuiWindowFlags_NoNav;
 
 	static const int mainPanelX = hierarchyWidth;
@@ -231,23 +219,16 @@ void SceneTiles::DrawMainPanel(const Tileset* tileset)
 	ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0.0f);
 	ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.35f, 0.35f, 0.35f, 0.7f));
 
-	if (ImGui::Begin("Neighbours", NULL, flags))
+	String title = (isTileData) ? "Tile Data" : "Combinations";
+	if (ImGui::Begin(title.c_str(), NULL, flags))
 	{
-		if (ImGui::BeginTabBar("TabBar", ImGuiTabBarFlags_NoTooltip))
+		if (isTileData)
 		{
-			if (ImGui::BeginTabItem("Tile Data", NULL, (isTileData) ? ImGuiTabItemFlags_SetSelected : 0))
-			{
-				DrawTileData(tileset, mainPanelWidth);
-				isTileData = false;
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::BeginTabItem("Combinations", NULL))
-			{
-				DrawCombinations(tileset, mainPanelWidth);
-				ImGui::EndTabItem();
-			}
-			ImGui::EndTabBar();
+			DrawTileData(tileset, mainPanelWidth);
+		}
+		else
+		{
+			DrawCombinations(tileset, mainPanelWidth);
 		}
 	}
 	ImGui::End();
@@ -367,6 +348,7 @@ void SceneTiles::DrawMask(const char* name, bool* selected, const int dir, const
 
 void SceneTiles::DrawCombinations(const Tileset* tileset, float panelWidth)
 {
+	static bool isPopupOpen = false;
 	static const int textureSize = 40;
 	static const float itemSize = (textureSize + 8.0f) * 2.0f + 2.0f + 9.0f; // values from NeighbourCombo (padding & spacing)
 
@@ -388,7 +370,8 @@ void SceneTiles::DrawCombinations(const Tileset* tileset, float panelWidth)
 				const Tile* neighbour = tileset->GetTile(j);
 
 				String label = String("###%d%d", dir, i);
-				NeighbourCombo(label.c_str(), false, textureSize, tile->GetTexture(), neighbour->GetTexture(), dir);
+				bool hovered = (isPopupOpen && comboData.firstIndex == i && comboData.secondIndex == j);
+				NeighbourCombo(label.c_str(), false, textureSize, tile->GetTexture(), neighbour->GetTexture(), dir, hovered);
 
 				count++;
 				if (count < columns)
@@ -421,11 +404,45 @@ void SceneTiles::DrawCombinations(const Tileset* tileset, float panelWidth)
 			tileData[comboData.secondIndex].isChanged = true;
 		}
 		ImGui::EndPopup();
+		isPopupOpen = true;
 	}
+	else
+		isPopupOpen = false;
+}
+
+bool SceneTiles::ToolbarIcon(unsigned int icon, const int buttonSize, const char* tooltip, bool selected)
+{
+	bool ret = false;
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4());
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5, 0.5, 0.5, 0.5f));
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 0.7f));
+
+	if (selected)
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5, 0.5, 0.5, 0.4f));
+
+	if (ImGui::ImageButton((ImTextureID)icon, ImVec2(buttonSize, buttonSize)))
+		ret = true;
+
+	if (selected)
+		ImGui::PopStyleColor();
+
+	ImGui::PopStyleColor(3);
+
+	// Tooltip
+	ImGuiContext& g = *ImGui::GetCurrentContext();
+	if (ImGui::IsItemHovered() && g.HoveredIdTimer > 0.8f)
+	{
+		ImGui::BeginTooltip();
+		ImGui::Text(tooltip);
+		ImGui::EndTooltip();
+	}
+
+	return ret;
 }
 
 // -----------------------------
-bool SceneTiles::NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation)
+bool SceneTiles::NeighbourCombo(const char* name, bool selected, float texSize, unsigned int tex1, unsigned int tex2, unsigned int orientation, bool rclick_hover)
 {
 	static const int rounding = 3.0f;
 	static const int padding = 8.0f;
@@ -453,7 +470,7 @@ bool SceneTiles::NeighbourCombo(const char* name, bool selected, float texSize, 
 	}
 
 	ImU32 bgColor;
-	if (ImGui::IsItemHovered())
+	if (ImGui::IsItemHovered() || rclick_hover)
 		bgColor = selected ? selectedHoveredColor : idleHoveredColor;
 	else
 		bgColor = selected ? selectedColor : idleColor;
