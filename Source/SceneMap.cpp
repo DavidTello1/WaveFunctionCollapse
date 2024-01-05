@@ -46,6 +46,13 @@ bool SceneMap::Init(const MapGenerator* map)
 	spacing = defaultSpacing;
 	isDrawSpaced = true;
 
+	// --- Panel Data
+	isPanelOpen = true;
+	panelX = App->window->GetWidth() - widthOpen;
+	panelY = menuBarHeight;
+	panelWidth = widthOpen;
+	panelHeight = App->window->GetHeight() - panelY;
+
 	// --- Entities
 	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f);
 	controller = new CameraController(camera, 0.3f);
@@ -53,15 +60,8 @@ bool SceneMap::Init(const MapGenerator* map)
 	buttonGrid = new UI_ButtonGroup(0, 0, map->GetWidth(), map->GetHeight(), map->GetCellSize(), spacing, UI_ButtonGroup::Type::MULTIPLE_SELECTION);
 	UpdateButtonGrid();
 
-	Color transparent = { 0,0,0,0 };
+	Color transparent = { 1,0,0,0 };
 	bgButton = new UI_Button(0, panelY, panelX, App->window->GetHeight(), transparent, transparent, transparent, true);
-
-	// --- Panel Data
-	isPanelOpen = true;
-	panelX = App->window->GetWidth() - widthOpen;
-	panelY = menuBarHeight;
-	panelWidth = widthOpen;
-	panelHeight = App->window->GetHeight() - panelY;
 
 	// --- Icons
 	playIcon = App->resources->LoadTexture("Assets/Textures/Icons/play.png")->index;
@@ -127,6 +127,7 @@ void SceneMap::OnWindowResize(int width, int height)
 {
 	// Update entities
 	UpdateButtonGrid();
+	bgButton->SetSize(width - panelWidth, height - panelY);
 
 	// Udpate panel position
 	panelX = width - panelWidth;
