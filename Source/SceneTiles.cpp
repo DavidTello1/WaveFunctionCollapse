@@ -307,7 +307,8 @@ void SceneTiles::DrawMask(const char* name, bool* selected, const int dir, const
 	if (!*selected)
 		return;
 
-	int samelineCount = 0;
+	int count = 0;
+	int lastBit = mask.lastSetBit();
 	for (int i = 0; i < mask.size(); ++i)
 	{
 		bool isSet = mask.getBit(i);
@@ -330,18 +331,16 @@ void SceneTiles::DrawMask(const char* name, bool* selected, const int dir, const
 			tileData[i].isChanged = true;
 		}
 
-		if (samelineCount > 0)
-			samelineCount--;
-
-		if (columns > 0 && (i + 1) % columns != 0)
+		count++;
+		if (columns > 0 && count % columns != 0 && i < mask.size() - 1)
 		{
+			if (isFilter && i == lastBit)
+				continue;
+
 			ImGui::SameLine();
-			samelineCount++;
 		}
 	}
 
-	if (samelineCount > 0)
-		ImGui::NewLine();
 	ImGui::Separator();
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8);
 }
