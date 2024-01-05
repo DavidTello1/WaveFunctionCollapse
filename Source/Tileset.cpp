@@ -40,6 +40,7 @@ void Tileset::RemoveTile(int index)
 	if (index < 0 || index >= tiles.size())
 		return;
 
+	delete tiles[index];
 	tiles.erase(index);
 
 	// Update Masks

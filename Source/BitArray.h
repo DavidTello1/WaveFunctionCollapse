@@ -274,6 +274,19 @@ public:
 		return -1;
 	}
 
+	int lastSetBit() const
+	{
+		int last = -1;
+
+		for (unsigned int i = 0; i < numBits; ++i)
+		{
+			if (getBit(i) == true)
+				last = i;
+		}
+
+		return last;
+	}
+
 	void addBit()
 	{
 		BitArray tmp = (*this);
