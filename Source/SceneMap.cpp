@@ -127,7 +127,6 @@ void SceneMap::OnWindowResize(int width, int height)
 {
 	// Update entities
 	UpdateButtonGrid();
-	camera->UpdateProjectionMatrix(0.0f, width * camera->GetZoom(), height * camera->GetZoom(), 0.0f);
 
 	// Udpate panel position
 	panelX = width - panelWidth;
@@ -511,7 +510,7 @@ void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 			tiles.push_back(map->GetTile(i));
 	}
 
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5); //*** why only here?
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
 	DrawCellInspector(tiles);
 }
 

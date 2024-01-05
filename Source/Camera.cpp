@@ -2,6 +2,8 @@
 
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleEvent.h"
+#include "Event.h"
 
 #include "glm/include/glm/gtc/type_ptr.hpp"
 
@@ -13,12 +15,21 @@ Camera::Camera()
 
 	UpdateProjectionMatrix(0, (float)App->window->GetWidth() * zoom, (float)App->window->GetHeight() * zoom, 0);
 	UpdateViewMatrix();
+
+	App->event->Subscribe(this, &Camera::OnWindowResize);
 }
 
 Camera::Camera(glm::vec3 position, float rotation, float zoom) : position(position), rotation(rotation), zoom(zoom)
 {
 	UpdateProjectionMatrix(0, (float)App->window->GetWidth()* zoom, (float)App->window->GetHeight()* zoom, 0);
 	UpdateViewMatrix();
+
+	App->event->Subscribe(this, &Camera::OnWindowResize);
+}
+
+void Camera::OnWindowResize(EventWindowResize* e)
+{
+	UpdateProjectionMatrix(0.0f, e->width * zoom, e->height * zoom, 0.0f);
 }
 
 void Camera::UpdateViewMatrix()

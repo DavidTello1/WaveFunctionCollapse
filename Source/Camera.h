@@ -2,6 +2,8 @@
 
 #include "glm/include/glm/glm.hpp"
 
+struct EventWindowResize;
+
 class Camera
 {
 	friend class CameraController;
@@ -25,10 +27,12 @@ public:
 	const glm::mat4& GetProjectionMatrix() const { return ProjectionMatrix; }
 	const glm::mat4& GetViewProjMatrix() const { return ViewProjMatrix; }
 
-	void UpdateProjectionMatrix(float left, float right, float top, float bottom); //*** should be protected (event OnResize)
+	// --- Events
+	void OnWindowResize(EventWindowResize* e);
 
 protected:
 	void UpdateViewMatrix();
+	void UpdateProjectionMatrix(float left, float right, float top, float bottom);
 
 protected:
 	glm::vec3 position = glm::vec3(0.0f);
