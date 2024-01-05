@@ -368,7 +368,14 @@ void MainScene::ImportTileset(json& file)
         std::string bottomMask  = file["tileset"][std::to_string(i)]["mask_bottom"];
 
         // Create Tile
-        unsigned int texture = App->resources->LoadTexture(texturePath.c_str())->index;
+        Texture* tex = App->resources->LoadTexture(texturePath.c_str());
+        if (tex == nullptr)
+        {
+            LOG("Error loading texture, path not valid: %s", texturePath.c_str());
+            continue;
+        }
+
+        unsigned int texture = tex->index;
         Tile tile = Tile(id, texture, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
 
         tileset->AddTile(tile);
@@ -446,8 +453,6 @@ void MainScene::ExportMap(json& file)
     {
         int index = presetCells.at(i);
         Cell* cell = mapGenerator->GetCell(index);
-        if (!cell->isPreset)
-            continue;
 
         file["map"]["cells"][std::to_string(i)]["tileID"] = cell->tileID;
         file["map"]["cells"][std::to_string(i)]["index"] = cell->index;
