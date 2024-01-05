@@ -436,9 +436,6 @@
     <ClInclude Include="json\json.hpp">
       <Filter>Source\Engine\External Libraries\Json</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleFileSystem.h">
-      <Filter>Source\Engine\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Source\MapGenerator\DataStructures</Filter>
     </ClInclude>
@@ -459,9 +456,6 @@
     </ClInclude>
     <ClInclude Include="MainScene.h">
       <Filter>Source\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="FileDialog.h">
-      <Filter>Source\Engine\Tools</Filter>
     </ClInclude>
     <ClInclude Include="tinyfiledialogs\tinyfiledialogs.h">
       <Filter>Source\Engine\External Libraries\TinyFileDialog</Filter>
@@ -539,9 +533,6 @@
     </ClCompile>
     <ClCompile Include="PerfTimer.cpp">
       <Filter>Source\Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleFileSystem.cpp">
-      <Filter>Source\Engine\Modules</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source\MapGenerator\DataStructures</Filter>

@@ -7,7 +7,6 @@
 #include "ModuleInput.h"
 #include "ModuleRenderer.h"
 #include "ModuleResources.h"
-#include "ModuleFileSystem.h"
 
 #include "MapGenerator.h"
 #include "Tileset.h"
@@ -286,8 +285,8 @@ void MainScene::OpenFileDialog(const char* title, const char* defaultFolder, con
 
 void MainScene::ImportFile(const char* filepath)
 {
-    String path = App->filesystem->NormalizePath(filepath).c_str();
-    String extension = App->filesystem->GetExtension(path.c_str()).c_str();
+    String path = App->resources->NormalizePath(filepath).c_str();
+    String extension = App->resources->GetExtension(path.c_str()).c_str();
 
     // Map or Tileset
     if (extension == "json")
@@ -365,7 +364,7 @@ void MainScene::ImportTile(const char* path)
 {
     int tileID = App->GenerateID();
     unsigned int texture = App->resources->LoadTexture(path)->index;
-    std::string name = App->filesystem->GetFileName(path, false);
+    std::string name = App->resources->GetFileName(path, false);
 
     tileset->AddTile(tileID, texture);
     sceneTiles->ImportTile(tileID, name.c_str(), path);

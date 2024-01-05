@@ -133,7 +133,6 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BitArray.h" />
-    <ClInclude Include="FileDialog.h" />
     <ClInclude Include="json\json.hpp" />
     <ClInclude Include="tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="UI_ButtonGroup.h" />
@@ -157,7 +156,6 @@
     <ClInclude Include="List.h" />
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="ModuleEvent.h" />
-    <ClInclude Include="ModuleFileSystem.h" />
     <ClInclude Include="ModuleGUI.h" />
     <ClInclude Include="PCG\pcg_basic.h" />
     <ClInclude Include="RandomNumber.h" />
@@ -283,7 +281,6 @@
     <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="MapGenerator.cpp" />
     <ClCompile Include="mmgr\mmgr.cpp" />
-    <ClCompile Include="ModuleFileSystem.cpp" />
     <ClCompile Include="ModuleGUI.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleRenderer.cpp" />

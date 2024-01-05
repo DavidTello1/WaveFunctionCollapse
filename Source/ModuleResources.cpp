@@ -1,7 +1,6 @@
 #include "ModuleResources.h"
 
 #include "Application.h"
-#include "ModuleFileSystem.h"
 
 #include "stb/stb_image.h"
 #include "Glew/include/glew.h"
@@ -108,6 +107,38 @@ u64 ModuleResources::GetFileLastWriteTimestamp(const char* filepath)
     return 0;
 }
 
+std::string ModuleResources::NormalizePath(const char* filepath) const
+{
+    std::string path = filepath;
+    for (std::string::iterator it = path.begin(); it != path.end(); ++it)
+    {
+        if (*it == '\\')
+            *it = '/';
+    }
+    return path;
+}
+
+std::string ModuleResources::GetFileName(const char* filepath, bool extension) const
+{
+    std::string name = filepath;
+
+    name = name.substr(name.find_last_of('/') + 1);
+
+    if (extension == false)
+        name = name.substr(0, name.find_first_of('.'));
+
+    return name;
+}
+
+std::string ModuleResources::GetExtension(const char* filepath) const
+{
+    std::string name = filepath;
+    name = name.substr(name.find_first_of('.') + 1);
+
+    return name;
+}
+
+// --------------------------------------------
 // Programs
 GLuint ModuleResources::CreateShader(std::string source, const char* name)
 {

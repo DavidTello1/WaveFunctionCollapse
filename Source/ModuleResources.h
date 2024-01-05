@@ -65,6 +65,9 @@ public:
 
 	static std::string ReadTextFile(const char* filepath); // Reads a whole file and returns a string with its contents. Returned string is temporary.
 	static u64 GetFileLastWriteTimestamp(const char* filepath); // Retrieves a timestamp indicating the last time the file was modified. Useful for hot reloads.
+	std::string NormalizePath(const char* filepath) const;
+	std::string GetFileName(const char* filepath, bool extension = true) const;
+	std::string GetExtension(const char* filepath) const;
 
 	// --- Shaders
 	static GLuint CreateShader(std::string filepath, const char* name);
