@@ -506,6 +506,9 @@ void MainScene::OnImportAny(EventImport* e)
 
 void MainScene::OnPlay(EventPlay* e)
 {
+    if (mapGenerator->GetAllTiles().empty())
+        return;
+
     timer.Start();
 
     mapGenerator->GenerateMap();
@@ -517,6 +520,9 @@ void MainScene::OnPlay(EventPlay* e)
 
 void MainScene::OnStep(EventStep* e)
 {
+    if (mapGenerator->GetAllTiles().empty())
+        return;
+
     timer.Start();
 
     mapGenerator->Step();
