@@ -1,0 +1,68 @@
+{
+    "tileset": {
+        "0": {
+            "ID": 475996475,
+            "mask_bottom": "1110011",
+            "mask_left": "1010111",
+            "mask_right": "1101011",
+            "mask_top": "1001111",
+            "name": "empty",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/empty.png"
+        },
+        "1": {
+            "ID": -1375462423,
+            "mask_bottom": "0001101",
+            "mask_left": "1000000",
+            "mask_right": "0010110",
+            "mask_top": "1000000",
+            "name": "topLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/topLeft.png"
+        },
+        "2": {
+            "ID": 1893570223,
+            "mask_bottom": "0001101",
+            "mask_left": "0101010",
+            "mask_right": "1000000",
+            "mask_top": "1000000",
+            "name": "topRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/topRight.png"
+        },
+        "3": {
+            "ID": -1375756816,
+            "mask_bottom": "1000000",
+            "mask_left": "1000000",
+            "mask_right": "0010110",
+            "mask_top": "0110001",
+            "name": "bottomLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/bottomLeft.png"
+        },
+        "4": {
+            "ID": 2040567752,
+            "mask_bottom": "1000000",
+            "mask_left": "0101010",
+            "mask_right": "1000000",
+            "mask_top": "0110001",
+            "name": "bottomRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/bottomRight.png"
+        },
+        "5": {
+            "ID": 1137564491,
+            "mask_bottom": "1000000",
+            "mask_left": "1101010",
+            "mask_right": "1010110",
+            "mask_top": "1000000",
+            "name": "horizontal",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/horizontal.png"
+        },
+        "6": {
+            "ID": -376631597,
+            "mask_bottom": "1001101",
+            "mask_left": "1000000",
+            "mask_right": "1000000",
+            "mask_top": "1110001",
+            "name": "vertical",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v1/vertical.png"
+        },
+        "numTiles": 7
+    }
+}

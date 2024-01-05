@@ -1,0 +1,775 @@
+{
+    "map": {
+        "cells": {
+            "0": {
+                "index": 0,
+                "tileID": 1304802902
+            },
+            "1": {
+                "index": 24,
+                "tileID": 2089896377
+            },
+            "10": {
+                "index": 607,
+                "tileID": 513298674
+            },
+            "100": {
+                "index": 618,
+                "tileID": -1598468142
+            },
+            "101": {
+                "index": 606,
+                "tileID": -1598468142
+            },
+            "102": {
+                "index": 18,
+                "tileID": -1965156026
+            },
+            "103": {
+                "index": 6,
+                "tileID": -1965156026
+            },
+            "104": {
+                "index": 174,
+                "tileID": 63542406
+            },
+            "105": {
+                "index": 474,
+                "tileID": 63542406
+            },
+            "106": {
+                "index": 450,
+                "tileID": 1147360382
+            },
+            "107": {
+                "index": 150,
+                "tileID": 1147360382
+            },
+            "108": {
+                "index": 259,
+                "tileID": 1304802902
+            },
+            "109": {
+                "index": 359,
+                "tileID": -221133031
+            },
+            "11": {
+                "index": 608,
+                "tileID": 513298674
+            },
+            "110": {
+                "index": 265,
+                "tileID": 2089896377
+            },
+            "111": {
+                "index": 365,
+                "tileID": -1674309364
+            },
+            "112": {
+                "index": 259,
+                "tileID": 1304802902
+            },
+            "113": {
+                "index": 265,
+                "tileID": 2089896377
+            },
+            "114": {
+                "index": 365,
+                "tileID": -1674309364
+            },
+            "115": {
+                "index": 359,
+                "tileID": -221133031
+            },
+            "116": {
+                "index": 284,
+                "tileID": 1901683489
+            },
+            "117": {
+                "index": 309,
+                "tileID": 1901683489
+            },
+            "118": {
+                "index": 334,
+                "tileID": 1901683489
+            },
+            "119": {
+                "index": 290,
+                "tileID": 1901683489
+            },
+            "12": {
+                "index": 609,
+                "tileID": 513298674
+            },
+            "120": {
+                "index": 315,
+                "tileID": 1901683489
+            },
+            "121": {
+                "index": 340,
+                "tileID": 1901683489
+            },
+            "122": {
+                "index": 260,
+                "tileID": 513298674
+            },
+            "123": {
+                "index": 261,
+                "tileID": 513298674
+            },
+            "124": {
+                "index": 262,
+                "tileID": 513298674
+            },
+            "125": {
+                "index": 263,
+                "tileID": 513298674
+            },
+            "126": {
+                "index": 264,
+                "tileID": 513298674
+            },
+            "127": {
+                "index": 364,
+                "tileID": 462751119
+            },
+            "128": {
+                "index": 360,
+                "tileID": 281630344
+            },
+            "129": {
+                "index": 361,
+                "tileID": -703635374
+            },
+            "13": {
+                "index": 610,
+                "tileID": 513298674
+            },
+            "130": {
+                "index": 362,
+                "tileID": -703635374
+            },
+            "131": {
+                "index": 363,
+                "tileID": -703635374
+            },
+            "132": {
+                "index": 335,
+                "tileID": -703635374
+            },
+            "133": {
+                "index": 336,
+                "tileID": -703635374
+            },
+            "134": {
+                "index": 337,
+                "tileID": -703635374
+            },
+            "135": {
+                "index": 338,
+                "tileID": -703635374
+            },
+            "136": {
+                "index": 339,
+                "tileID": -703635374
+            },
+            "137": {
+                "index": 314,
+                "tileID": -703635374
+            },
+            "138": {
+                "index": 289,
+                "tileID": -703635374
+            },
+            "139": {
+                "index": 288,
+                "tileID": -703635374
+            },
+            "14": {
+                "index": 611,
+                "tileID": 513298674
+            },
+            "140": {
+                "index": 287,
+                "tileID": -703635374
+            },
+            "141": {
+                "index": 286,
+                "tileID": -703635374
+            },
+            "142": {
+                "index": 285,
+                "tileID": -703635374
+            },
+            "143": {
+                "index": 310,
+                "tileID": -703635374
+            },
+            "144": {
+                "index": 311,
+                "tileID": -703635374
+            },
+            "145": {
+                "index": 312,
+                "tileID": -703635374
+            },
+            "146": {
+                "index": 313,
+                "tileID": -703635374
+            },
+            "147": {
+                "index": 391,
+                "tileID": -703635374
+            },
+            "148": {
+                "index": 241,
+                "tileID": -703635374
+            },
+            "149": {
+                "index": 233,
+                "tileID": -703635374
+            },
+            "15": {
+                "index": 612,
+                "tileID": 513298674
+            },
+            "150": {
+                "index": 383,
+                "tileID": -703635374
+            },
+            "151": {
+                "index": 386,
+                "tileID": -703635374
+            },
+            "152": {
+                "index": 387,
+                "tileID": -703635374
+            },
+            "153": {
+                "index": 388,
+                "tileID": -703635374
+            },
+            "16": {
+                "index": 613,
+                "tileID": 513298674
+            },
+            "17": {
+                "index": 614,
+                "tileID": 513298674
+            },
+            "18": {
+                "index": 615,
+                "tileID": 513298674
+            },
+            "19": {
+                "index": 616,
+                "tileID": 513298674
+            },
+            "2": {
+                "index": 624,
+                "tileID": -1674309364
+            },
+            "20": {
+                "index": 617,
+                "tileID": 513298674
+            },
+            "21": {
+                "index": 618,
+                "tileID": -1598468142
+            },
+            "22": {
+                "index": 619,
+                "tileID": 513298674
+            },
+            "23": {
+                "index": 620,
+                "tileID": 513298674
+            },
+            "24": {
+                "index": 621,
+                "tileID": 513298674
+            },
+            "25": {
+                "index": 622,
+                "tileID": 513298674
+            },
+            "26": {
+                "index": 623,
+                "tileID": 513298674
+            },
+            "27": {
+                "index": 23,
+                "tileID": 513298674
+            },
+            "28": {
+                "index": 22,
+                "tileID": 513298674
+            },
+            "29": {
+                "index": 21,
+                "tileID": 513298674
+            },
+            "3": {
+                "index": 600,
+                "tileID": -221133031
+            },
+            "30": {
+                "index": 20,
+                "tileID": 513298674
+            },
+            "31": {
+                "index": 19,
+                "tileID": 513298674
+            },
+            "32": {
+                "index": 18,
+                "tileID": -1965156026
+            },
+            "33": {
+                "index": 17,
+                "tileID": 513298674
+            },
+            "34": {
+                "index": 16,
+                "tileID": 513298674
+            },
+            "35": {
+                "index": 15,
+                "tileID": 513298674
+            },
+            "36": {
+                "index": 14,
+                "tileID": 513298674
+            },
+            "37": {
+                "index": 13,
+                "tileID": 513298674
+            },
+            "38": {
+                "index": 12,
+                "tileID": 513298674
+            },
+            "39": {
+                "index": 11,
+                "tileID": 513298674
+            },
+            "4": {
+                "index": 601,
+                "tileID": 513298674
+            },
+            "40": {
+                "index": 10,
+                "tileID": 513298674
+            },
+            "41": {
+                "index": 9,
+                "tileID": 513298674
+            },
+            "42": {
+                "index": 8,
+                "tileID": 513298674
+            },
+            "43": {
+                "index": 7,
+                "tileID": 513298674
+            },
+            "44": {
+                "index": 6,
+                "tileID": -1965156026
+            },
+            "45": {
+                "index": 5,
+                "tileID": 513298674
+            },
+            "46": {
+                "index": 4,
+                "tileID": 513298674
+            },
+            "47": {
+                "index": 3,
+                "tileID": 513298674
+            },
+            "48": {
+                "index": 2,
+                "tileID": 513298674
+            },
+            "49": {
+                "index": 1,
+                "tileID": 513298674
+            },
+            "5": {
+                "index": 602,
+                "tileID": 513298674
+            },
+            "50": {
+                "index": 49,
+                "tileID": 1901683489
+            },
+            "51": {
+                "index": 74,
+                "tileID": 1901683489
+            },
+            "52": {
+                "index": 99,
+                "tileID": 1901683489
+            },
+            "53": {
+                "index": 224,
+                "tileID": 1901683489
+            },
+            "54": {
+                "index": 249,
+                "tileID": 1901683489
+            },
+            "55": {
+                "index": 274,
+                "tileID": 1901683489
+            },
+            "56": {
+                "index": 199,
+                "tileID": 1901683489
+            },
+            "57": {
+                "index": 174,
+                "tileID": 63542406
+            },
+            "58": {
+                "index": 149,
+                "tileID": 1901683489
+            },
+            "59": {
+                "index": 124,
+                "tileID": 1901683489
+            },
+            "6": {
+                "index": 603,
+                "tileID": 513298674
+            },
+            "60": {
+                "index": 299,
+                "tileID": 1901683489
+            },
+            "61": {
+                "index": 324,
+                "tileID": 1901683489
+            },
+            "62": {
+                "index": 349,
+                "tileID": 1901683489
+            },
+            "63": {
+                "index": 374,
+                "tileID": 1901683489
+            },
+            "64": {
+                "index": 399,
+                "tileID": 1901683489
+            },
+            "65": {
+                "index": 424,
+                "tileID": 1901683489
+            },
+            "66": {
+                "index": 449,
+                "tileID": 1901683489
+            },
+            "67": {
+                "index": 474,
+                "tileID": 63542406
+            },
+            "68": {
+                "index": 499,
+                "tileID": 1901683489
+            },
+            "69": {
+                "index": 524,
+                "tileID": 1901683489
+            },
+            "7": {
+                "index": 604,
+                "tileID": 513298674
+            },
+            "70": {
+                "index": 549,
+                "tileID": 1901683489
+            },
+            "71": {
+                "index": 574,
+                "tileID": 1901683489
+            },
+            "72": {
+                "index": 599,
+                "tileID": 1901683489
+            },
+            "73": {
+                "index": 25,
+                "tileID": 1901683489
+            },
+            "74": {
+                "index": 50,
+                "tileID": 1901683489
+            },
+            "75": {
+                "index": 75,
+                "tileID": 1901683489
+            },
+            "76": {
+                "index": 100,
+                "tileID": 1901683489
+            },
+            "77": {
+                "index": 125,
+                "tileID": 1901683489
+            },
+            "78": {
+                "index": 150,
+                "tileID": 1147360382
+            },
+            "79": {
+                "index": 175,
+                "tileID": 1901683489
+            },
+            "8": {
+                "index": 605,
+                "tileID": 513298674
+            },
+            "80": {
+                "index": 200,
+                "tileID": 1901683489
+            },
+            "81": {
+                "index": 225,
+                "tileID": 1901683489
+            },
+            "82": {
+                "index": 250,
+                "tileID": 1901683489
+            },
+            "83": {
+                "index": 275,
+                "tileID": 1901683489
+            },
+            "84": {
+                "index": 300,
+                "tileID": 1901683489
+            },
+            "85": {
+                "index": 325,
+                "tileID": 1901683489
+            },
+            "86": {
+                "index": 350,
+                "tileID": 1901683489
+            },
+            "87": {
+                "index": 375,
+                "tileID": 1901683489
+            },
+            "88": {
+                "index": 400,
+                "tileID": 1901683489
+            },
+            "89": {
+                "index": 425,
+                "tileID": 1901683489
+            },
+            "9": {
+                "index": 606,
+                "tileID": -1598468142
+            },
+            "90": {
+                "index": 450,
+                "tileID": 1147360382
+            },
+            "91": {
+                "index": 475,
+                "tileID": 1901683489
+            },
+            "92": {
+                "index": 500,
+                "tileID": 1901683489
+            },
+            "93": {
+                "index": 525,
+                "tileID": 1901683489
+            },
+            "94": {
+                "index": 550,
+                "tileID": 1901683489
+            },
+            "95": {
+                "index": 575,
+                "tileID": 1901683489
+            },
+            "96": {
+                "index": 6,
+                "tileID": -1965156026
+            },
+            "97": {
+                "index": 18,
+                "tileID": -1965156026
+            },
+            "98": {
+                "index": 618,
+                "tileID": -1598468142
+            },
+            "99": {
+                "index": 606,
+                "tileID": -1598468142
+            }
+        },
+        "data": {
+            "cellSize": 24,
+            "height": 25,
+            "width": 25
+        },
+        "numPreset": 154
+    },
+    "tileset": {
+        "0": {
+            "ID": -703635374,
+            "mask_bottom": "1110010100001101",
+            "mask_left": "1010101010001011",
+            "mask_right": "1101001001000111",
+            "mask_top": "1001110000101110",
+            "name": "empty",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/empty.png"
+        },
+        "1": {
+            "ID": 1304802902,
+            "mask_bottom": "0000101010000010",
+            "mask_left": "1000000000000000",
+            "mask_right": "0000110000101000",
+            "mask_top": "1000000000000000",
+            "name": "topLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/topLeft.png"
+        },
+        "10": {
+            "ID": -1598468142,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0100010100000100",
+            "mask_right": "0010010100001000",
+            "mask_top": "0000001000000001",
+            "name": "Tup",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tup.png"
+        },
+        "11": {
+            "ID": -328162517,
+            "mask_bottom": "0000001000000010",
+            "mask_left": "0000010000000100",
+            "mask_right": "0000010000001000",
+            "mask_top": "0000001000000001",
+            "name": "X",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/X.png"
+        },
+        "12": {
+            "ID": 281630344,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0101010101110100",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "horizontalLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/horizontalLeft.png"
+        },
+        "13": {
+            "ID": 462751119,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "0010110110111000",
+            "mask_top": "1000000000000000",
+            "name": "horizontalRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/horizontalRight.png"
+        },
+        "14": {
+            "ID": -1693201715,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0110001111010001",
+            "name": "verticalBottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/verticalBottom.png"
+        },
+        "15": {
+            "ID": 119921780,
+            "mask_bottom": "0001101011110010",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "verticalTop",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/verticalTop.png"
+        },
+        "2": {
+            "ID": 2089896377,
+            "mask_bottom": "0001001001000010",
+            "mask_left": "0001010000100100",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "topRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/topRight.png"
+        },
+        "3": {
+            "ID": -221133031,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "0010010100001000",
+            "mask_top": "0010001010000001",
+            "name": "bottomLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/bottomLeft.png"
+        },
+        "4": {
+            "ID": -1674309364,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0100010100000100",
+            "mask_right": "1000000000000000",
+            "mask_top": "0100001001000001",
+            "name": "bottomRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/bottomRight.png"
+        },
+        "5": {
+            "ID": 513298674,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0101010101110100",
+            "mask_right": "0010110110111000",
+            "mask_top": "1000000000000000",
+            "name": "horizontal",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/horizontal.png"
+        },
+        "6": {
+            "ID": 1901683489,
+            "mask_bottom": "0001101011110010",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0110001111010001",
+            "name": "vertical",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/vertical.png"
+        },
+        "7": {
+            "ID": -1965156026,
+            "mask_bottom": "0000001000000010",
+            "mask_left": "0001010000100100",
+            "mask_right": "0000110000101000",
+            "mask_top": "1000000000000000",
+            "name": "Tdown",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tdown.png"
+        },
+        "8": {
+            "ID": 63542406,
+            "mask_bottom": "0001001001000010",
+            "mask_left": "0000010000000100",
+            "mask_right": "1000000000000000",
+            "mask_top": "0100001001000001",
+            "name": "Tleft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tleft.png"
+        },
+        "9": {
+            "ID": 1147360382,
+            "mask_bottom": "0000101010000010",
+            "mask_left": "1000000000000000",
+            "mask_right": "0000010000001000",
+            "mask_top": "0010001010000001",
+            "name": "Tright",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tright.png"
+        },
+        "numTiles": 16
+    }
+}

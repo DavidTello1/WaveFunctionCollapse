@@ -1,0 +1,149 @@
+{
+    "tileset": {
+        "0": {
+            "ID": -703635374,
+            "mask_bottom": "1110010100001101",
+            "mask_left": "1010101010001011",
+            "mask_right": "1101001001000111",
+            "mask_top": "1001110000101110",
+            "name": "empty",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/empty.png"
+        },
+        "1": {
+            "ID": 1304802902,
+            "mask_bottom": "0000101010000010",
+            "mask_left": "1000000000000000",
+            "mask_right": "0000110000101000",
+            "mask_top": "1000000000000000",
+            "name": "topLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/topLeft.png"
+        },
+        "10": {
+            "ID": -1598468142,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0100010100000100",
+            "mask_right": "0010010100001000",
+            "mask_top": "0000001000000001",
+            "name": "Tup",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tup.png"
+        },
+        "11": {
+            "ID": -328162517,
+            "mask_bottom": "0000001000000010",
+            "mask_left": "0000010000000100",
+            "mask_right": "0000010000001000",
+            "mask_top": "0000001000000001",
+            "name": "X",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/X.png"
+        },
+        "12": {
+            "ID": 281630344,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0101010101110100",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "horizontalLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/horizontalLeft.png"
+        },
+        "13": {
+            "ID": 462751119,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "0010110110111000",
+            "mask_top": "1000000000000000",
+            "name": "horizontalRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/horizontalRight.png"
+        },
+        "14": {
+            "ID": -1693201715,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0110001111010001",
+            "name": "verticalBottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/verticalBottom.png"
+        },
+        "15": {
+            "ID": 119921780,
+            "mask_bottom": "0001101011110010",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "verticalTop",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/verticalTop.png"
+        },
+        "2": {
+            "ID": 2089896377,
+            "mask_bottom": "0001001001000010",
+            "mask_left": "0001010000100100",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "topRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/topRight.png"
+        },
+        "3": {
+            "ID": -221133031,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "0010010100001000",
+            "mask_top": "0010001010000001",
+            "name": "bottomLeft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/bottomLeft.png"
+        },
+        "4": {
+            "ID": -1674309364,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0100010100000100",
+            "mask_right": "1000000000000000",
+            "mask_top": "0100001001000001",
+            "name": "bottomRight",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/bottomRight.png"
+        },
+        "5": {
+            "ID": 513298674,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0101010101110100",
+            "mask_right": "0010110110111000",
+            "mask_top": "1000000000000000",
+            "name": "horizontal",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/horizontal.png"
+        },
+        "6": {
+            "ID": 1901683489,
+            "mask_bottom": "0001101011110010",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0110001111010001",
+            "name": "vertical",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/vertical.png"
+        },
+        "7": {
+            "ID": -1965156026,
+            "mask_bottom": "0000001000000010",
+            "mask_left": "0001010000100100",
+            "mask_right": "0000110000101000",
+            "mask_top": "1000000000000000",
+            "name": "Tdown",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tdown.png"
+        },
+        "8": {
+            "ID": 63542406,
+            "mask_bottom": "0001001001000010",
+            "mask_left": "0000010000000100",
+            "mask_right": "1000000000000000",
+            "mask_top": "0100001001000001",
+            "name": "Tleft",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tleft.png"
+        },
+        "9": {
+            "ID": 1147360382,
+            "mask_bottom": "0000101010000010",
+            "mask_left": "1000000000000000",
+            "mask_right": "0000010000001000",
+            "mask_top": "0010001010000001",
+            "name": "Tright",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_v3/Tright.png"
+        },
+        "numTiles": 16
+    }
+}
