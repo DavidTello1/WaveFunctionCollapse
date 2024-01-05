@@ -35,7 +35,7 @@ public:
 	// --- Setters
 	void SetWidth(int width) { this->width = width; Resize(); }
 	void SetHeight(int height) { this->height = height; Resize(); }
-	void SetCellSize(int size) { cellSize = size; } //*** Resize()?
+	void SetCellSize(int size) { cellSize = size; }
 	void SetSize(int width, int height) { this->width = width; this->height = height; Resize(); }
 
 	// --- Utils

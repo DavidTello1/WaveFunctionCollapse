@@ -274,7 +274,7 @@ public:
 		return -1;
 	}
 
-	void addBit() //*** needs testing
+	void addBit()
 	{
 		BitArray tmp = (*this);
 
@@ -292,7 +292,7 @@ public:
 		clearBit(numBits - 1);
 	}
 
-	void eraseBit(int index) //*** needs testing
+	void eraseBit(int index)
 	{
 		assert(index >= 0 && index < numBits);
 

@@ -144,7 +144,7 @@ void MapGenerator::ResetMap()
 	}
 }
 
-void MapGenerator::Resize() //*** maintain preset cells?
+void MapGenerator::Resize()
 {
 	// Clear preset cells list
 	presetCells.clear();

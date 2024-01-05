@@ -153,7 +153,7 @@ public:
 	}
 
 	// Erase
-	void erase(int index) //*** needs testing
+	void erase(int index)
 	{
 		assert(index >= 0 && index < numElements);
 

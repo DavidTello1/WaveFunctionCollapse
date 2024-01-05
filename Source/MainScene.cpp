@@ -84,33 +84,6 @@ bool MainScene::Start()
     // Set Scene Camera (created in sceneMap->Init())
     this->camera = sceneMap->GetCamera();
 
-    ////***
-    //// -----------------------------------------
-    //Tile empty       = Tile(0, App->resources->LoadTexture("Assets/Textures/empty.png")->index,       "1001111", "1010111", "1101011", "1110011");
-    //Tile topLeft     = Tile(1, App->resources->LoadTexture("Assets/Textures/topLeft.png")->index,     "1000000", "1000000", "0010110", "0001101");
-    //Tile topRight    = Tile(2, App->resources->LoadTexture("Assets/Textures/topRight.png")->index,    "1000000", "0101010", "1000000", "0001101");
-    //Tile bottomLeft  = Tile(3, App->resources->LoadTexture("Assets/Textures/bottomLeft.png")->index,  "0110001", "1000000", "0010110", "1000000");
-    //Tile bottomRight = Tile(4, App->resources->LoadTexture("Assets/Textures/bottomRight.png")->index, "0110001", "0101010", "1000000", "1000000");
-    //Tile horizontal  = Tile(5, App->resources->LoadTexture("Assets/Textures/horizontal.png")->index,  "1000000", "1101010", "1010110", "1000000");
-    //Tile vertical    = Tile(6, App->resources->LoadTexture("Assets/Textures/vertical.png")->index,    "1110001", "1000000", "1000000", "1001101");
-
-    //tileset->AddTile(empty);
-    //tileset->AddTile(topLeft);
-    //tileset->AddTile(topRight);
-    //tileset->AddTile(bottomLeft);
-    //tileset->AddTile(bottomRight);
-    //tileset->AddTile(horizontal);
-    //tileset->AddTile(vertical);
-
-    //sceneTiles->ImportTile(0, "Empty", "Assets/Textures/empty.png");
-    //sceneTiles->ImportTile(1, "TopLeft", "Assets/Textures/topLeft.png");
-    //sceneTiles->ImportTile(2, "TopRight", "Assets/Textures/topRight.png");
-    //sceneTiles->ImportTile(3, "BottomLeft", "Assets/Textures/bottomLeft.png");
-    //sceneTiles->ImportTile(4, "BottomRight", "Assets/Textures/bottomRight.png");
-    //sceneTiles->ImportTile(5, "Horizontal", "Assets/Textures/horizontal.png");
-    //sceneTiles->ImportTile(6, "Vertical", "Assets/Textures/vertical.png");
-    ////----------------------------------------
-
     return true;
 }
 
