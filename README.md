@@ -1,12 +1,20 @@
 # WaveFunctionCollapse
-This is a C++ implementation of the Wave Function Collapse algorithm and a tool to manage the adjacency rules of the tiles.
+C++ implementation of the Wave Function Collapse algorithm and tool to manage the adjacency rules of the tiles.
+
+## Video
+
 
 ## Shortcuts
-- Ctrl + S       -> Save Tileset
 - Ctrl + Tab     -> Change Scene
-- Ctrl + O       -> Import File
+
+**Scene MapGenerator**
 - Ctrl + L-Click -> Multiselect cells (keep pressed)
 - Alt + L-Click  -> Deselect cells (keep pressed)
+
+**Scene TileManager**
+- Ctrl + S       -> Save Tileset
+- Ctrl + O       -> Import File
+- Up/Down Arrows -> Next/Previous tile
 
 ## Importing
 You can import a single tile from a file with the following extensions: .jpg, .png, .bmp or .tif
