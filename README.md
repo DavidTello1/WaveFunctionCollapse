@@ -2,7 +2,7 @@
 C++ implementation of the Wave Function Collapse algorithm and tool to manage the adjacency rules of the tiles.
 
 ## Video
-
+https://youtu.be/Itpd9paG87c
 
 ## Shortcuts
 - Ctrl + Tab     -> Change Scene
