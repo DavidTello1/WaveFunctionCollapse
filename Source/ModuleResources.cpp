@@ -125,7 +125,7 @@ std::string ModuleResources::GetFileName(const char* filepath, bool extension) c
     name = name.substr(name.find_last_of('/') + 1);
 
     if (extension == false)
-        name = name.substr(0, name.find_first_of('.'));
+        name = name.substr(0, name.find_last_of('.'));
 
     return name;
 }
@@ -133,7 +133,7 @@ std::string ModuleResources::GetFileName(const char* filepath, bool extension) c
 std::string ModuleResources::GetExtension(const char* filepath) const
 {
     std::string name = filepath;
-    name = name.substr(name.find_first_of('.') + 1);
+    name = name.substr(name.find_last_of('.') + 1);
 
     return name;
 }

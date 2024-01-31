@@ -369,7 +369,7 @@ void SceneTiles::DrawCombinations(const Tileset* tileset, float panelWidth)
 				const Tile* neighbour = tileset->GetTile(j);
 
 				String label = String("###%d%d", dir, i);
-				bool hovered = (isPopupOpen && comboData.firstIndex == i && comboData.secondIndex == j);
+				bool hovered = (isPopupOpen && comboData.firstIndex == i && comboData.secondIndex == j && comboData.dir == dir);
 				NeighbourCombo(label.c_str(), false, textureSize, tile->GetTexture(), neighbour->GetTexture(), dir, hovered);
 
 				count++;
