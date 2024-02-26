@@ -272,6 +272,10 @@ void SceneTiles::DrawTileData(const Tileset* tileset, const float panelWidth)
 	ImGui::TextColored(yellow, data.texturePath.c_str());
 	ImGui::EndColumns();
 
+	bool isWalkable = tile->IsWalkable();
+	if (ImGui::Checkbox("Walkable", &isWalkable))
+		App->event->Publish(new EventSetTileWalkable(currentTile, isWalkable));
+
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 12);
 	DrawMask("Top Mask:    ", &topOpen,	   0, tileset, neighbourSize, panelWidth);
 	DrawMask("Left Mask:   ", &leftOpen,   1, tileset, neighbourSize, panelWidth);

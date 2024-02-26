@@ -10,6 +10,7 @@
 #include "ModuleRenderer.h"
 
 #include "MapGenerator.h"
+#include "PathGenerator.h"
 #include "Cell.h"
 #include "Tile.h"
 
@@ -34,7 +35,7 @@ SceneMap::~SceneMap()
 {
 }
 
-bool SceneMap::Init(const MapGenerator* map)
+bool SceneMap::Init(const MapGenerator& map)
 {
 	state = State::STOP;
 
@@ -45,6 +46,7 @@ bool SceneMap::Init(const MapGenerator* map)
 	heightRatio = 1.0f;
 	spacing = defaultSpacing;
 	isDrawSpaced = true;
+	isDrawAreas = true;
 
 	// --- Panel Data
 	isPanelOpen = true;
@@ -57,7 +59,7 @@ bool SceneMap::Init(const MapGenerator* map)
 	camera = new Camera(glm::vec3(0.0f), 0.0f, 1.0f);
 	controller = new CameraController(camera, 0.3f);
 
-	buttonGrid = new UI_ButtonGroup(0, 0, map->GetWidth(), map->GetHeight(), map->GetCellSize(), spacing, UI_ButtonGroup::Type::MULTIPLE_SELECTION);
+	buttonGrid = new UI_ButtonGroup(0, 0, map.GetWidth(), map.GetHeight(), map.GetCellSize(), spacing, UI_ButtonGroup::Type::MULTIPLE_SELECTION);
 	UpdateButtonGrid();
 
 	Color transparent = { 1,0,0,0 };
@@ -102,7 +104,7 @@ bool SceneMap::CleanUp()
     return true;
 }
 
-bool SceneMap::Draw(const MapGenerator* map)
+bool SceneMap::Draw(const MapGenerator& map)
 {
 	DrawMap(map);
 	buttonGrid->Draw();
@@ -110,8 +112,11 @@ bool SceneMap::Draw(const MapGenerator* map)
 	return true;
 }
 
-bool SceneMap::DrawUI(const MapGenerator* map)
+bool SceneMap::DrawUI(const MapGenerator& map, const PathGenerator& paths)
 {
+	if (isDrawAreas)
+		DrawAreas(map, paths);
+
 	DrawPanel(map);
 
     return true;
@@ -232,16 +237,16 @@ void SceneMap::UpdateButtonGrid()
 	buttonGrid->SetPos(offsetX, offsetY);
 }
 
-void SceneMap::DrawMap(const MapGenerator* map)
+void SceneMap::DrawMap(const MapGenerator& map)
 {
 	static const Color black = { 0.0f, 0.0f, 0.0f, 1.0f };
 	static const Color gray = { 0.5f, 0.5f, 0.5f, 1.0f };
 	static const Color red = { 1.0f, 0.0f, 0.0f, 1.0f };
 	static const Color green = { 0.0f, 1.0f, 0.0f, 1.0f };
 
-	const int width = map->GetWidth();
-	const int height = map->GetHeight();
-	const int cellSize = map->GetCellSize();
+	const int width = map.GetWidth();
+	const int height = map.GetHeight();
+	const int cellSize = map.GetCellSize();
 
 	// Offset
 	int offsetX = ((int)App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
@@ -252,7 +257,7 @@ void SceneMap::DrawMap(const MapGenerator* map)
 	for (unsigned int i = 0; i < numCells; ++i)
 	{
 		// Cell
-		Cell* cell = map->GetCell(i);
+		Cell* cell = map.GetCell(i);
 		int x = cell->index % width;
 		int y = cell->index / width;
 
@@ -263,7 +268,7 @@ void SceneMap::DrawMap(const MapGenerator* map)
 		// Draw Texture
 		if (!cell->isInvalid && (cell->isCollapsed || cell->isPreset))
 		{
-			Tile* tile = map->GetTileByID(cell->tileID);
+			Tile* tile = map.GetTileByID(cell->tileID);
 			App->renderer->DrawQuad(position, size, tile->GetTexture());
 			continue;
 		}
@@ -274,9 +279,76 @@ void SceneMap::DrawMap(const MapGenerator* map)
 	}
 }
 
+void SceneMap::DrawAreas(const MapGenerator& map, const PathGenerator& paths)
+{
+	const int width = map.GetWidth();
+	const int height = map.GetHeight();
+	const int cellSize = map.GetCellSize();
+
+	static Color colors[10] = {
+		Color(1.0f, 0.0f, 0.0f, 0.7f),
+		Color(1.0f, 1.0f, 0.0f, 0.7f),
+		Color(1.0f, 0.0f, 1.0f, 0.7f),
+		Color(0.0f, 1.0f, 0.0f, 0.7f),
+		Color(0.0f, 1.0f, 1.0f, 0.7f),
+		Color(0.0f, 0.0f, 1.0f, 0.7f),
+		Color(0.5f, 0.5f, 0.5f, 0.7f),
+		Color(1.0f, 0.5f, 0.5f, 0.7f),
+		Color(0.5f, 1.0f, 0.5f, 0.7f),
+		Color(0.0f, 0.7f, 0.7f, 0.7f)
+	};
+
+	// Offset
+	int offsetX = ((int)App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
+	int offsetY = ((int)App->window->GetHeight() - ((height + spacing) * cellSize)) / 2;
+
+	// --- Draw Areas
+	int count = 0;
+	const std::map<int, DynArray<int>> areas = paths.GetAreas();
+	for (auto it = areas.begin(); it != areas.end(); it++)
+	{
+		DynArray<int> area = it->second;
+		for (int i = 0; i < area.size(); ++i)
+		{
+			// Cell
+			Cell* cell = map.GetCell(area[i]);
+			int x = cell->index % width;
+			int y = cell->index / width;
+
+			// Position & Size
+			glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
+			glm::vec2 size = { cellSize, cellSize };
+
+			// Draw Color
+			Color color = colors[count];
+			App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+		}
+		count++;
+		if (count >= 10)
+			count = 0;
+	}
+
+	// --- Draw BreadCrumbs
+	const DynArray<int> breadCrumbs = paths.GetBreadcrumbs();
+	for (int i = 0; i < breadCrumbs.size(); ++i)
+	{
+		// Cell
+		int x = breadCrumbs[i] % width;
+		int y = breadCrumbs[i] / width;
+
+		// Position & Size
+		glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
+		glm::vec2 size = { cellSize, cellSize };
+
+		// Draw Color
+		Color color = { 0.0f, 0.0f, 0.0f, 0.5f };
+		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+	}
+}
+
 // -----------------------------
 // --- UI DRAW ---
-void SceneMap::DrawPanel(const MapGenerator* map)
+void SceneMap::DrawPanel(const MapGenerator& map)
 {
 	static const int sectionSpacing = 5;
 	static const ImGuiWindowFlags flags = 
@@ -325,7 +397,7 @@ void SceneMap::DrawPanel(const MapGenerator* map)
 		// --- World Size
 		if (state == State::STOP)
 		{
-			DrawSectionResize(map->GetWidth(), map->GetHeight());
+			DrawSectionResize(map.GetWidth(), map.GetHeight());
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + sectionSpacing);
 			ImGui::Separator();
@@ -390,6 +462,9 @@ void SceneMap::DrawSectionOptions()
 	{
 		DrawSpaced();
 	}
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
+	ImGui::Checkbox("Draw Areas", &isDrawAreas);
 }
 
 void SceneMap::DrawSectionResize(int width, int height)
@@ -431,7 +506,7 @@ void SceneMap::DrawSectionResize(int width, int height)
 	}
 }
 
-void SceneMap::DrawSectionCellPresets(const MapGenerator* map)
+void SceneMap::DrawSectionCellPresets(const MapGenerator& map)
 {
 	// Num Selected
 	ImGui::Text("Selected Cells: %d", buttonGrid->GetSelected().size());
@@ -455,10 +530,10 @@ void SceneMap::DrawSectionCellPresets(const MapGenerator* map)
 	if (buttonGrid->GetSelected().size() == 0)
 		return;
 
-	DrawCellInspector(map->GetAllTiles());
+	DrawCellInspector(map.GetAllTiles());
 }
 
-void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
+void SceneMap::DrawSectionCellInspector(const MapGenerator& map)
 {
 	static const int maxTextSize = 105;
 	static const ImVec4 yellow = { 1, 1, 0, 1 };
@@ -467,13 +542,13 @@ void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 		return;
 
 	// Cell
-	Cell* cell = map->GetCell(buttonGrid->GetSelected().front());
+	Cell* cell = map.GetCell(buttonGrid->GetSelected().front());
 	
 	// Texture
 	ImTextureID texture = 0;
 	if (cell->isCollapsed && !cell->isInvalid)
 	{
-		Tile* tile = map->GetTileByID(cell->tileID);
+		Tile* tile = map.GetTileByID(cell->tileID);
 		if (tile != nullptr)
 			texture = (ImTextureID)tile->GetTexture();
 	}
@@ -494,7 +569,7 @@ void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 
 	// Values
 	ImGui::TextColored(yellow, "%d", cell->index);
-	ImGui::TextColored(yellow, "%d, %d", cell->index % map->GetWidth(), cell->index / map->GetWidth());
+	ImGui::TextColored(yellow, "%d, %d", cell->index % map.GetWidth(), cell->index / map.GetWidth());
 	ImGui::TextColored(yellow, (cell->isCollapsed) ? "true" : "false");
 	DrawText(String("%d", cell->tileID).c_str(), maxTextSize);
 	DrawText(Utils::MaskToString(cell->mask).c_str(), maxTextSize);
@@ -508,7 +583,7 @@ void SceneMap::DrawSectionCellInspector(const MapGenerator* map)
 	for (unsigned int i = 0; i < cell->mask.size(); ++i)
 	{
 		if (cell->mask.getBit(i) == true)
-			tiles.push_back(map->GetTile(i));
+			tiles.push_back(map.GetTile(i));
 	}
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);

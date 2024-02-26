@@ -2,6 +2,7 @@
 #include "DynArray.h"
 
 class MapGenerator;
+class PathGenerator;
 struct Tile;
 
 class Camera;
@@ -23,15 +24,16 @@ public:
 	SceneMap();
 	~SceneMap();
 
-	bool Init(const MapGenerator* map);
+	bool Init(const MapGenerator& map);
 	bool Update(float dt);
 	bool CleanUp();
 
-	bool Draw(const MapGenerator* map);
-	bool DrawUI(const MapGenerator* map);
+	bool Draw(const MapGenerator& map);
+	bool DrawUI(const MapGenerator& map, const PathGenerator& paths);
 
 	// ---
 	Camera* GetCamera() const { return camera; }
+	State GetState() const { return state; }
 	void SetState(State state) { this->state = state; }
 	void UnselectAllCells();
 
@@ -52,15 +54,16 @@ private:
 	void DrawSpaced();
 	void PanelToggled(bool isOpen);
 	void UpdateButtonGrid();
-	void DrawMap(const MapGenerator* map);
+	void DrawMap(const MapGenerator& map);
+	void DrawAreas(const MapGenerator& map, const PathGenerator& paths);
 
 	// --- Draw
-	void DrawPanel(const MapGenerator* map);
+	void DrawPanel(const MapGenerator& map);
 	void DrawSectionButtons();
 	void DrawSectionOptions();
 	void DrawSectionResize(int width, int height);
-	void DrawSectionCellPresets(const MapGenerator* map);
-	void DrawSectionCellInspector(const MapGenerator* map);
+	void DrawSectionCellPresets(const MapGenerator& map);
+	void DrawSectionCellInspector(const MapGenerator& map);
 	void DrawCellInspector(const DynArray<Tile*>& tiles);
 
 	// --- UI elements
@@ -84,6 +87,7 @@ private:
 	float heightRatio = 1.0f;
 	int spacing = 0;
 	bool isDrawSpaced = true;
+	bool isDrawAreas = true;
 
 	// Panel Data
 	static const int menuBarHeight = 19;

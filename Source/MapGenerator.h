@@ -9,6 +9,8 @@ class RandomNumber;
 
 class MapGenerator
 {
+	friend class PathGenerator;
+
 public:
 	MapGenerator(const int width, const int height, const int cellSize);
 	MapGenerator(const int width, const int height, const int cellSize, const DynArray<Tile*>& tiles);
@@ -45,6 +47,9 @@ public:
 	void PresetCell(unsigned int index, int tileID); // sets a cell to the specified tile but does not propagate
 	void ClearPresetCells();
 
+protected:
+	int FindTile(int tileID) const;
+
 private:
 	int HeuristicPick();
 	void CollapseCell(unsigned int index);
@@ -53,11 +58,10 @@ private:
 	void FirstStep(); // propagate preset cells
 	
 	// --- Utils
-	int FindTile(int tileID) const;
 	int CheckNeighbour(int index, int direction);
 	void Resize();
 
-private:
+protected:
 	int width = 0;
 	int height = 0;
 	int cellSize = 0;

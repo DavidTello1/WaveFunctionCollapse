@@ -460,6 +460,9 @@
     <ClInclude Include="tinyfiledialogs\tinyfiledialogs.h">
       <Filter>Source\Engine\External Libraries\TinyFileDialog</Filter>
     </ClInclude>
+    <ClInclude Include="PathGenerator.h">
+      <Filter>Source\MapGenerator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -554,6 +557,9 @@
     </ClCompile>
     <ClCompile Include="tinyfiledialogs\tinyfiledialogs.c">
       <Filter>Source\Engine\External Libraries\TinyFileDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="PathGenerator.cpp">
+      <Filter>Source\MapGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

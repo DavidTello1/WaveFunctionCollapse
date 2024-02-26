@@ -26,6 +26,7 @@ public:
 	void SetTile(int index, const Tile& tile);
 	void SetMask(int index, int dir, const BitArray& mask);
 	void UpdateMask(int index, int dir, int bit, bool value);
+	void SetWalkable(int index, bool value);
 
 private:
 	DynArray<Tile*> tiles;

@@ -26,7 +26,7 @@ void Tileset::AddTile(int tileID, unsigned int texture)
 		}
 	}
 
-	Tile* tile = new Tile(tileID, texture, tiles.size() + 1);
+	Tile* tile = new Tile(tileID, texture, true, tiles.size() + 1);
 	tiles.push_back(tile);
 }
 
@@ -88,6 +88,14 @@ void Tileset::UpdateMask(int index, int dir, int bit, bool value)
 		tiles[index]->masks[dir].setBit(bit);
 	else
 		tiles[index]->masks[dir].clearBit(bit);
+}
+
+void Tileset::SetWalkable(int index, bool value)
+{
+	if (index < 0 || index >= tiles.size())
+		return;
+
+	tiles[index]->isWalkable = value;
 }
 
 bool Tileset::IsValid(int tileID)

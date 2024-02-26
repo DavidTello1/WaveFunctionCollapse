@@ -9,6 +9,7 @@
 #include "ModuleResources.h"
 
 #include "MapGenerator.h"
+#include "PathGenerator.h"
 #include "Tileset.h"
 #include "Tile.h"
 #include "Cell.h"
@@ -47,6 +48,7 @@ bool MainScene::Init()
 
     // --- Create Map Generator
     mapGenerator = new MapGenerator(width, height, cellSize);
+    pathGenerator = new PathGenerator(mapGenerator);
 
     // --- Create Scenes
     sceneMap = new SceneMap();
@@ -71,6 +73,7 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnSaveTileset);
     App->event->Subscribe(this, &MainScene::OnRemoveTile);
     App->event->Subscribe(this, &MainScene::OnUpdateMask);
+    App->event->Subscribe(this, &MainScene::OnSetTileWalkable);
 
     return true;
 }
@@ -78,7 +81,7 @@ bool MainScene::Init()
 bool MainScene::Start()
 {
     // --- Init Scenes
-    sceneMap->Init(mapGenerator);
+    sceneMap->Init(*mapGenerator);
     sceneTiles->Init();
 
     // Set Scene Camera (created in sceneMap->Init())
@@ -93,8 +96,11 @@ bool MainScene::Update(float dt)
 
     if (isSceneMap)
     {
-        if (mapGenerator->IsFinished())
+        if (mapGenerator->IsFinished() && sceneMap->GetState() != SceneMap::State::FINISHED)
+        {
             sceneMap->SetState(SceneMap::State::FINISHED);
+            pathGenerator->GeneratePaths();
+        }
 
         // Update Scenes
         sceneMap->Update(dt);
@@ -117,6 +123,7 @@ bool MainScene::CleanUp()
 
     delete tileset;
     delete mapGenerator;
+    delete pathGenerator;
 
     return true;
 }
@@ -124,7 +131,7 @@ bool MainScene::CleanUp()
 bool MainScene::Draw()
 {
     if (isSceneMap)
-        sceneMap->Draw(mapGenerator);
+        sceneMap->Draw(*mapGenerator);
 
     return true;
 }
@@ -134,7 +141,7 @@ bool MainScene::DrawUI()
     DrawMenuBar();
 
     if (isSceneMap)
-        sceneMap->DrawUI(mapGenerator);
+        sceneMap->DrawUI(*mapGenerator, *pathGenerator);
     else
         sceneTiles->DrawUI(tileset);
 
@@ -361,6 +368,7 @@ void MainScene::ImportTileset(json& file)
         // Read Tile
         std::string name        = file["tileset"][std::to_string(i)]["name"];
         int id                  = file["tileset"][std::to_string(i)]["ID"];
+        bool isWalkable         = file["tileset"][std::to_string(i)]["isWalkable"];
         std::string texturePath = file["tileset"][std::to_string(i)]["texturePath"];
         std::string topMask     = file["tileset"][std::to_string(i)]["mask_top"];
         std::string leftMask    = file["tileset"][std::to_string(i)]["mask_left"];
@@ -376,7 +384,7 @@ void MainScene::ImportTileset(json& file)
         }
 
         unsigned int texture = tex->index;
-        Tile tile = Tile(id, texture, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
+        Tile tile = Tile(id, texture, isWalkable, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
 
         tileset->AddTile(tile);
         sceneTiles->ImportTile(id, name.c_str(), texturePath.c_str());
@@ -394,6 +402,7 @@ void MainScene::ExportTileset(json& file)
         file["tileset"][std::to_string(i)]["ID"]          = tile->GetID();
         file["tileset"][std::to_string(i)]["name"]        = data.name.c_str();
         file["tileset"][std::to_string(i)]["texturePath"] = data.texturePath.c_str();
+        file["tileset"][std::to_string(i)]["isWalkable"]  = tile->IsWalkable();
         file["tileset"][std::to_string(i)]["mask_top"]    = Utils::MaskToString(tile->GetMasks()[0]).c_str();
         file["tileset"][std::to_string(i)]["mask_left"]   = Utils::MaskToString(tile->GetMasks()[1]).c_str();
         file["tileset"][std::to_string(i)]["mask_right"]  = Utils::MaskToString(tile->GetMasks()[2]).c_str();
@@ -515,6 +524,7 @@ void MainScene::OnStep(EventStep* e)
 void MainScene::OnStop(EventStop* e)
 {
     mapGenerator->ResetMap();
+    pathGenerator->Reset();
 
     sceneMap->SetStepTime(0.0f);
     sceneMap->SetTotalTime(0.0f);
@@ -603,4 +613,9 @@ void MainScene::OnRemoveTile(EventRemoveTile* e)
 void MainScene::OnUpdateMask(EventUpdateMask* e)
 {
     tileset->UpdateMask(e->index, e->dir, e->bit, e->value);
+}
+
+void MainScene::OnSetTileWalkable(EventSetTileWalkable* e)
+{
+    tileset->SetWalkable(e->index, e->value);
 }

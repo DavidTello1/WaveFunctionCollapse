@@ -47,3 +47,9 @@ struct EventUpdateMask : public Event {
 	int index, dir, bit;
 	bool value;
 };
+
+struct EventSetTileWalkable : public Event {
+	EventSetTileWalkable(int index, bool value) : index(index), value(value) {}
+	int index;
+	bool value;
+};

@@ -7,6 +7,7 @@
 typedef nlohmann::json json;
 
 class MapGenerator;
+class PathGenerator;
 class Tileset;
 
 class SceneMap;
@@ -29,6 +30,7 @@ struct EventImport;
 struct EventSaveTileset;
 struct EventRemoveTile;
 struct EventUpdateMask;
+struct EventSetTileWalkable;
 // ---
 
 class MainScene : public Scene
@@ -83,12 +85,14 @@ private:
 	void OnSaveTileset(EventSaveTileset* e);
 	void OnRemoveTile(EventRemoveTile* e);
 	void OnUpdateMask(EventUpdateMask* e);
+	void OnSetTileWalkable(EventSetTileWalkable* e);
 
 public:
 	bool isSceneMap = true;
 
 	// --- Map Generator
 	MapGenerator* mapGenerator = nullptr;
+	PathGenerator* pathGenerator = nullptr;
 	int width = 25;
 	int height = 25;
 	int cellSize = 24;
