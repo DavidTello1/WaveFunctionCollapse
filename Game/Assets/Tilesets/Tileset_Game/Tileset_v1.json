@@ -1,0 +1,410 @@
+{
+    "tileset": {
+        "0": {
+            "ID": 1681928537,
+            "mask_bottom": "100110011100111000000000000000000010001000011",
+            "mask_left": "101010101011011000000000000000000100010100100",
+            "mask_right": "110101010011101000000000000000101000100001000",
+            "mask_top": "111001100101110000000000000001010001000010000",
+            "name": "block",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/block.png"
+        },
+        "1": {
+            "ID": -174471041,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "001000000000000010000100010001000100000010000",
+            "mask_top": "000100000000000001000010010000101000000000010",
+            "name": "corner_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corner_BL.png"
+        },
+        "10": {
+            "ID": 1198705330,
+            "mask_bottom": "000001100011000000010011100000001001110000100",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000000011010001010001100100000000100111001000",
+            "name": "corridor_v",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corridor_v.png"
+        },
+        "11": {
+            "ID": 631682164,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000000011010000010001100100000000100111001000",
+            "name": "deadEnd_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_bottom.png"
+        },
+        "12": {
+            "ID": -1366473553,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000000101100000001001010100000010001011000010",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "deadEnd_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_left.png"
+        },
+        "13": {
+            "ID": -1805921208,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "000001010100000000100101100000000011101010000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "deadEnd_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_right.png"
+        },
+        "14": {
+            "ID": -1178292741,
+            "mask_bottom": "000001100010000000010011100000001001110000100",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "deadEnd_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_top.png"
+        },
+        "15": {
+            "ID": 558798364,
+            "mask_bottom": "000000000000000000000000000000000000000000000",
+            "mask_left": "000000000000000000000000000000000000000000000",
+            "mask_right": "000000000000000000000000000000000000000000000",
+            "mask_top": "000000000000000000000000000000000000000000000",
+            "name": "empty",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/empty.png"
+        },
+        "16": {
+            "ID": -1574148675,
+            "mask_bottom": "000000000011000000000000000000000000000000000",
+            "mask_left": "010000000000000000000000000001010000000000000",
+            "mask_right": "001000000000000000000000000001000000000010000",
+            "mask_top": "000000000000000000010000000110000000000000001",
+            "name": "pillar_2_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_2_bottom.png"
+        },
+        "17": {
+            "ID": -825914032,
+            "mask_bottom": "010000000000000000000000000000100000000001000",
+            "mask_left": "000000000100100000000000000000000000000000000",
+            "mask_right": "000000000000000000100000001010000000000100000",
+            "mask_top": "000100000000000000000000000000101000000000000",
+            "name": "pillar_2_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_2_left.png"
+        },
+        "18": {
+            "ID": -232852898,
+            "mask_bottom": "001000000000000000000000000000000100000100000",
+            "mask_left": "000000000000000001000000010100100000000000000",
+            "mask_right": "000000000100010000000000000000000000000000000",
+            "mask_top": "000010000000000000000000000000000000000100100",
+            "name": "pillar_2_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_2_right.png"
+        },
+        "19": {
+            "ID": 1636886360,
+            "mask_bottom": "000000000000000010000000011001000000000000000",
+            "mask_left": "000100000000000000000000000000000000000000011",
+            "mask_right": "000010000000000000000000000000000010000000001",
+            "mask_top": "000000000010001000000000000000000000000000000",
+            "name": "pillar_2_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_2_top.png"
+        },
+        "2": {
+            "ID": 1298986056,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "010000000000000010001000001001010000000001000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000010000000000000100001001000000010000100100",
+            "name": "corner_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corner_BR.png"
+        },
+        "20": {
+            "ID": 651775549,
+            "mask_bottom": "000000000011000000000000000000000000000000000",
+            "mask_left": "000000000100100000000000000000000000000000000",
+            "mask_right": "001000000000000000000000000001000000000010000",
+            "mask_top": "000100000000000000000000000000101000000000000",
+            "name": "pillar_3_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_3_BL.png"
+        },
+        "21": {
+            "ID": -1199901357,
+            "mask_bottom": "000000000011000000000000000000000000000000000",
+            "mask_left": "010000000000000000000000000001010000000000000",
+            "mask_right": "000000000100010000000000000000000000000000000",
+            "mask_top": "000010000000000000000000000000000000000100100",
+            "name": "pillar_3_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_3_BR.png"
+        },
+        "22": {
+            "ID": 921673527,
+            "mask_bottom": "010000000000000000000000000000100000000001000",
+            "mask_left": "000000000100100000000000000000000000000000000",
+            "mask_right": "000010000000000000000000000000000010000000001",
+            "mask_top": "000000000010001000000000000000000000000000000",
+            "name": "pillar_3_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_3_TL.png"
+        },
+        "23": {
+            "ID": 1085103891,
+            "mask_bottom": "001000000000000000000000000000000100000100000",
+            "mask_left": "000100000000000000000000000000000000000000011",
+            "mask_right": "000000000100010000000000000000000000000000000",
+            "mask_top": "000000000010001000000000000000000000000000000",
+            "name": "pillar_3_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_3_TR.png"
+        },
+        "24": {
+            "ID": 1850682256,
+            "mask_bottom": "000000000011000000000000000000000000000000000",
+            "mask_left": "000000000100100000000000000000000000000000000",
+            "mask_right": "000000000100010000000000000000000000000000000",
+            "mask_top": "000000000010001000000000000000000000000000000",
+            "name": "pillar_4",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_4.png"
+        },
+        "25": {
+            "ID": -764020821,
+            "mask_bottom": "010000000000000000000000000000100000000001000",
+            "mask_left": "010000000000000000000000000001010000000000000",
+            "mask_right": "000000000000000000100000001010000000000100000",
+            "mask_top": "000000000000000000010000000110000000000000001",
+            "name": "pillar_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_BL.png"
+        },
+        "26": {
+            "ID": -477516788,
+            "mask_bottom": "001000000000000000000000000000000100000100000",
+            "mask_left": "000000000000000001000000010100100000000000000",
+            "mask_right": "001000000000000000000000000001000000000010000",
+            "mask_top": "000000000000000000010000000110000000000000001",
+            "name": "pillar_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_BR.png"
+        },
+        "27": {
+            "ID": 1476224629,
+            "mask_bottom": "000000000000000010000000011001000000000000000",
+            "mask_left": "000100000000000000000000000000000000000000011",
+            "mask_right": "000000000000000000100000001010000000000100000",
+            "mask_top": "000100000000000000000000000000101000000000000",
+            "name": "pillar_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_TL.png"
+        },
+        "28": {
+            "ID": -45025799,
+            "mask_bottom": "000000000000000010000000011001000000000000000",
+            "mask_left": "000000000000000001000000010100100000000000000",
+            "mask_right": "000010000000000000000000000000000010000000001",
+            "mask_top": "000010000000000000000000000000000000000100100",
+            "name": "pillar_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_TR.png"
+        },
+        "29": {
+            "ID": 1937120698,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "010000000000000010001000001001010000000001000",
+            "mask_right": "001000000000000010000100010001000100000010000",
+            "mask_top": "000000000000000000010000000110000000000000001",
+            "name": "wall_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_bottom.png"
+        },
+        "3": {
+            "ID": 646014551,
+            "mask_bottom": "010000000000000001001000000100110000000001000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000010000000000000010001000100000010000000101",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "corner_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corner_TL.png"
+        },
+        "30": {
+            "ID": 530981411,
+            "mask_bottom": "010000000000000001001000000100110000000001000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000000000000000000100000001010000000000100000",
+            "mask_top": "000100000000000001000010010000101000000000010",
+            "name": "wall_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_left.png"
+        },
+        "31": {
+            "ID": 1912287245,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "000000010100100000000000000000000010001000000",
+            "mask_right": "001000000000000010000100010001000100000010000",
+            "mask_top": "000100000000000000000000000000101000000000000",
+            "name": "wall_leftPillar_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_leftPillar_bottom.png"
+        },
+        "32": {
+            "ID": -836088134,
+            "mask_bottom": "010000000000000001001000000100110000000001000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000010000000000000000000000000000010000000001",
+            "mask_top": "000000001010001000000000000000000100010000000",
+            "name": "wall_leftPillar_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_leftPillar_left.png"
+        },
+        "33": {
+            "ID": -22591230,
+            "mask_bottom": "000001000011000000000000000000001000100000000",
+            "mask_left": "010000000000000000000000000001010000000000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000010000000000000100001001000000010000100100",
+            "name": "wall_leftPillar_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_leftPillar_right.png"
+        },
+        "34": {
+            "ID": 251728672,
+            "mask_bottom": "001000000000000000000000000000000100000100000",
+            "mask_left": "000100000000000000010010000010001000000000011",
+            "mask_right": "000000100100010000000000000000010001000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "wall_leftPillar_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_leftPillar_top.png"
+        },
+        "35": {
+            "ID": -1626660899,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "000000010100100000000000000000000010001000000",
+            "mask_right": "000000001100010000000000000000000000001000010",
+            "mask_top": "000000000010001000000000000000000000000000000",
+            "name": "wall_pillars2_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_bottom.png"
+        },
+        "36": {
+            "ID": -853304698,
+            "mask_bottom": "000000100011000000000000000000000000010000100",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000000000100010000000000000000000000000000000",
+            "mask_top": "000000001010001000000000000000000100010000000",
+            "name": "wall_pillars2_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_left.png"
+        },
+        "37": {
+            "ID": -2006405661,
+            "mask_bottom": "000001000011000000000000000000001000100000000",
+            "mask_left": "000000000100100000000000000000000000000000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000000010010001000000000000000000000100001000",
+            "name": "wall_pillars2_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_right.png"
+        },
+        "38": {
+            "ID": 1444366478,
+            "mask_bottom": "000000000011000000000000000000000000000000000",
+            "mask_left": "000001000100100000000000000000000001000010000",
+            "mask_right": "000000100100010000000000000000010001000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "wall_pillars2_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_top.png"
+        },
+        "39": {
+            "ID": 1250286551,
+            "mask_bottom": "001000000000000000100100000010000100000110000",
+            "mask_left": "000000000000000001000000010100100000000000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000010000000000000100001001000000010000100100",
+            "name": "wall_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_right.png"
+        },
+        "4": {
+            "ID": 56378009,
+            "mask_bottom": "001000000000000000100100000010000100000110000",
+            "mask_left": "000100000000000000010010000010001000000000011",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "corner_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corner_TR.png"
+        },
+        "40": {
+            "ID": -1355970302,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "010000000000000010001000001001010000000001000",
+            "mask_right": "000000001100010000000000000000000000001000010",
+            "mask_top": "000010000000000000000000000000000000000100100",
+            "name": "wall_rightPillar_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_rightPillar_bottom.png"
+        },
+        "41": {
+            "ID": -1495978237,
+            "mask_bottom": "000000100011000000000000000000000000010000100",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "001000000000000000000000000001000000000010000",
+            "mask_top": "000100000000000001000010010000101000000000010",
+            "name": "wall_rightPillar_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_rightPillar_left.png"
+        },
+        "42": {
+            "ID": -591470815,
+            "mask_bottom": "001000000000000000100100000010000100000110000",
+            "mask_left": "000100000000000000000000000000000000000000011",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000000010010001000000000000000000000100001000",
+            "name": "wall_rightPillar_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_rightPillar_right.png"
+        },
+        "43": {
+            "ID": 2121181314,
+            "mask_bottom": "010000000000000000000000000000100000000001000",
+            "mask_left": "000001000100100000000000000000000001000010000",
+            "mask_right": "000010000000000000010001000100000010000000101",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "wall_rightPillar_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_rightPillar_top.png"
+        },
+        "44": {
+            "ID": 1100913428,
+            "mask_bottom": "000000000000000010000000011001000000000000000",
+            "mask_left": "000100000000000000010010000010001000000000011",
+            "mask_right": "000010000000000000010001000100000010000000101",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "wall_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_top.png"
+        },
+        "5": {
+            "ID": -1329996836,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000000001100010000000000000000000000001000010",
+            "mask_top": "000000001010001000000000000000000100010000000",
+            "name": "cornerPillar_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_BL.png"
+        },
+        "6": {
+            "ID": -689889685,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "000000010100100000000000000000000010001000000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "000000010010001000000000000000000000100001000",
+            "name": "cornerPillar_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_BR.png"
+        },
+        "7": {
+            "ID": 833707833,
+            "mask_bottom": "000000100011000000000000000000000000010000100",
+            "mask_left": "100000000000000000000000000000000000000000000",
+            "mask_right": "000000100100010000000000000000010001000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "cornerPillar_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_TL.png"
+        },
+        "8": {
+            "ID": -720440687,
+            "mask_bottom": "000001000011000000000000000000001000100000000",
+            "mask_left": "000001000100100000000000000000000001000010000",
+            "mask_right": "100000000000000000000000000000000000000000000",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "cornerPillar_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_TR.png"
+        },
+        "9": {
+            "ID": -392309402,
+            "mask_bottom": "100000000000000000000000000000000000000000000",
+            "mask_left": "000001010100100000100101100000000011101010000",
+            "mask_right": "000000101100010001001010100000010001011000010",
+            "mask_top": "100000000000000000000000000000000000000000000",
+            "name": "corridor_h",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corridor_h.png"
+        },
+        "numTiles": 45
+    }
+}
