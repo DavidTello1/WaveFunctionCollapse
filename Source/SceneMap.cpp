@@ -453,9 +453,17 @@ void SceneMap::DrawSectionOptions()
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", stepTime);
 
-	ImGui::Text("Total Time:");
+	ImGui::Text("WFC Time:");
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime);
+
+	ImGui::Text("Paths Time:");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", pathsTime);
+
+	ImGui::Text("Total Time:");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime + pathsTime);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	if (ImGui::Checkbox("Draw Spacing", &isDrawSpaced))

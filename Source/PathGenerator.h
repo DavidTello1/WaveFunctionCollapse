@@ -2,7 +2,17 @@
 #include "DynArray.h"
 #include <map>
 
+#define NUM_NEIGHBOURS 4
+#define MIN_AREA_SIZE 5
+
 class MapGenerator;
+
+struct Area {
+	int label;
+
+	DynArray<int> cells; // cellIndices contained in this area
+	DynArray<int> neighbourAreas; // labels of neighbouring areas
+};
 
 class PathGenerator
 {
@@ -17,24 +27,21 @@ public:
 	const DynArray<int>& GetBreadcrumbs() const { return breadCrumbs; }
 
 private:
-	void GetAreas_FirstPass(); // Connected-Component-Labeling (First Pass)
-	void GetAreas_SecondPass(); // Connected-Component-Labeling (Second Pass)
-
-	void ConnectAreas(); // Bowyer-Watson
-	void GetPaths(); // Prim's algorithm
-	void CarvePaths(); // Dijkstra
+	void FindAreas(); // Connected-Component-Labeling
+	void CreateAreas(); // Fill areas map
+	void RemoveAreas(int minSize); // Remove areas smaller than minSize
+	void GetConnections(); // Get connections to neighbouring areas
+	void SetBreadCrumbs(); // Select random point in each area
+	void CarvePaths(); // Pathfinding to connect areas
 	void FinishGeneration(); // Final map tiles (WFC of reset cells)
 
 private:
-	static constexpr int MIN_AREA_SIZE = 5;
-
 	MapGenerator* map = nullptr; // reference to MapGenerator (shared_ptr)
 
 	std::map<int, DynArray<int>> areas;
-	DynArray<int> walkableCells;
 
+	DynArray<int> walkabilityMap;
 	DynArray<int> labelingMap;
-	std::map<int, int> equivalencies;
 
 	DynArray<int> breadCrumbs;
 };

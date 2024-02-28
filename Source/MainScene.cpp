@@ -99,7 +99,12 @@ bool MainScene::Update(float dt)
         if (mapGenerator->IsFinished() && sceneMap->GetState() != SceneMap::State::FINISHED)
         {
             sceneMap->SetState(SceneMap::State::FINISHED);
+
+            // Generate Paths
+            timer.Start();
             pathGenerator->GeneratePaths();
+            sceneMap->SetPathsTime(timer.ReadMs());
+
         }
 
         // Update Scenes
@@ -430,6 +435,7 @@ void MainScene::ImportMap(json& file)
 
     mapGenerator->SetSize(width, height);
     mapGenerator->SetCellSize(cellSize);
+    sceneMap->OnMapResize(width, height);
 
     // Preset Cells
     int numPreset = file["map"]["numPreset"];

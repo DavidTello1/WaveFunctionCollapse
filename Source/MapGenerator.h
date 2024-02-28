@@ -49,6 +49,7 @@ public:
 
 protected:
 	int FindTile(int tileID) const;
+	int CheckNeighbour(int index, int direction);
 
 private:
 	int HeuristicPick();
@@ -58,7 +59,6 @@ private:
 	void FirstStep(); // propagate preset cells
 	
 	// --- Utils
-	int CheckNeighbour(int index, int direction);
 	void Resize();
 
 protected:

@@ -6,6 +6,8 @@
 #include "Tile.h"
 #include "RandomNumber.h"
 
+#include <string>
+
 PathGenerator::PathGenerator(MapGenerator* map) : map(map)
 {
 }
@@ -23,17 +25,17 @@ DynArray<int> PathGenerator::GeneratePaths()
     // --- Connected Component Labeling
     labelingMap = DynArray<int>(numCells);
     labelingMap.fill(0);
+    FindAreas();
 
-    GetAreas_FirstPass();
-    GetAreas_SecondPass();
+    // --- Init Areas' map and Remove small ones
+    CreateAreas();
+    RemoveAreas(MIN_AREA_SIZE);
 
-    // --- Delaunay Triangulation (BowyerWatson)
-    ConnectAreas();
+    // --- Get neighbouring areas to connect to
+    GetConnections();
 
-    // --- Prim's Algorithm
-    GetPaths();
-
-    // --- Dijkstra
+    // --- Pathfinding
+    SetBreadCrumbs();
     CarvePaths();
 
     // --- Final WFC
@@ -45,26 +47,25 @@ DynArray<int> PathGenerator::GeneratePaths()
 void PathGenerator::Reset()
 {
     areas.clear();
-    walkableCells.clear();
+    walkabilityMap.clear();
 
     labelingMap.clear();
-    equivalencies.clear();
-
     breadCrumbs.clear();
 }
 
-void PathGenerator::GetAreas_FirstPass()
+void PathGenerator::FindAreas()
 {
     int numAreas = 1;
+    std::map<int, int> equivalencies;
 
     for (int i = 0; i < labelingMap.size(); ++i)
     {
         // --- Get Walkable Cells
         Tile* tile = map->GetTileByID(map->cells[i]->tileID);
+        walkabilityMap.push_back(tile->IsWalkable());
+
         if (!tile->IsWalkable())
             continue;
-        else
-            walkableCells.push_back(i);
 
 
         // --- Connected Component Labeling (First Pass)
@@ -133,53 +134,70 @@ void PathGenerator::GetAreas_FirstPass()
             }
         }
     }
-}
 
-void PathGenerator::GetAreas_SecondPass()
-{
     // --- Join different labels from same area to single label
-    for (int i = 0; i < walkableCells.size(); ++i)
+    for (int i = 0; i < walkabilityMap.size(); ++i)
     {
-        int index = walkableCells[i];
-        int label = labelingMap[index];
+        if (walkabilityMap[i] == false)
+            continue;
+
+        int label = labelingMap[i];
 
         bool containsLabel = true;
         while (containsLabel)
         {
             if (equivalencies.find(label) == equivalencies.end()) // if label not found
             {
-                labelingMap[index] = label;
+                labelingMap[i] = label;
                 break;
             }
 
             label = equivalencies[label]; // pseudo-recursivity
         }
     }
+}
 
-    // --- Create Areas
+void PathGenerator::CreateAreas()
+{
     // Create List of All Areas
-    for (int i = 0; i < walkableCells.size(); ++i)
+    for (int i = 0; i < walkabilityMap.size(); ++i)
     {
-        int index = walkableCells[i];
-        int label = labelingMap[index];
+        if (walkabilityMap[i] == false)
+            continue;
+
+        int label = labelingMap[i];
 
         // Init label if it doesn't exist
         if (areas.find(label) == areas.end())
             areas[label] = DynArray<int>();
 
         // Add cell
-        areas[label].push_back(index);
+        areas[label].push_back(i);
     }
+}
 
+void PathGenerator::RemoveAreas(int minSize)
+{
     // Check for Area Size & Remove if too small
     for (auto it = areas.begin(); it != areas.end(); )
     {
         DynArray<int> area = it->second;
 
-        if (area.size() >= MIN_AREA_SIZE)
+        if (area.size() >= minSize)
         {
             ++it;
             continue;
+        }
+
+        // Set Cells to Blocked Tile (non-walkable)
+        for (int i = 0; i < area.size(); ++i)
+        {
+            int cellIndex = area[i];
+            walkabilityMap[cellIndex] = false;
+
+            //// Set cell's tileID to BlockedTile
+            //int blockedTile = map->GetAllTiles().front()->GetID();
+            //map->SetCell(cellIndex, blockedTile);
         }
 
         // Remove Area
@@ -188,7 +206,74 @@ void PathGenerator::GetAreas_SecondPass()
 }
 
 // -----------------------------------
-void PathGenerator::ConnectAreas()
+void PathGenerator::GetConnections()
+{
+    std::map<int, DynArray<int>> connections;
+
+    // Init Connections Map
+    for (auto it = areas.begin(); it != areas.end(); it++)
+        connections[it->first] = DynArray<int>();
+
+
+    // Get Neighbouring Areas
+    for (int i = 0; i < walkabilityMap.size(); ++i)
+    {
+        if (walkabilityMap[i] == true) //only check nonWalkable cells
+            continue;
+
+        DynArray<int> neighbourAreas;
+
+        // Check neighbours
+        for (int dir = 0; dir < 4; ++dir)
+        {
+            int neighbourIndex = map->CheckNeighbour(i, dir);
+
+            if (neighbourIndex == -1 || walkabilityMap[neighbourIndex] == false)
+                continue;
+
+            neighbourAreas.push_back(labelingMap[neighbourIndex]);
+        }
+
+        // Check if areas are different (there is a connection)
+        if (neighbourAreas.size() <= 1)
+            continue;
+
+        // Add neighbours
+        for (int j = 1; j < neighbourAreas.size(); ++j)
+        {
+            neighbourAreas = neighbourAreas.sort();
+            neighbourAreas = neighbourAreas.flip();
+
+            int areaLabel = neighbourAreas.front();
+
+            if (neighbourAreas[j] == areaLabel)
+                continue;
+
+            connections[areaLabel].push_back(neighbourAreas[j]);
+        }
+    }
+
+    // Remove duplicates
+    for (auto it = connections.begin(); it != connections.end(); it++)
+    {
+        if (it->second.size() == 0)
+            continue;
+
+        it->second = it->second.sort();
+
+        int index = 0;
+        for (int i = 0; i < it->second.size() - 1; ++i)
+        {
+            if (it->second[i] != it->second[i + 1])
+                it->second[index++] = it->second[i];
+
+        }
+        it->second[index++] = it->second[it->second.size() - 1];
+        it->second.resize(index);
+    }
+}
+
+void PathGenerator::SetBreadCrumbs()
 {
     // Select random point from each area
     for (auto it = areas.begin(); it != areas.end(); it++)
@@ -196,20 +281,9 @@ void PathGenerator::ConnectAreas()
         DynArray<int> area = it->second;
 
         int index = map->RNG->GenerateBoundedInt(area.size());
-
         int cellIndex = area[index];
-
         breadCrumbs.push_back(cellIndex);
     }
-
-    // Bowyer-Watson to generate Delaunay Triangulation
-}
-
-void PathGenerator::GetPaths()
-{
-    // Prim's Algorithm to select the main connections
-
-    // Randomly select extra paths (weighted random)
 }
 
 void PathGenerator::CarvePaths()

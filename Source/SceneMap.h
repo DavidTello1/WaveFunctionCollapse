@@ -39,6 +39,7 @@ public:
 
 	void AddTime(float time) { totalTime += time; }
 	void SetStepTime(float time) { stepTime = time; }
+	void SetPathsTime(float time) { pathsTime = time; }
 	void SetTotalTime(float time) { totalTime = time; }
 
 	void OnWindowResize(int width, int height);
@@ -82,6 +83,7 @@ private:
 	//  UI Variables
 	static const int defaultSpacing = 2;
 	float stepTime = 0;
+	float pathsTime = 0;
 	float totalTime = 0;
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
