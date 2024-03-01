@@ -53,3 +53,15 @@ struct EventSetTileWalkable : public Event {
 	int index;
 	bool value;
 };
+
+struct EventSetTileSymmetry : public Event {
+	EventSetTileSymmetry(int index, bool value) : index(index), value(value) {}
+	int index;
+	bool value;
+};
+
+struct EventSetTileCost : public Event {
+	EventSetTileCost(int index, int value) : index(index), value(value) {}
+	int index;
+	int value;
+};

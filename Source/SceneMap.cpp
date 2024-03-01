@@ -41,6 +41,8 @@ bool SceneMap::Init(const MapGenerator& map)
 
 	// --- UI Variables
 	stepTime = 0.0f;
+	wfcTime = 0.0f;
+	pathsTime = 0.0f;
 	totalTime = 0.0f;
 	widthRatio = 1.0f;
 	heightRatio = 1.0f;
@@ -329,12 +331,12 @@ void SceneMap::DrawAreas(const MapGenerator& map, const PathGenerator& paths)
 	}
 
 	// --- Draw BreadCrumbs
-	const DynArray<int> breadCrumbs = paths.GetBreadcrumbs();
-	for (int i = 0; i < breadCrumbs.size(); ++i)
+	const std::map<int, int> breadCrumbs = paths.GetBreadcrumbs();
+	for (auto it = breadCrumbs.begin(); it != breadCrumbs.end(); it++)
 	{
 		// Cell
-		int x = breadCrumbs[i] % width;
-		int y = breadCrumbs[i] / width;
+		int x = it->second % width;
+		int y = it->second / width;
 
 		// Position & Size
 		glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
@@ -343,6 +345,28 @@ void SceneMap::DrawAreas(const MapGenerator& map, const PathGenerator& paths)
 		// Draw Color
 		Color color = { 0.0f, 0.0f, 0.0f, 0.5f };
 		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+	}
+
+	// --- Draw Paths
+	const DynArray<DynArray<int>> connectedPaths = paths.GetPaths();
+	for (int i = 0; i < connectedPaths.size(); ++i)
+	{
+		DynArray<int> connection = connectedPaths[i];
+
+		for (int j = 0; j < connection.size(); ++j)
+		{
+			// Cell
+			int x = connection[j] % width;
+			int y = connection[j] / width;
+
+			// Position & Size(
+			glm::vec2 position = { offsetX + x * (cellSize + spacing) + (cellSize / 4.0f), offsetY + y * (cellSize + spacing) + (cellSize / 4.0f)};
+			glm::vec2 size = { cellSize / 2.0f, cellSize / 2.0f };
+
+			// Draw Color
+			Color color = { 1.0f, 1.0f, 1.0f, 0.5f };
+			App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+		}
 	}
 }
 
@@ -455,7 +479,7 @@ void SceneMap::DrawSectionOptions()
 
 	ImGui::Text("WFC Time:");
 	ImGui::SameLine();
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime);
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", wfcTime);
 
 	ImGui::Text("Paths Time:");
 	ImGui::SameLine();
@@ -463,7 +487,7 @@ void SceneMap::DrawSectionOptions()
 
 	ImGui::Text("Total Time:");
 	ImGui::SameLine();
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime + pathsTime);
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%.2f ms", totalTime);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	if (ImGui::Checkbox("Draw Spacing", &isDrawSpaced))

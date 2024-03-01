@@ -463,6 +463,12 @@
     <ClInclude Include="PathGenerator.h">
       <Filter>Source\MapGenerator</Filter>
     </ClInclude>
+    <ClInclude Include="Pathfinding.h">
+      <Filter>Source\MapGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2D.h">
+      <Filter>Source\Engine\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -559,6 +565,9 @@
       <Filter>Source\Engine\External Libraries\TinyFileDialog</Filter>
     </ClCompile>
     <ClCompile Include="PathGenerator.cpp">
+      <Filter>Source\MapGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinding.cpp">
       <Filter>Source\MapGenerator</Filter>
     </ClCompile>
   </ItemGroup>

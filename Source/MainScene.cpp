@@ -74,6 +74,8 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnRemoveTile);
     App->event->Subscribe(this, &MainScene::OnUpdateMask);
     App->event->Subscribe(this, &MainScene::OnSetTileWalkable);
+    App->event->Subscribe(this, &MainScene::OnSetTileSymmetry);
+    App->event->Subscribe(this, &MainScene::OnSetTileCost);
 
     return true;
 }
@@ -104,7 +106,7 @@ bool MainScene::Update(float dt)
             timer.Start();
             pathGenerator->GeneratePaths();
             sceneMap->SetPathsTime(timer.ReadMs());
-
+            sceneMap->CalcTotalTime();
         }
 
         // Update Scenes
@@ -187,10 +189,6 @@ void MainScene::DrawMenuBar()
                 if (ImGui::MenuItem("Map Presets"))
                 {
                     OnImportMapPresets();
-                }
-                if (ImGui::MenuItem("Map"))
-                {
-                    OnImportMap();
                 }
                 ImGui::EndMenu();
             }
@@ -285,7 +283,7 @@ void MainScene::ImportFile(const char* filepath)
     if (extension == "json")
     {
         json file = App->resources->LoadJson(path.c_str());
-        ImportMap(file);
+        ImportMapPresets(file);
         return;
     }
     
@@ -318,14 +316,6 @@ void MainScene::OnImportMapPresets()
     const char* filterDesc = "Json Files (*.json)";
 
     OpenFileDialog("Import Map Presets", FOLDER_ASSETS, 1, filters, filterDesc, false);
-}
-
-void MainScene::OnImportMap()
-{
-    const char* filters[1] = { "*.json" };
-    const char* filterDesc = "Json Files (*.json)";
-
-    OpenFileDialog("Import Map", FOLDER_ASSETS, 1, filters, filterDesc, false);
 }
 
 void MainScene::OnExportTileset()
@@ -405,6 +395,7 @@ void MainScene::ImportTileset(json& file)
         std::string name        = file["tileset"][std::to_string(i)]["name"];
         int id                  = file["tileset"][std::to_string(i)]["ID"];
         bool isWalkable         = file["tileset"][std::to_string(i)]["isWalkable"];
+        int cost                = file["tileset"][std::to_string(i)]["cost"];
         std::string texturePath = file["tileset"][std::to_string(i)]["texturePath"];
         std::string topMask     = file["tileset"][std::to_string(i)]["mask_top"];
         std::string leftMask    = file["tileset"][std::to_string(i)]["mask_left"];
@@ -420,7 +411,7 @@ void MainScene::ImportTileset(json& file)
         }
 
         unsigned int texture = tex->index;
-        Tile tile = Tile(id, texture, isWalkable, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
+        Tile tile = Tile(id, texture, isWalkable, cost, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
 
         tileset->AddTile(tile);
         sceneTiles->ImportTile(id, name.c_str(), texturePath.c_str());
@@ -439,6 +430,7 @@ void MainScene::ExportTileset(json& file)
         file["tileset"][std::to_string(i)]["name"]        = data.name.c_str();
         file["tileset"][std::to_string(i)]["texturePath"] = data.texturePath.c_str();
         file["tileset"][std::to_string(i)]["isWalkable"]  = tile->IsWalkable();
+        file["tileset"][std::to_string(i)]["cost"]        = tile->GetCost();
         file["tileset"][std::to_string(i)]["mask_top"]    = Utils::MaskToString(tile->GetMasks()[0]).c_str();
         file["tileset"][std::to_string(i)]["mask_left"]   = Utils::MaskToString(tile->GetMasks()[1]).c_str();
         file["tileset"][std::to_string(i)]["mask_right"]  = Utils::MaskToString(tile->GetMasks()[2]).c_str();
@@ -502,38 +494,6 @@ void MainScene::ExportMapPresets(json& file)
 
         file["map"]["cells"][std::to_string(i)]["tileID"] = cell->tileID;
         file["map"]["cells"][std::to_string(i)]["index"] = cell->index;
-    }
-}
-
-void MainScene::ImportMap(json& file)
-{
-    // --- Import Tileset
-    ImportTileset(file);
-    mapGenerator->SetTileset(tileset->GetAllTiles());
-
-    // --- Import Map
-    if (file.find("map") == file.end())
-    {
-        LOG("Error importing map, not found in json file");
-        return;
-    }
-
-    // Map Data
-    width = file["map"]["data"]["width"];
-    height = file["map"]["data"]["height"];
-    cellSize = file["map"]["data"]["cellSize"];
-
-    mapGenerator->SetSize(width, height);
-    mapGenerator->SetCellSize(cellSize);
-    sceneMap->OnMapResize(width, height);
-
-    // Cells
-    int numCells = width * height;
-    for (int i = 0; i < numCells; ++i)
-    {
-        int tile = file["map"]["cells"][std::to_string(i)]["tileID"];
-
-        mapGenerator->SetCell(i, tile);
     }
 }
 
@@ -613,6 +573,8 @@ void MainScene::OnStop(EventStop* e)
     pathGenerator->Reset();
 
     sceneMap->SetStepTime(0.0f);
+    sceneMap->SetWFCTime(0.0f);
+    sceneMap->SetPathsTime(0.0f);
     sceneMap->SetTotalTime(0.0f);
 
     sceneMap->OnStop();
@@ -704,4 +666,14 @@ void MainScene::OnUpdateMask(EventUpdateMask* e)
 void MainScene::OnSetTileWalkable(EventSetTileWalkable* e)
 {
     tileset->SetWalkable(e->index, e->value);
+}
+
+void MainScene::OnSetTileSymmetry(EventSetTileSymmetry* e)
+{
+    tileset->SetSymmetry(e->index, e->value);
+}
+
+void MainScene::OnSetTileCost(EventSetTileCost* e)
+{
+    tileset->SetCost(e->index, e->value);
 }

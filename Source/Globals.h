@@ -18,6 +18,7 @@ void log(const char file[], int line, const char* format, ...);
 #define CAP(n) ((n <= 0.0f) ? n = 0.0f : (n >= 1.0f) ? n = 1.0f : n = n)
 #define MIN(a,b) ((a)<(b)) ? (a) : (b)
 #define MAX(a,b) ((a)>(b)) ? (a) : (b)
+#define CLAMP(x, upper, lower) (MIN(upper, MAX(x, lower)))
 
 // Typedefs
 typedef unsigned int uint;

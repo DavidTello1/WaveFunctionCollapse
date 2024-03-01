@@ -24,7 +24,8 @@ public:
 	void Reset();
 
 	const std::map<int, DynArray<int>> GetAreas() const { return areas; }
-	const DynArray<int>& GetBreadcrumbs() const { return breadCrumbs; }
+	const std::map<int, int>& GetBreadcrumbs() const { return breadCrumbs; }
+	const DynArray<DynArray<int>>& GetPaths() const { return paths; }
 
 private:
 	void FindAreas(); // Connected-Component-Labeling
@@ -40,10 +41,14 @@ private:
 
 	std::map<int, DynArray<int>> areas;
 
-	DynArray<int> walkabilityMap;
+	DynArray<bool> walkabilityMap;
 	DynArray<int> labelingMap;
+	DynArray<int> costMap;
 
-	DynArray<int> breadCrumbs;
+	std::map<int, DynArray<int>> connections;
+	std::map<int, int> breadCrumbs;
+
+	DynArray<DynArray<int>> paths;
 };
 
 

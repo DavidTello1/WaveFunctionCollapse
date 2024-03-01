@@ -37,10 +37,12 @@ public:
 	void SetState(State state) { this->state = state; }
 	void UnselectAllCells();
 
-	void AddTime(float time) { totalTime += time; }
+	void AddTime(float time) { wfcTime += time; }
 	void SetStepTime(float time) { stepTime = time; }
+	void SetWFCTime(float time) { wfcTime = time; }
 	void SetPathsTime(float time) { pathsTime = time; }
 	void SetTotalTime(float time) { totalTime = time; }
+	void CalcTotalTime() { totalTime = wfcTime + pathsTime; }
 
 	void OnWindowResize(int width, int height);
 	void OnZoom(float zoom);
@@ -82,9 +84,10 @@ private:
 
 	//  UI Variables
 	static const int defaultSpacing = 2;
-	float stepTime = 0;
-	float pathsTime = 0;
-	float totalTime = 0;
+	float stepTime = 0.0f;
+	float wfcTime = 0.0f;
+	float pathsTime = 0.0f;
+	float totalTime = 0.0f;
 	float widthRatio = 1.0f;
 	float heightRatio = 1.0f;
 	int spacing = 0;

@@ -26,7 +26,7 @@ void Tileset::AddTile(int tileID, unsigned int texture)
 		}
 	}
 
-	Tile* tile = new Tile(tileID, texture, true, tiles.size() + 1);
+	Tile* tile = new Tile(tileID, texture, true, 1, tiles.size() + 1);
 	tiles.push_back(tile);
 }
 
@@ -97,6 +97,23 @@ void Tileset::SetWalkable(int index, bool value)
 
 	tiles[index]->isWalkable = value;
 }
+
+void Tileset::SetSymmetry(int index, bool value)
+{
+	if (index < 0 || index >= tiles.size())
+		return;
+
+	tiles[index]->isSymmetrical = value;
+}
+
+void Tileset::SetCost(int index, int value)
+{
+	if (index < 0 || index >= tiles.size())
+		return;
+
+	tiles[index]->cost = value;
+}
+
 
 bool Tileset::IsValid(int tileID)
 {

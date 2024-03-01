@@ -132,9 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="PathGenerator.h" />
     <ClInclude Include="BitArray.h" />
     <ClInclude Include="json\json.hpp" />
+    <ClInclude Include="Point2D.h" />
     <ClInclude Include="tinyfiledialogs\tinyfiledialogs.h" />
     <ClInclude Include="UI_ButtonGroup.h" />
     <ClInclude Include="Camera.h" />
@@ -267,6 +269,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="PathGenerator.cpp" />
     <ClCompile Include="tinyfiledialogs\tinyfiledialogs.c" />
     <ClCompile Include="UI_ButtonGroup.cpp" />

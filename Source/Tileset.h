@@ -27,6 +27,8 @@ public:
 	void SetMask(int index, int dir, const BitArray& mask);
 	void UpdateMask(int index, int dir, int bit, bool value);
 	void SetWalkable(int index, bool value);
+	void SetSymmetry(int index, bool value);
+	void SetCost(int index, int value);
 
 private:
 	DynArray<Tile*> tiles;

@@ -2,6 +2,7 @@
 #include "PathGenerator.h"
 
 #include "MapGenerator.h"
+#include "Pathfinding.h"
 #include "Cell.h"
 #include "Tile.h"
 #include "RandomNumber.h"
@@ -47,10 +48,15 @@ DynArray<int> PathGenerator::GeneratePaths()
 void PathGenerator::Reset()
 {
     areas.clear();
-    walkabilityMap.clear();
 
+    walkabilityMap.clear();
     labelingMap.clear();
+    costMap.clear();
+
+    connections.clear();
     breadCrumbs.clear();
+
+    paths.clear();
 }
 
 void PathGenerator::FindAreas()
@@ -60,8 +66,12 @@ void PathGenerator::FindAreas()
 
     for (int i = 0; i < labelingMap.size(); ++i)
     {
-        // --- Get Walkable Cells
         Tile* tile = map->GetTileByID(map->cells[i]->tileID);
+        
+        // --- Get Cost Map
+        costMap.push_back(tile->GetCost());
+
+        // --- Get Walkable Cells
         walkabilityMap.push_back(tile->IsWalkable());
 
         if (!tile->IsWalkable())
@@ -193,11 +203,16 @@ void PathGenerator::RemoveAreas(int minSize)
         for (int i = 0; i < area.size(); ++i)
         {
             int cellIndex = area[i];
+            const Tile* tile = map->GetAllTiles().front(); // blocked Tile
+
+            // Set cell's tileID to BlockedTile
+            map->SetCell(cellIndex, tile->GetID());
+
+            // Update Walkability Map
             walkabilityMap[cellIndex] = false;
 
-            //// Set cell's tileID to BlockedTile
-            //int blockedTile = map->GetAllTiles().front()->GetID();
-            //map->SetCell(cellIndex, blockedTile);
+            // Update Cost Map
+            costMap[cellIndex] = tile->GetCost();
         }
 
         // Remove Area
@@ -208,8 +223,6 @@ void PathGenerator::RemoveAreas(int minSize)
 // -----------------------------------
 void PathGenerator::GetConnections()
 {
-    std::map<int, DynArray<int>> connections;
-
     // Init Connections Map
     for (auto it = areas.begin(); it != areas.end(); it++)
         connections[it->first] = DynArray<int>();
@@ -281,16 +294,45 @@ void PathGenerator::SetBreadCrumbs()
         DynArray<int> area = it->second;
 
         int index = map->RNG->GenerateBoundedInt(area.size());
-        int cellIndex = area[index];
-        breadCrumbs.push_back(cellIndex);
+
+        breadCrumbs[it->first] = area[index];
     }
 }
 
 void PathGenerator::CarvePaths()
 {
+    LOG("--- COST MAP ---")
+    for (int i = 0; i < costMap.size(); ++i)
+    {
+        LOG("%d", costMap[i]);
+    }
+
+    Pathfinding pathfinder = Pathfinding(map->width, map->height, costMap);
+
+    for (auto it = connections.begin(); it != connections.end(); it++)
+    {
+        int origin_index = breadCrumbs[it->first];
+
+        Point2D origin = Point2D(origin_index % map->width, origin_index / map->width);
+
+        DynArray<int> connectedAreas = it->second;
+        for (int i = 0; i < connectedAreas.size(); ++i)
+        {
+            int dest_index = breadCrumbs[connectedAreas[i]];
+
+            Point2D destination = Point2D(dest_index % map->width, dest_index / map->width);
+
+            int size = pathfinder.Propagate(origin, destination);
+            if (size == 0)
+                LOG("Error path not valid");
+
+            paths.push_back(pathfinder.GetPath());
+        }
+    }
+
     // A* algorithm from startPos to points in each area
 
-    // Reset Cells in path that are non-Walkable and neighbours
+    // Reset Cells in path that are non-Walkable and all of its 8 neighbours
 }
 
 void PathGenerator::FinishGeneration()

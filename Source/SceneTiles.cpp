@@ -276,6 +276,16 @@ void SceneTiles::DrawTileData(const Tileset* tileset, const float panelWidth)
 	if (ImGui::Checkbox("Walkable", &isWalkable))
 		App->event->Publish(new EventSetTileWalkable(currentTile, isWalkable));
 
+	bool isSymmetrical = tile->IsSymmetrical();
+	if (ImGui::Checkbox("Symmetrical", &isSymmetrical))
+		App->event->Publish(new EventSetTileSymmetry(currentTile, isSymmetrical));
+
+	int cost = tile->GetCost();
+	ImGui::SetNextItemWidth(100.0f);
+	if (ImGui::InputInt("Cost", &cost, 1, 1))
+		App->event->Publish(new EventSetTileCost(currentTile, cost));
+
+
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 12);
 	DrawMask("Top Mask:    ", &topOpen,	   0, tileset, neighbourSize, panelWidth);
 	DrawMask("Left Mask:   ", &leftOpen,   1, tileset, neighbourSize, panelWidth);
@@ -325,14 +335,19 @@ void SceneTiles::DrawMask(const char* name, bool* selected, const int dir, const
 
 		if (NeighbourCombo(label.c_str(), isSet, comboSize, tile->GetTexture(), neighbour->GetTexture(), dir))
 		{
-			// Update Masks (currentTile & neighbour)
+			// Update Tile Mask
 			int neighbourDir = NUM_NEIGHBOURS - dir - 1;
 			App->event->Publish(new EventUpdateMask(currentTile, dir, i, !isSet));
-			App->event->Publish(new EventUpdateMask(i, neighbourDir, currentTile, !isSet));
 
 			isChanges = true;
 			tileData[currentTile].isChanged = true;
-			tileData[i].isChanged = true;
+
+			// Update Neighbour Mask
+			if (tile->IsSymmetrical())
+			{
+				App->event->Publish(new EventUpdateMask(i, neighbourDir, currentTile, !isSet));
+				tileData[i].isChanged = true;
+			}
 		}
 
 		count++;

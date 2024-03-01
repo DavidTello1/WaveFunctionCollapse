@@ -31,6 +31,8 @@ struct EventSaveTileset;
 struct EventRemoveTile;
 struct EventUpdateMask;
 struct EventSetTileWalkable;
+struct EventSetTileSymmetry;
+struct EventSetTileCost;
 // ---
 
 class MainScene : public Scene
@@ -56,7 +58,6 @@ private:
 	void OnImportTile();
 	void OnImportTileset();
 	void OnImportMapPresets();
-	void OnImportMap();
 	void OnExportTileset();
 	void OnExportMapPresets();
 	void OnExportMap();
@@ -66,7 +67,6 @@ private:
 	void ExportTileset(json& file);
 	void ImportMapPresets(json& file);
 	void ExportMapPresets(json& file);
-	void ImportMap(json& file);
 	void ExportMap(json& file);
 
 	// --- EVENTS ---
@@ -90,6 +90,8 @@ private:
 	void OnRemoveTile(EventRemoveTile* e);
 	void OnUpdateMask(EventUpdateMask* e);
 	void OnSetTileWalkable(EventSetTileWalkable* e);
+	void OnSetTileSymmetry(EventSetTileSymmetry* e);
+	void OnSetTileCost(EventSetTileCost* e);
 
 public:
 	bool isSceneMap = true;
