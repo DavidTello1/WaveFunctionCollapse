@@ -184,6 +184,10 @@ void MainScene::DrawMenuBar()
                 {
                     OnImportTileset();
                 }
+                if (ImGui::MenuItem("Map Presets"))
+                {
+                    OnImportMapPresets();
+                }
                 if (ImGui::MenuItem("Map"))
                 {
                     OnImportMap();
@@ -196,7 +200,11 @@ void MainScene::DrawMenuBar()
                 {
                     OnExportTileset();
                 }
-                if (ImGui::MenuItem("Map"))
+                if (ImGui::MenuItem("Map Presets"))
+                {
+                    OnExportMapPresets();
+                }
+                if (ImGui::MenuItem("Map", nullptr, false, mapGenerator->IsFinished()))
                 {
                     OnExportMap();
                 }
@@ -304,6 +312,13 @@ void MainScene::OnImportTileset()
 
     OpenFileDialog("Import Tileset", FOLDER_ASSETS, 1, filters, filterDesc, false);
 }
+void MainScene::OnImportMapPresets()
+{
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json Files (*.json)";
+
+    OpenFileDialog("Import Map Presets", FOLDER_ASSETS, 1, filters, filterDesc, false);
+}
 
 void MainScene::OnImportMap()
 {
@@ -325,6 +340,22 @@ void MainScene::OnExportTileset()
 
     json file;
     ExportTileset(file);
+
+    App->resources->SaveJson(path.c_str(), file);
+}
+
+void MainScene::OnExportMapPresets()
+{
+    const char* filters[1] = { "*.json" };
+    const char* filterDesc = "Json File (*.json)";
+
+    String path = tinyfd_saveFileDialog("Save Map Presets", FOLDER_ASSETS, 1, filters, filterDesc);
+
+    if (path == "") // Cancel pressed
+        return;
+
+    json file;
+    ExportMapPresets(file);
 
     App->resources->SaveJson(path.c_str(), file);
 }
@@ -415,7 +446,7 @@ void MainScene::ExportTileset(json& file)
     }
 }
 
-void MainScene::ImportMap(json& file)
+void MainScene::ImportMapPresets(json& file)
 {
     // --- Import Tileset
     ImportTileset(file);
@@ -448,7 +479,7 @@ void MainScene::ImportMap(json& file)
     }
 }
 
-void MainScene::ExportMap(json& file)
+void MainScene::ExportMapPresets(json& file)
 {
     // --- Export Tileset
     ExportTileset(file);
@@ -473,6 +504,55 @@ void MainScene::ExportMap(json& file)
         file["map"]["cells"][std::to_string(i)]["index"] = cell->index;
     }
 }
+
+void MainScene::ImportMap(json& file)
+{
+    // --- Import Tileset
+    ImportTileset(file);
+    mapGenerator->SetTileset(tileset->GetAllTiles());
+
+    // --- Import Map
+    if (file.find("map") == file.end())
+    {
+        LOG("Error importing map, not found in json file");
+        return;
+    }
+
+    // Map Data
+    width = file["map"]["data"]["width"];
+    height = file["map"]["data"]["height"];
+    cellSize = file["map"]["data"]["cellSize"];
+
+    mapGenerator->SetSize(width, height);
+    mapGenerator->SetCellSize(cellSize);
+    sceneMap->OnMapResize(width, height);
+
+    // Cells
+    int numCells = width * height;
+    for (int i = 0; i < numCells; ++i)
+    {
+        int tile = file["map"]["cells"][std::to_string(i)]["tileID"];
+
+        mapGenerator->SetCell(i, tile);
+    }
+}
+
+void MainScene::ExportMap(json& file)
+{
+    // --- Export Tileset
+    ExportTileset(file);
+
+    // --- Export Map
+    // Map Data
+    file["map"]["data"]["width"] = width;
+    file["map"]["data"]["height"] = height;
+    file["map"]["data"]["cellSize"] = cellSize;
+
+    // Cells
+    for (int i = 0; i < width * height; ++i)
+        file["map"]["cells"][std::to_string(i)]["tileID"] = mapGenerator->GetCell(i)->tileID;
+}
+
 
 // -------------------------------
 // --- EVENTS ---

@@ -55,13 +55,17 @@ private:
 	void ImportFile(const char* filepath);
 	void OnImportTile();
 	void OnImportTileset();
+	void OnImportMapPresets();
 	void OnImportMap();
 	void OnExportTileset();
+	void OnExportMapPresets();
 	void OnExportMap();
 
 	void ImportTile(const char* texturePath);
 	void ImportTileset(json& file);
 	void ExportTileset(json& file);
+	void ImportMapPresets(json& file);
+	void ExportMapPresets(json& file);
 	void ImportMap(json& file);
 	void ExportMap(json& file);
 
