@@ -49,6 +49,7 @@ bool SceneMap::Init(const MapGenerator& map)
 	spacing = defaultSpacing;
 	isDrawSpaced = true;
 	isDrawAreas = true;
+	isPathSteps = false;
 
 	// --- Panel Data
 	isPanelOpen = true;
@@ -497,6 +498,16 @@ void SceneMap::DrawSectionOptions()
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	ImGui::Checkbox("Draw Areas", &isDrawAreas);
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
+	ImGui::Checkbox("Path Stepped", &isPathSteps);
+
+	if (isPathSteps)
+	{
+		ImGui::SameLine();
+		if (ImGui::Button("Next Step"))
+			App->event->Publish(new EventPathStep());
+	}
 }
 
 void SceneMap::DrawSectionResize(int width, int height)

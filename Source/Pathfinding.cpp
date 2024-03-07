@@ -2,6 +2,8 @@
 
 #include "Globals.h"
 
+#include "mmgr/mmgr.h"
+
 int Pathfinding::Propagate(const Point2D& origin, const Point2D& destination)
 {
 	int ret = -1;

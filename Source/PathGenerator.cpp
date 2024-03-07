@@ -7,7 +7,11 @@
 #include "Tile.h"
 #include "RandomNumber.h"
 
+#include "String.h"
+#include "Utils.h"
 #include <string>
+
+#include "mmgr/mmgr.h"
 
 PathGenerator::PathGenerator(MapGenerator* map) : map(map)
 {
@@ -22,6 +26,8 @@ DynArray<int> PathGenerator::GeneratePaths()
     DynArray<int> final_map;
 
     int numCells = map->width * map->height;
+    // --- Create WalkableMask
+    CreateWalkableMask();
 
     // --- Connected Component Labeling
     labelingMap = DynArray<int>(numCells);
@@ -37,12 +43,53 @@ DynArray<int> PathGenerator::GeneratePaths()
 
     // --- Pathfinding
     SetBreadCrumbs();
-    CarvePaths();
+    CalcPaths();
 
     // --- Final WFC
+    CarvePaths();
     FinishGeneration();
 
     return final_map;
+}
+
+void PathGenerator::Step()
+{
+    if (step == 0)
+    {
+        int numCells = map->width * map->height;
+
+        // --- Create WalkableMask
+        CreateWalkableMask();
+
+        // --- Connected Component Labeling
+        labelingMap = DynArray<int>(numCells);
+        labelingMap.fill(0);
+        FindAreas();
+        CreateAreas();
+    }
+    else if (step == 1)
+    {
+        RemoveAreas(MIN_AREA_SIZE);
+    }
+    else if (step == 2)
+    {
+        GetConnections();
+        SetBreadCrumbs();
+    }
+    else if (step == 3)
+    {
+        CalcPaths();
+    }
+    else if (step == 4)
+    {
+        CarvePaths();
+    }
+    else if (step == 5)
+    {
+        FinishGeneration();
+    }
+    
+    step++;
 }
 
 void PathGenerator::Reset()
@@ -57,6 +104,8 @@ void PathGenerator::Reset()
     breadCrumbs.clear();
 
     paths.clear();
+
+    step = 0;
 }
 
 void PathGenerator::FindAreas()
@@ -69,7 +118,10 @@ void PathGenerator::FindAreas()
         Tile* tile = map->GetTileByID(map->cells[i]->tileID);
         
         // --- Get Cost Map
-        costMap.push_back(tile->GetCost());
+        int cost = tile->GetCost();
+        if (map->cells[i]->isPreset && tile->IsWalkable() == false)
+            cost *= 100;
+        costMap.push_back(cost);
 
         // --- Get Walkable Cells
         walkabilityMap.push_back(tile->IsWalkable());
@@ -255,7 +307,7 @@ void PathGenerator::GetConnections()
         for (int j = 1; j < neighbourAreas.size(); ++j)
         {
             neighbourAreas = neighbourAreas.sort();
-            neighbourAreas = neighbourAreas.flip();
+            neighbourAreas = neighbourAreas.flip(); // smaller values first
 
             int areaLabel = neighbourAreas.front();
 
@@ -269,7 +321,7 @@ void PathGenerator::GetConnections()
     // Remove duplicates
     for (auto it = connections.begin(); it != connections.end(); it++)
     {
-        if (it->second.size() == 0)
+        if (it->second.empty())
             continue;
 
         it->second = it->second.sort();
@@ -299,14 +351,8 @@ void PathGenerator::SetBreadCrumbs()
     }
 }
 
-void PathGenerator::CarvePaths()
+void PathGenerator::CalcPaths()
 {
-    LOG("--- COST MAP ---")
-    for (int i = 0; i < costMap.size(); ++i)
-    {
-        LOG("%d", costMap[i]);
-    }
-
     Pathfinding pathfinder = Pathfinding(map->width, map->height, costMap);
 
     for (auto it = connections.begin(); it != connections.end(); it++)
@@ -329,14 +375,234 @@ void PathGenerator::CarvePaths()
             paths.push_back(pathfinder.GetPath());
         }
     }
+}
 
-    // A* algorithm from startPos to points in each area
+void PathGenerator::CarvePaths() //*** NEEDS OPTIMIZATION (when doing pathfinding save nonWalkable cells in array instead of traversing all paths)
+{
+    // Reset Cells in path that are non-Walkable and its neighbours
 
-    // Reset Cells in path that are non-Walkable and all of its 8 neighbours
+    for (int i = 0; i < paths.size(); ++i)
+    {
+        DynArray<int> path = paths[i];
+
+        for (int j = 0; j < path.size(); ++j)
+        {
+            int index = path[j];
+
+            Cell* cell = map->GetCell(index);
+            if (cell->isCollapsed == false)
+                continue;
+
+            const Tile* tile = map->GetTileByID(cell->tileID);
+
+            // Reset Cell if it is a wall
+            if (tile->IsWalkable())
+                continue;
+
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+            
+            map->numCollapsed--;
+
+
+            // Reset walkable neighbours (8 directions)
+            ResetNeighbours(index);
+        }
+    }
 }
 
 void PathGenerator::FinishGeneration()
 {
-    // Redo WFC algorithm for reseted cells and neighbours
+    DynArray<int> resetNeighbours;
+    int numCells = map->width * map->height;
 
+    // Get all neighbours of reset cells
+    for (int i = 0; i < numCells; ++i)
+    {
+        Cell* cell = map->GetCell(i);
+
+        if (cell->isCollapsed == false)
+            continue;
+
+        // if cell is neighbour of a reset cell, propagate it
+        for (int dir = 0; dir < 4; ++dir)
+        {
+            int neighbourIndex = map->CheckNeighbour(i, dir);
+            if (neighbourIndex == -1)
+                continue;
+
+            Cell* neighbour = map->GetCell(neighbourIndex);
+
+            if (neighbour->isCollapsed == false)
+            {
+                resetNeighbours.push_back(i);
+                break;
+            }
+        }
+    }
+
+
+    // Redo WFC algorithm for reseted cells and neighbours
+    for (unsigned int i = 0; i < resetNeighbours.size(); ++i)
+    {
+        int index = resetNeighbours[i];
+        map->PropagateCell(index);
+    }
+}
+
+void PathGenerator::CreateWalkableMask()
+{
+    // Init mask of only walkable tiles (for carvePaths method)
+    DynArray<Tile*> tiles = map->GetAllTiles();
+    walkableMask = BitArray(tiles.size());
+    walkableMask.setAll();
+    for (int i = 0; i < tiles.size(); ++i)
+    {
+        if (tiles[i]->IsWalkable() == false)
+            walkableMask.clearBit(i);
+    }
+}
+
+void PathGenerator::ResetNeighbours(int index)
+{
+    if (index < 0 || index >= map->width * map->height)
+        return;
+
+    // Top
+    if (index >= map->width)
+    {
+        int top = index - map->width;
+        Cell* cell = map->GetCell(top);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // Left
+    if (index % map->width != 0)
+    {
+        int left = index - 1;
+        Cell* cell = map->GetCell(left);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // Right
+    if ((index + 1) % map->width != 0)
+    {
+        int right = index + 1;
+        Cell* cell = map->GetCell(right);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // Bottom
+    if (index < map->width * (map->height - 1))
+    {
+        int bottom = index + map->width;
+        Cell* cell = map->GetCell(bottom);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // TopLeft
+    if (index >= map->width && index % map->width != 0)
+    {
+        int topLeft = index - map->width - 1;
+        Cell* cell = map->GetCell(topLeft);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // TopRight
+    if (index >= map->width && (index + 1) % map->width != 0)
+    {
+        int topRight = index - map->width + 1;
+        Cell* cell = map->GetCell(topRight);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // BottomLeft
+    if (index < map->width * (map->height - 1) && index % map->width != 0)
+    {
+        int bottomLeft = index + map->width - 1;
+        Cell* cell = map->GetCell(bottomLeft);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
+
+    // BottomRight
+    if (index < map->width * (map->height - 1) && (index + 1) % map->width != 0)
+    {
+        int bottomRight = index + map->width + 1;
+        Cell* cell = map->GetCell(bottomRight);
+
+        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
+        {
+            cell->tileID = -1;
+            cell->isCollapsed = false;
+            cell->isInvalid = false;
+            cell->mask = walkableMask;
+
+            map->numCollapsed--;
+        }
+    }
 }

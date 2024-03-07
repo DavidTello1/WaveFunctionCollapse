@@ -62,6 +62,8 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnStep);
     App->event->Subscribe(this, &MainScene::OnStop);
 
+    App->event->Subscribe(this, &MainScene::OnPathStep);
+
     App->event->Subscribe(this, &MainScene::OnSetCell);
     App->event->Subscribe(this, &MainScene::OnPresetCells);
     App->event->Subscribe(this, &MainScene::OnResetCells);
@@ -103,10 +105,13 @@ bool MainScene::Update(float dt)
             sceneMap->SetState(SceneMap::State::FINISHED);
 
             // Generate Paths
-            timer.Start();
-            pathGenerator->GeneratePaths();
-            sceneMap->SetPathsTime(timer.ReadMs());
-            sceneMap->CalcTotalTime();
+            if (sceneMap->IsPathSteps() == false)
+            {
+                timer.Start();
+                pathGenerator->GeneratePaths();
+                sceneMap->SetPathsTime(timer.ReadMs());
+                sceneMap->CalcTotalTime();
+            }
         }
 
         // Update Scenes
@@ -578,6 +583,16 @@ void MainScene::OnStop(EventStop* e)
     sceneMap->SetTotalTime(0.0f);
 
     sceneMap->OnStop();
+}
+
+void MainScene::OnPathStep(EventPathStep* e)
+{
+    timer.Start();
+
+    pathGenerator->Step();
+
+    sceneMap->AddPathTime(timer.ReadMs());
+    sceneMap->CalcTotalTime();
 }
 
 void MainScene::OnSetCell(EventSetCell* e)

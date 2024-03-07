@@ -8,6 +8,7 @@
 struct EventPlay : public Event {};
 struct EventStep : public Event {};
 struct EventStop : public Event {};
+struct EventPathStep : public Event {};
 
 struct EventSetCell : public Event {
 	EventSetCell(unsigned int cell, int tileID) : cell(cell), tileID(tileID) {}

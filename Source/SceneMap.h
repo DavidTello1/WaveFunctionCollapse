@@ -40,6 +40,7 @@ public:
 	void AddTime(float time) { wfcTime += time; }
 	void SetStepTime(float time) { stepTime = time; }
 	void SetWFCTime(float time) { wfcTime = time; }
+	void AddPathTime(float time) { pathsTime += time; }
 	void SetPathsTime(float time) { pathsTime = time; }
 	void SetTotalTime(float time) { totalTime = time; }
 	void CalcTotalTime() { totalTime = wfcTime + pathsTime; }
@@ -50,6 +51,8 @@ public:
 	void OnPlay();
 	void OnStep();
 	void OnStop();
+
+	bool IsPathSteps() const { return isPathSteps; }
 
 private:
 	// ---
@@ -93,6 +96,7 @@ private:
 	int spacing = 0;
 	bool isDrawSpaced = true;
 	bool isDrawAreas = true;
+	bool isPathSteps = false;
 
 	// Panel Data
 	static const int menuBarHeight = 19;
