@@ -136,11 +136,22 @@ void MapGenerator::ResetMap()
 	isFirstStep = true;
 	numCollapsed = 0;
 
-	// Reset all not preset cells
+	// Remove cells
 	for (unsigned int i = 0; i < cells.size(); ++i)
+		delete cells[i];
+	cells.clear();
+
+	// Create new cell array with updated size
+	int numCells = width * height;
+	for (int i = 0; i < numCells; ++i) {
+		cells.push_back(new Cell(i, this->tiles.size()));
+	}
+
+	for (auto it = presetCells.begin(); it != presetCells.end(); it++)
 	{
-		if (!cells[i]->isPreset)
-			cells[i]->Reset();
+		int index = it->first;
+		cells[index]->SetCell(it->second, 0);
+		cells[index]->isPreset = true;
 	}
 }
 
@@ -179,7 +190,8 @@ void MapGenerator::PresetCell(unsigned int index, int tileID)
 
 	cells[index]->SetCell(tileID, bit);
 	cells[index]->isPreset = true;
-	presetCells.append(index);
+
+	presetCells[index] = tileID;
 }
 
 void MapGenerator::SetCell(unsigned int index, int tileID)
@@ -336,9 +348,9 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 
 void MapGenerator::FirstStep()
 {
-	for (unsigned int i = 0; i < presetCells.size(); ++i)
+	for (auto it = presetCells.begin(); it != presetCells.end(); it++)
 	{
-		unsigned int index = presetCells.at(i);
+		int index = it->first;
 		PropagateCell(index);
 	}
 

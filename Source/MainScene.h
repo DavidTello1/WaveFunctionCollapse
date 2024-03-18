@@ -26,6 +26,7 @@ struct EventResetCells;
 struct EventResetAllCells;
 struct EventMapResize;
 struct EventPathStep;
+struct EventLoadPathTileset;
 
 struct EventImport;
 struct EventSaveTileset;
@@ -81,6 +82,7 @@ private:
 	void OnStop(EventStop* e);
 
 	void OnPathStep(EventPathStep* e);
+	void OnLoadPathTileset(EventLoadPathTileset* e);
 
 	void OnSetCell(EventSetCell* e);
 	void OnPresetCells(EventPresetCells* e);

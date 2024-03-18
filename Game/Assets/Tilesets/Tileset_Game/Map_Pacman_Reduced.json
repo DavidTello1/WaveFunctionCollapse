@@ -1,0 +1,751 @@
+{
+    "map": {
+        "cells": {
+            "0": {
+                "index": 0,
+                "tileID": 1681928537
+            },
+            "1": {
+                "index": 1,
+                "tileID": 1681928537
+            },
+            "10": {
+                "index": 10,
+                "tileID": 1681928537
+            },
+            "100": {
+                "index": 550,
+                "tileID": 1681928537
+            },
+            "101": {
+                "index": 525,
+                "tileID": 1681928537
+            },
+            "102": {
+                "index": 500,
+                "tileID": 1681928537
+            },
+            "103": {
+                "index": 475,
+                "tileID": 1681928537
+            },
+            "104": {
+                "index": 450,
+                "tileID": 1681928537
+            },
+            "105": {
+                "index": 425,
+                "tileID": 1681928537
+            },
+            "106": {
+                "index": 400,
+                "tileID": 1681928537
+            },
+            "107": {
+                "index": 375,
+                "tileID": 1681928537
+            },
+            "108": {
+                "index": 350,
+                "tileID": 1681928537
+            },
+            "109": {
+                "index": 325,
+                "tileID": 1681928537
+            },
+            "11": {
+                "index": 11,
+                "tileID": 1681928537
+            },
+            "110": {
+                "index": 300,
+                "tileID": 1681928537
+            },
+            "111": {
+                "index": 275,
+                "tileID": 1681928537
+            },
+            "112": {
+                "index": 250,
+                "tileID": 1681928537
+            },
+            "113": {
+                "index": 225,
+                "tileID": 1681928537
+            },
+            "114": {
+                "index": 200,
+                "tileID": 1681928537
+            },
+            "115": {
+                "index": 175,
+                "tileID": 1681928537
+            },
+            "116": {
+                "index": 150,
+                "tileID": 1681928537
+            },
+            "117": {
+                "index": 50,
+                "tileID": 1681928537
+            },
+            "118": {
+                "index": 25,
+                "tileID": 1681928537
+            },
+            "119": {
+                "index": 75,
+                "tileID": 1681928537
+            },
+            "12": {
+                "index": 12,
+                "tileID": 1681928537
+            },
+            "120": {
+                "index": 100,
+                "tileID": 1681928537
+            },
+            "121": {
+                "index": 125,
+                "tileID": 1681928537
+            },
+            "122": {
+                "index": 31,
+                "tileID": 1681928537
+            },
+            "123": {
+                "index": 151,
+                "tileID": 1681928537
+            },
+            "124": {
+                "index": 451,
+                "tileID": 1681928537
+            },
+            "125": {
+                "index": 581,
+                "tileID": 1681928537
+            },
+            "126": {
+                "index": 593,
+                "tileID": 1681928537
+            },
+            "127": {
+                "index": 473,
+                "tileID": 1681928537
+            },
+            "128": {
+                "index": 173,
+                "tileID": 1681928537
+            },
+            "129": {
+                "index": 612,
+                "tileID": 1198705330
+            },
+            "13": {
+                "index": 13,
+                "tileID": 1681928537
+            },
+            "130": {
+                "index": 637,
+                "tileID": 1198705330
+            },
+            "131": {
+                "index": 312,
+                "tileID": 1681928537
+            },
+            "132": {
+                "index": 286,
+                "tileID": 1681928537
+            },
+            "133": {
+                "index": 287,
+                "tileID": 1681928537
+            },
+            "134": {
+                "index": 288,
+                "tileID": 1681928537
+            },
+            "135": {
+                "index": 313,
+                "tileID": 1681928537
+            },
+            "136": {
+                "index": 338,
+                "tileID": 1681928537
+            },
+            "137": {
+                "index": 337,
+                "tileID": 1681928537
+            },
+            "138": {
+                "index": 336,
+                "tileID": 1681928537
+            },
+            "139": {
+                "index": 311,
+                "tileID": 1681928537
+            },
+            "14": {
+                "index": 14,
+                "tileID": 1681928537
+            },
+            "15": {
+                "index": 15,
+                "tileID": 1681928537
+            },
+            "16": {
+                "index": 16,
+                "tileID": 1681928537
+            },
+            "17": {
+                "index": 17,
+                "tileID": 1681928537
+            },
+            "18": {
+                "index": 18,
+                "tileID": 1681928537
+            },
+            "19": {
+                "index": 22,
+                "tileID": 1681928537
+            },
+            "2": {
+                "index": 2,
+                "tileID": 1681928537
+            },
+            "20": {
+                "index": 23,
+                "tileID": 1681928537
+            },
+            "21": {
+                "index": 21,
+                "tileID": 1681928537
+            },
+            "22": {
+                "index": 20,
+                "tileID": 1681928537
+            },
+            "23": {
+                "index": 19,
+                "tileID": 1681928537
+            },
+            "24": {
+                "index": 43,
+                "tileID": 1681928537
+            },
+            "25": {
+                "index": 24,
+                "tileID": 1681928537
+            },
+            "26": {
+                "index": 49,
+                "tileID": 1681928537
+            },
+            "27": {
+                "index": 74,
+                "tileID": 1681928537
+            },
+            "28": {
+                "index": 99,
+                "tileID": 1681928537
+            },
+            "29": {
+                "index": 124,
+                "tileID": 1681928537
+            },
+            "3": {
+                "index": 3,
+                "tileID": 1681928537
+            },
+            "30": {
+                "index": 149,
+                "tileID": 1681928537
+            },
+            "31": {
+                "index": 174,
+                "tileID": 1681928537
+            },
+            "32": {
+                "index": 199,
+                "tileID": 1681928537
+            },
+            "33": {
+                "index": 224,
+                "tileID": 1681928537
+            },
+            "34": {
+                "index": 249,
+                "tileID": 1681928537
+            },
+            "35": {
+                "index": 274,
+                "tileID": 1681928537
+            },
+            "36": {
+                "index": 299,
+                "tileID": 1681928537
+            },
+            "37": {
+                "index": 324,
+                "tileID": 1681928537
+            },
+            "38": {
+                "index": 349,
+                "tileID": 1681928537
+            },
+            "39": {
+                "index": 374,
+                "tileID": 1681928537
+            },
+            "4": {
+                "index": 4,
+                "tileID": 1681928537
+            },
+            "40": {
+                "index": 399,
+                "tileID": 1681928537
+            },
+            "41": {
+                "index": 424,
+                "tileID": 1681928537
+            },
+            "42": {
+                "index": 474,
+                "tileID": 1681928537
+            },
+            "43": {
+                "index": 499,
+                "tileID": 1681928537
+            },
+            "44": {
+                "index": 524,
+                "tileID": 1681928537
+            },
+            "45": {
+                "index": 449,
+                "tileID": 1681928537
+            },
+            "46": {
+                "index": 549,
+                "tileID": 1681928537
+            },
+            "47": {
+                "index": 574,
+                "tileID": 1681928537
+            },
+            "48": {
+                "index": 599,
+                "tileID": 1681928537
+            },
+            "49": {
+                "index": 624,
+                "tileID": 1681928537
+            },
+            "5": {
+                "index": 5,
+                "tileID": 1681928537
+            },
+            "50": {
+                "index": 649,
+                "tileID": 1681928537
+            },
+            "51": {
+                "index": 648,
+                "tileID": 1681928537
+            },
+            "52": {
+                "index": 647,
+                "tileID": 1681928537
+            },
+            "53": {
+                "index": 646,
+                "tileID": 1681928537
+            },
+            "54": {
+                "index": 645,
+                "tileID": 1681928537
+            },
+            "55": {
+                "index": 644,
+                "tileID": 1681928537
+            },
+            "56": {
+                "index": 643,
+                "tileID": 1681928537
+            },
+            "57": {
+                "index": 642,
+                "tileID": 1681928537
+            },
+            "58": {
+                "index": 641,
+                "tileID": 1681928537
+            },
+            "59": {
+                "index": 640,
+                "tileID": 1681928537
+            },
+            "6": {
+                "index": 6,
+                "tileID": 1681928537
+            },
+            "60": {
+                "index": 639,
+                "tileID": 1681928537
+            },
+            "61": {
+                "index": 638,
+                "tileID": 1681928537
+            },
+            "62": {
+                "index": 637,
+                "tileID": 1198705330
+            },
+            "63": {
+                "index": 636,
+                "tileID": 1681928537
+            },
+            "64": {
+                "index": 635,
+                "tileID": 1681928537
+            },
+            "65": {
+                "index": 634,
+                "tileID": 1681928537
+            },
+            "66": {
+                "index": 633,
+                "tileID": 1681928537
+            },
+            "67": {
+                "index": 632,
+                "tileID": 1681928537
+            },
+            "68": {
+                "index": 606,
+                "tileID": 1681928537
+            },
+            "69": {
+                "index": 605,
+                "tileID": 1681928537
+            },
+            "7": {
+                "index": 7,
+                "tileID": 1681928537
+            },
+            "70": {
+                "index": 604,
+                "tileID": 1681928537
+            },
+            "71": {
+                "index": 603,
+                "tileID": 1681928537
+            },
+            "72": {
+                "index": 602,
+                "tileID": 1681928537
+            },
+            "73": {
+                "index": 601,
+                "tileID": 1681928537
+            },
+            "74": {
+                "index": 600,
+                "tileID": 1681928537
+            },
+            "75": {
+                "index": 625,
+                "tileID": 1681928537
+            },
+            "76": {
+                "index": 626,
+                "tileID": 1681928537
+            },
+            "77": {
+                "index": 627,
+                "tileID": 1681928537
+            },
+            "78": {
+                "index": 628,
+                "tileID": 1681928537
+            },
+            "79": {
+                "index": 629,
+                "tileID": 1681928537
+            },
+            "8": {
+                "index": 8,
+                "tileID": 1681928537
+            },
+            "80": {
+                "index": 630,
+                "tileID": 1681928537
+            },
+            "81": {
+                "index": 631,
+                "tileID": 1681928537
+            },
+            "82": {
+                "index": 607,
+                "tileID": 1681928537
+            },
+            "83": {
+                "index": 608,
+                "tileID": 1681928537
+            },
+            "84": {
+                "index": 609,
+                "tileID": 1681928537
+            },
+            "85": {
+                "index": 610,
+                "tileID": 1681928537
+            },
+            "86": {
+                "index": 611,
+                "tileID": 1681928537
+            },
+            "87": {
+                "index": 612,
+                "tileID": 1198705330
+            },
+            "88": {
+                "index": 613,
+                "tileID": 1681928537
+            },
+            "89": {
+                "index": 614,
+                "tileID": 1681928537
+            },
+            "9": {
+                "index": 9,
+                "tileID": 1681928537
+            },
+            "90": {
+                "index": 615,
+                "tileID": 1681928537
+            },
+            "91": {
+                "index": 616,
+                "tileID": 1681928537
+            },
+            "92": {
+                "index": 617,
+                "tileID": 1681928537
+            },
+            "93": {
+                "index": 618,
+                "tileID": 1681928537
+            },
+            "94": {
+                "index": 619,
+                "tileID": 1681928537
+            },
+            "95": {
+                "index": 620,
+                "tileID": 1681928537
+            },
+            "96": {
+                "index": 621,
+                "tileID": 1681928537
+            },
+            "97": {
+                "index": 622,
+                "tileID": 1681928537
+            },
+            "98": {
+                "index": 623,
+                "tileID": 1681928537
+            },
+            "99": {
+                "index": 575,
+                "tileID": 1681928537
+            }
+        },
+        "data": {
+            "cellSize": 24,
+            "height": 26,
+            "width": 25
+        },
+        "numPreset": 140
+    },
+    "tileset": {
+        "0": {
+            "ID": 1681928537,
+            "cost": 20,
+            "isWalkable": false,
+            "mask_bottom": "1001110011100001",
+            "mask_left": "1010101101100010",
+            "mask_right": "1101001110100100",
+            "mask_top": "1110010111001000",
+            "name": "block",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/block.png"
+        },
+        "1": {
+            "ID": -1329996836,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "0000110001000001",
+            "mask_top": "0000101000100010",
+            "name": "cornerPillar_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_BL.png"
+        },
+        "10": {
+            "ID": -1178292741,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0110001000011110",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "deadEnd_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_top.png"
+        },
+        "11": {
+            "ID": 1850682256,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0000001100000000",
+            "mask_left": "0000010010000000",
+            "mask_right": "0000010001000000",
+            "mask_top": "0000001000100000",
+            "name": "pillar_4",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/pillar_4.png"
+        },
+        "12": {
+            "ID": -1626660899,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0001010010000001",
+            "mask_right": "0000110001000001",
+            "mask_top": "0000001000100000",
+            "name": "wall_pillars2_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_bottom.png"
+        },
+        "13": {
+            "ID": -853304698,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0010001100000010",
+            "mask_left": "1000000000000000",
+            "mask_right": "0000010001000000",
+            "mask_top": "0000101000100010",
+            "name": "wall_pillars2_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_left.png"
+        },
+        "14": {
+            "ID": -2006405661,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0100001100000100",
+            "mask_left": "0000010010000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0001001000100100",
+            "name": "wall_pillars2_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_right.png"
+        },
+        "15": {
+            "ID": 1444366478,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0000001100000000",
+            "mask_left": "0100010010001000",
+            "mask_right": "0010010001001000",
+            "mask_top": "1000000000000000",
+            "name": "wall_pillars2_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/wall_pillars2_top.png"
+        },
+        "2": {
+            "ID": -689889685,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0001010010000001",
+            "mask_right": "1000000000000000",
+            "mask_top": "0001001000100100",
+            "name": "cornerPillar_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_BR.png"
+        },
+        "3": {
+            "ID": 833707833,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0010001100000010",
+            "mask_left": "1000000000000000",
+            "mask_right": "0010010001001000",
+            "mask_top": "1000000000000000",
+            "name": "cornerPillar_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_TL.png"
+        },
+        "4": {
+            "ID": -720440687,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0100001100000100",
+            "mask_left": "0100010010001000",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "cornerPillar_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/cornerPillar_TR.png"
+        },
+        "5": {
+            "ID": -392309402,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0101010010011101",
+            "mask_right": "0010110001011011",
+            "mask_top": "1000000000000000",
+            "name": "corridor_h",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corridor_h.png"
+        },
+        "6": {
+            "ID": 1198705330,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "0110001100011110",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0001101000110111",
+            "name": "corridor_v",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/corridor_v.png"
+        },
+        "7": {
+            "ID": 631682164,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "1000000000000000",
+            "mask_top": "0001101000010111",
+            "name": "deadEnd_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_bottom.png"
+        },
+        "8": {
+            "ID": -1366473553,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "1000000000000000",
+            "mask_right": "0010110000011011",
+            "mask_top": "1000000000000000",
+            "name": "deadEnd_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_left.png"
+        },
+        "9": {
+            "ID": -1805921208,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000000000000000",
+            "mask_left": "0101010000011101",
+            "mask_right": "1000000000000000",
+            "mask_top": "1000000000000000",
+            "name": "deadEnd_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/deadEnd_right.png"
+        },
+        "numTiles": 16
+    }
+}

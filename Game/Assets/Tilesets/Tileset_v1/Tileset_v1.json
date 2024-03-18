@@ -2,6 +2,8 @@
     "tileset": {
         "0": {
             "ID": 475996475,
+            "cost": 1,
+            "isWalkable": true,
             "mask_bottom": "1110011",
             "mask_left": "1010111",
             "mask_right": "1101011",
@@ -11,6 +13,8 @@
         },
         "1": {
             "ID": -1375462423,
+            "cost": 20,
+            "isWalkable": false,
             "mask_bottom": "0001101",
             "mask_left": "1000000",
             "mask_right": "0010110",
@@ -20,6 +24,8 @@
         },
         "2": {
             "ID": 1893570223,
+            "cost": 20,
+            "isWalkable": false,
             "mask_bottom": "0001101",
             "mask_left": "0101010",
             "mask_right": "1000000",
@@ -29,6 +35,8 @@
         },
         "3": {
             "ID": -1375756816,
+            "cost": 20,
+            "isWalkable": false,
             "mask_bottom": "1000000",
             "mask_left": "1000000",
             "mask_right": "0010110",
@@ -38,6 +46,8 @@
         },
         "4": {
             "ID": 2040567752,
+            "cost": 20,
+            "isWalkable": false,
             "mask_bottom": "1000000",
             "mask_left": "0101010",
             "mask_right": "1000000",
@@ -47,6 +57,8 @@
         },
         "5": {
             "ID": 1137564491,
+            "cost": 20,
+            "isWalkable": false,
             "mask_bottom": "1000000",
             "mask_left": "1101010",
             "mask_right": "1010110",
@@ -56,6 +68,8 @@
         },
         "6": {
             "ID": -376631597,
+            "cost": 20,
+            "isWalkable": false,
             "mask_bottom": "1001101",
             "mask_left": "1000000",
             "mask_right": "1000000",

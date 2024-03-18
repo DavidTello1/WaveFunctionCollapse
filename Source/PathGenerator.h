@@ -7,6 +7,7 @@
 #define MIN_AREA_SIZE 5
 
 class MapGenerator;
+struct Tile;
 
 class PathGenerator
 {
@@ -17,6 +18,8 @@ public:
 	DynArray<int> GeneratePaths();
 	void Step();
 	void Reset();
+
+	void SetTileset(const DynArray<Tile*>& tileset);
 
 	const std::map<int, DynArray<int>> GetAreas() const { return areas; }
 	const std::map<int, int>& GetBreadcrumbs() const { return breadCrumbs; }
@@ -30,11 +33,14 @@ private:
 	void SetBreadCrumbs(); // Select random point in each area
 	void CalcPaths(); // Pathfinding to connect areas
 	void CarvePaths(); // Remove walls in paths and its neighbours
+	void LastChecks(); // Remove disconnected areas
 	void FinishGeneration(); // Final map tiles (WFC of reset cells)
 
 	// --- Utils
 	void CreateWalkableMask();
 	void ResetNeighbours(int index);
+	void ChangeTileset(bool expanded);
+	int CheckNeighbour(int index, int direction);
 
 private:
 	MapGenerator* map = nullptr; // reference to MapGenerator (shared_ptr)
@@ -54,4 +60,7 @@ private:
 
 	// ---
 	int step = 0;
+
+	DynArray<Tile*> tiles; //copy of tileset in WFC, owned by WFC
+	DynArray<Tile*> tiles_expanded; // tileset with more tiles to fill gaps in FinishGeneration()
 };

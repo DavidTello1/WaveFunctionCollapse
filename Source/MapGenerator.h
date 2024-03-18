@@ -2,6 +2,7 @@
 
 #include "List.h"
 #include "DynArray.h"
+#include <map>
 
 struct Tile;
 struct Cell;
@@ -32,7 +33,7 @@ public:
 	Tile* GetTile(unsigned int index) const { return tiles[index]; }
 	Tile* GetTileByID(int tileID) const;
 	const DynArray<Tile*>& GetAllTiles() const { return tiles; }
-	const List<unsigned int>& GetPresetCells() const { return presetCells; }
+	const std::map<int, int>& GetPresetCells() const { return presetCells; }
 
 	// --- Setters
 	void SetWidth(int width) { this->width = width; Resize(); }
@@ -72,7 +73,7 @@ protected:
 	DynArray<Cell*> cells;
 	DynArray<Tile*> tiles;
 
-	List<unsigned int> presetCells;
+	std::map<int, int> presetCells;
 
 	RandomNumber* RNG;
 };

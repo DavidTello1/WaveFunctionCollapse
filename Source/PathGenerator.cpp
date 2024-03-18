@@ -19,6 +19,9 @@ PathGenerator::PathGenerator(MapGenerator* map) : map(map)
 
 PathGenerator::~PathGenerator()
 {
+    for (unsigned int i = 0; i < tiles_expanded.size(); ++i)
+        delete tiles_expanded[i];
+    tiles_expanded.clear();
 }
 
 DynArray<int> PathGenerator::GeneratePaths()
@@ -88,12 +91,18 @@ void PathGenerator::Step()
     {
         FinishGeneration();
     }
+    else if (step == 6)
+    {
+        LastChecks();
+    }
     
     step++;
 }
 
 void PathGenerator::Reset()
 {
+    ChangeTileset(false);
+ 
     areas.clear();
 
     walkabilityMap.clear();
@@ -106,6 +115,26 @@ void PathGenerator::Reset()
     paths.clear();
 
     step = 0;
+}
+
+void PathGenerator::SetTileset(const DynArray<Tile*>& tileset)
+{
+    // --- Copy WFC tiles
+    tiles.clear();
+    for (unsigned int i = 0; i < map->tiles.size(); ++i)
+        tiles.push_back(map->tiles[i]);
+
+    // --- Expanded Tileset
+    // Remove Tiles
+    for (unsigned int i = 0; i < tiles_expanded.size(); ++i)
+        delete tiles_expanded[i];
+    tiles_expanded.clear();
+
+    // Init Tiles Array
+    for (unsigned int i = 0; i < tileset.size(); ++i)
+    {
+        tiles_expanded.push_back(new Tile(tileset[i]));
+    }
 }
 
 void PathGenerator::FindAreas()
@@ -289,9 +318,9 @@ void PathGenerator::GetConnections()
         DynArray<int> neighbourAreas;
 
         // Check neighbours
-        for (int dir = 0; dir < 4; ++dir)
+        for (int dir = 0; dir < 8; ++dir)
         {
-            int neighbourIndex = map->CheckNeighbour(i, dir);
+            int neighbourIndex = CheckNeighbour(i, dir);
 
             if (neighbourIndex == -1 || walkabilityMap[neighbourIndex] == false)
                 continue;
@@ -375,6 +404,15 @@ void PathGenerator::CalcPaths()
             paths.push_back(pathfinder.GetPath());
         }
     }
+
+    // Start to End is walkable
+    Point2D startPos = Point2D(12, 25);
+    Point2D endPos = Point2D(12, 14);
+    int size = pathfinder.Propagate(startPos, endPos);
+    if (size == 0)
+        LOG("Error path not valid");
+
+    paths.push_back(pathfinder.GetPath());
 }
 
 void PathGenerator::CarvePaths() //*** NEEDS OPTIMIZATION (when doing pathfinding save nonWalkable cells in array instead of traversing all paths)
@@ -413,6 +451,49 @@ void PathGenerator::CarvePaths() //*** NEEDS OPTIMIZATION (when doing pathfindin
     }
 }
 
+void PathGenerator::LastChecks()
+{
+    labelingMap.fill(0);
+    areas.clear();
+    walkabilityMap.clear();
+    costMap.clear();
+
+    FindAreas();
+    CreateAreas();
+
+    if (areas.size() == 1)
+        return;
+
+    int biggestArea = 0;
+    int size = 0;
+    for (auto it = areas.begin(); it != areas.end(); it++)
+    {
+        if (it->second.size() > size)
+        {
+            size = it->second.size();
+            biggestArea = it->first;
+        }
+    }
+
+    for (auto it = areas.begin(); it != areas.end(); it++)
+    {
+        if (it->first == biggestArea)
+            continue;
+
+        DynArray<int> area = it->second;
+
+        // Set Cells to Blocked Tile (non-walkable)
+        for (int i = 0; i < area.size(); ++i)
+        {
+            int cellIndex = area[i];
+            const Tile* tile = map->GetAllTiles().front(); // blocked Tile
+
+            map->SetCell(cellIndex, tile->GetID());
+            walkabilityMap[cellIndex] = false;
+        }
+    }
+}
+
 void PathGenerator::FinishGeneration()
 {
     DynArray<int> resetNeighbours;
@@ -445,6 +526,7 @@ void PathGenerator::FinishGeneration()
 
 
     // Redo WFC algorithm for reseted cells and neighbours
+    ChangeTileset(true);
     for (unsigned int i = 0; i < resetNeighbours.size(); ++i)
     {
         int index = resetNeighbours[i];
@@ -455,12 +537,11 @@ void PathGenerator::FinishGeneration()
 void PathGenerator::CreateWalkableMask()
 {
     // Init mask of only walkable tiles (for carvePaths method)
-    DynArray<Tile*> tiles = map->GetAllTiles();
-    walkableMask = BitArray(tiles.size());
+    walkableMask = BitArray(tiles_expanded.size());
     walkableMask.setAll();
-    for (int i = 0; i < tiles.size(); ++i)
+    for (int i = 0; i < tiles_expanded.size(); ++i)
     {
-        if (tiles[i]->IsWalkable() == false)
+        if (tiles_expanded[i]->IsWalkable() == false)
             walkableMask.clearBit(i);
     }
 }
@@ -605,4 +686,61 @@ void PathGenerator::ResetNeighbours(int index)
             map->numCollapsed--;
         }
     }
+}
+
+void PathGenerator::ChangeTileset(bool expanded)
+{
+    // Change Tileset
+    map->tiles = (expanded) ? tiles_expanded : tiles;
+}
+
+int PathGenerator::CheckNeighbour(int index, int direction)
+{
+    if (index < 0 || index >= (int)map->cells.size())
+        return -1;
+
+    switch (direction)
+    {
+    case 0: // Top
+        if (index >= map->width)
+            return index - map->width;
+        break;
+
+    case 1: // Left
+        if (index % map->width != 0)
+            return index - 1;
+        break;
+
+    case 2: // Right
+        if ((index + 1) % map->width != 0)
+            return index + 1;
+        break;
+
+    case 3: // Bottom
+        if (index < map->width * (map->height - 1))
+            return index + map->width;
+        break;
+
+    case 4: // TopLeft
+        if (index >= map->width && index % map->width != 0)
+            return index - map->width -1;
+        break;
+
+    case 5: // TopRight
+        if (index >= map->width && (index + 1) % map->width != 0)
+            return index - map->width + 1;
+        break;
+
+    case 6: // BottomLeft
+        if (index < map->width * (map->height - 1) && index % map->width != 0)
+            return index + map->width - 1;
+        break;
+
+    case 7: // BottomRight
+        if (index < map->width * (map->height - 1) && (index + 1) % map->width != 0)
+            return index + map->width + 1;
+        break;
+    }
+
+    return -1;
 }

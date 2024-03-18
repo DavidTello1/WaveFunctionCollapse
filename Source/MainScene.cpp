@@ -63,6 +63,7 @@ bool MainScene::Init()
     App->event->Subscribe(this, &MainScene::OnStop);
 
     App->event->Subscribe(this, &MainScene::OnPathStep);
+    App->event->Subscribe(this, &MainScene::OnLoadPathTileset);
 
     App->event->Subscribe(this, &MainScene::OnSetCell);
     App->event->Subscribe(this, &MainScene::OnPresetCells);
@@ -488,13 +489,13 @@ void MainScene::ExportMapPresets(json& file)
     file["map"]["data"]["cellSize"] = cellSize;
 
     // Preset Cells
-    List<unsigned int> presetCells = mapGenerator->GetPresetCells();
+    std::map<int, int> presetCells = mapGenerator->GetPresetCells(); //*** this breaks
     int numPreset = mapGenerator->GetPresetCells().size();
 
     file["map"]["numPreset"] = numPreset;
     for (int i = 0; i < numPreset; ++i)
     {
-        int index = presetCells.at(i);
+        int index = presetCells.at(i); //*** breaks here, at() expects keyValue not index position
         Cell* cell = mapGenerator->GetCell(index);
 
         file["map"]["cells"][std::to_string(i)]["tileID"] = cell->tileID;
@@ -574,8 +575,8 @@ void MainScene::OnStep(EventStep* e)
 
 void MainScene::OnStop(EventStop* e)
 {
-    mapGenerator->ResetMap();
     pathGenerator->Reset();
+    mapGenerator->ResetMap();
 
     sceneMap->SetStepTime(0.0f);
     sceneMap->SetWFCTime(0.0f);
@@ -593,6 +594,51 @@ void MainScene::OnPathStep(EventPathStep* e)
 
     sceneMap->AddPathTime(timer.ReadMs());
     sceneMap->CalcTotalTime();
+}
+
+void MainScene::OnLoadPathTileset(EventLoadPathTileset* e)
+{
+    const char* path = "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/Tileset_v1.json";
+    json file = App->resources->LoadJson(path);
+
+    if (file.find("tileset") == file.end())
+    {
+        LOG("Error importing tileset, not found in json file");
+        return;
+    }
+
+    // Create Tileset
+    int numTiles = file["tileset"]["numTiles"];
+    DynArray<Tile*> tiles = DynArray<Tile*>(numTiles);
+
+    for (int i = 0; i < numTiles; ++i)
+    {
+        // Read Tile
+        std::string name = file["tileset"][std::to_string(i)]["name"];
+        int id = file["tileset"][std::to_string(i)]["ID"];
+        bool isWalkable = file["tileset"][std::to_string(i)]["isWalkable"];
+        int cost = file["tileset"][std::to_string(i)]["cost"];
+        std::string texturePath = file["tileset"][std::to_string(i)]["texturePath"];
+        std::string topMask = file["tileset"][std::to_string(i)]["mask_top"];
+        std::string leftMask = file["tileset"][std::to_string(i)]["mask_left"];
+        std::string rightMask = file["tileset"][std::to_string(i)]["mask_right"];
+        std::string bottomMask = file["tileset"][std::to_string(i)]["mask_bottom"];
+
+        // Create Tile
+        Texture* tex = App->resources->LoadTexture(texturePath.c_str());
+        if (tex == nullptr)
+        {
+            LOG("Error loading texture, path not valid: %s", texturePath.c_str());
+            continue;
+        }
+
+        unsigned int texture = tex->index;
+        Tile* tile = new Tile(id, texture, isWalkable, cost, topMask.c_str(), leftMask.c_str(), rightMask.c_str(), bottomMask.c_str());
+
+        tiles.push_back(tile);
+    }
+
+    pathGenerator->SetTileset(tiles);
 }
 
 void MainScene::OnSetCell(EventSetCell* e)

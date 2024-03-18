@@ -269,7 +269,7 @@ void SceneMap::DrawMap(const MapGenerator& map)
 		glm::vec2 size = { cellSize, cellSize };
 
 		// Draw Texture
-		if (!cell->isInvalid && (cell->isCollapsed || cell->isPreset))
+		if (!cell->isInvalid && (cell->isCollapsed || (cell->isPreset && cell->tileID != -1)))
 		{
 			Tile* tile = map.GetTileByID(cell->tileID);
 			App->renderer->DrawQuad(position, size, tile->GetTexture());
@@ -508,6 +508,9 @@ void SceneMap::DrawSectionOptions()
 		if (ImGui::Button("Next Step"))
 			App->event->Publish(new EventPathStep());
 	}
+
+	if (ImGui::Button("Secondary Tileset"))
+		App->event->Publish(new EventLoadPathTileset());
 }
 
 void SceneMap::DrawSectionResize(int width, int height)
