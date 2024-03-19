@@ -49,7 +49,6 @@ public:
 	void ClearPresetCells();
 
 protected:
-	int FindTile(int tileID) const;
 	int CheckNeighbour(int index, int direction);
 
 private:

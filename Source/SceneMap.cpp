@@ -49,6 +49,7 @@ bool SceneMap::Init(const MapGenerator& map)
 	spacing = defaultSpacing;
 	isDrawSpaced = true;
 	isDrawAreas = true;
+	isDrawWalkability = true;
 	isPathSteps = false;
 
 	// --- Panel Data
@@ -119,6 +120,9 @@ bool SceneMap::DrawUI(const MapGenerator& map, const PathGenerator& paths)
 {
 	if (isDrawAreas)
 		DrawAreas(map, paths);
+
+	if (isDrawWalkability)
+		DrawWalkability(map, paths);
 
 	DrawPanel(map);
 
@@ -371,6 +375,35 @@ void SceneMap::DrawAreas(const MapGenerator& map, const PathGenerator& paths)
 	}
 }
 
+void SceneMap::DrawWalkability(const MapGenerator& map, const PathGenerator& paths)
+{
+	const int width = map.GetWidth();
+	const int height = map.GetHeight();
+	const int cellSize = map.GetCellSize();
+
+	// Offset
+	int offsetX = ((int)App->window->GetWidth() - ((width + spacing) * cellSize)) / 2;
+	int offsetY = ((int)App->window->GetHeight() - ((height + spacing) * cellSize)) / 2;
+
+
+	const DynArray<bool> walkabilityMap = paths.GetWalkabilityMap();
+	for (int i = 0; i < walkabilityMap.size(); ++i)
+	{
+		Color color = (walkabilityMap[i]) ? Color(1.0f, 0.0f, 0.0f, 0.5f) : Color(0.0f, 1.0f, 0.0f, 0.5f);
+
+		// Cell
+		int x = i % width;
+		int y = i / width;
+
+		// Position & Size
+		glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
+		glm::vec2 size = { cellSize, cellSize };
+
+		// Draw Color
+		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+	}
+}
+
 // -----------------------------
 // --- UI DRAW ---
 void SceneMap::DrawPanel(const MapGenerator& map)
@@ -498,6 +531,9 @@ void SceneMap::DrawSectionOptions()
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	ImGui::Checkbox("Draw Areas", &isDrawAreas);
+
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
+	ImGui::Checkbox("Draw Walkability", &isDrawWalkability);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3);
 	ImGui::Checkbox("Path Stepped", &isPathSteps);

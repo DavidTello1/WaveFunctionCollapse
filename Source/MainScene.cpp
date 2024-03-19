@@ -489,17 +489,18 @@ void MainScene::ExportMapPresets(json& file)
     file["map"]["data"]["cellSize"] = cellSize;
 
     // Preset Cells
-    std::map<int, int> presetCells = mapGenerator->GetPresetCells(); //*** this breaks
+    std::map<int, int> presetCells = mapGenerator->GetPresetCells();
     int numPreset = mapGenerator->GetPresetCells().size();
 
     file["map"]["numPreset"] = numPreset;
-    for (int i = 0; i < numPreset; ++i)
+    int count = 0;
+    for (auto it = presetCells.begin(); it != presetCells.end(); it++)
     {
-        int index = presetCells.at(i); //*** breaks here, at() expects keyValue not index position
-        Cell* cell = mapGenerator->GetCell(index);
+        Cell* cell = mapGenerator->GetCell(it->first);
 
-        file["map"]["cells"][std::to_string(i)]["tileID"] = cell->tileID;
-        file["map"]["cells"][std::to_string(i)]["index"] = cell->index;
+        file["map"]["cells"][std::to_string(count)]["tileID"] = cell->tileID;
+        file["map"]["cells"][std::to_string(count)]["index"] = cell->index;
+        count++;
     }
 }
 
@@ -598,7 +599,7 @@ void MainScene::OnPathStep(EventPathStep* e)
 
 void MainScene::OnLoadPathTileset(EventLoadPathTileset* e)
 {
-    const char* path = "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Game/Tileset_v1.json";
+    const char* path = "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/Tileset.json";
     json file = App->resources->LoadJson(path);
 
     if (file.find("tileset") == file.end())

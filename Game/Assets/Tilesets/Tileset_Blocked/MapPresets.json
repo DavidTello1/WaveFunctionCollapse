@@ -1,0 +1,1240 @@
+{
+    "map": {
+        "cells": {
+            "0": {
+                "index": 0,
+                "tileID": 646099831
+            },
+            "1": {
+                "index": 1,
+                "tileID": 646099831
+            },
+            "10": {
+                "index": 10,
+                "tileID": 646099831
+            },
+            "100": {
+                "index": 575,
+                "tileID": 646099831
+            },
+            "101": {
+                "index": 581,
+                "tileID": 646099831
+            },
+            "102": {
+                "index": 586,
+                "tileID": 1508325904
+            },
+            "103": {
+                "index": 587,
+                "tileID": 1508325904
+            },
+            "104": {
+                "index": 588,
+                "tileID": 1508325904
+            },
+            "105": {
+                "index": 593,
+                "tileID": 646099831
+            },
+            "106": {
+                "index": 599,
+                "tileID": 646099831
+            },
+            "107": {
+                "index": 600,
+                "tileID": 646099831
+            },
+            "108": {
+                "index": 601,
+                "tileID": 646099831
+            },
+            "109": {
+                "index": 602,
+                "tileID": 646099831
+            },
+            "11": {
+                "index": 11,
+                "tileID": 646099831
+            },
+            "110": {
+                "index": 603,
+                "tileID": 646099831
+            },
+            "111": {
+                "index": 604,
+                "tileID": 646099831
+            },
+            "112": {
+                "index": 605,
+                "tileID": 646099831
+            },
+            "113": {
+                "index": 606,
+                "tileID": 646099831
+            },
+            "114": {
+                "index": 607,
+                "tileID": 646099831
+            },
+            "115": {
+                "index": 608,
+                "tileID": 646099831
+            },
+            "116": {
+                "index": 609,
+                "tileID": 646099831
+            },
+            "117": {
+                "index": 611,
+                "tileID": 792668167
+            },
+            "118": {
+                "index": 612,
+                "tileID": 1508325904
+            },
+            "119": {
+                "index": 613,
+                "tileID": 132999926
+            },
+            "12": {
+                "index": 12,
+                "tileID": 646099831
+            },
+            "120": {
+                "index": 615,
+                "tileID": 646099831
+            },
+            "121": {
+                "index": 616,
+                "tileID": 646099831
+            },
+            "122": {
+                "index": 617,
+                "tileID": 646099831
+            },
+            "123": {
+                "index": 618,
+                "tileID": 646099831
+            },
+            "124": {
+                "index": 619,
+                "tileID": 646099831
+            },
+            "125": {
+                "index": 620,
+                "tileID": 646099831
+            },
+            "126": {
+                "index": 621,
+                "tileID": 646099831
+            },
+            "127": {
+                "index": 622,
+                "tileID": 646099831
+            },
+            "128": {
+                "index": 623,
+                "tileID": 646099831
+            },
+            "129": {
+                "index": 624,
+                "tileID": 646099831
+            },
+            "13": {
+                "index": 13,
+                "tileID": 646099831
+            },
+            "130": {
+                "index": 625,
+                "tileID": 646099831
+            },
+            "131": {
+                "index": 626,
+                "tileID": 646099831
+            },
+            "132": {
+                "index": 627,
+                "tileID": 646099831
+            },
+            "133": {
+                "index": 628,
+                "tileID": 646099831
+            },
+            "134": {
+                "index": 629,
+                "tileID": 646099831
+            },
+            "135": {
+                "index": 630,
+                "tileID": 646099831
+            },
+            "136": {
+                "index": 631,
+                "tileID": 646099831
+            },
+            "137": {
+                "index": 632,
+                "tileID": 646099831
+            },
+            "138": {
+                "index": 633,
+                "tileID": 646099831
+            },
+            "139": {
+                "index": 634,
+                "tileID": 646099831
+            },
+            "14": {
+                "index": 14,
+                "tileID": 646099831
+            },
+            "140": {
+                "index": 635,
+                "tileID": 646099831
+            },
+            "141": {
+                "index": 636,
+                "tileID": 916309007
+            },
+            "142": {
+                "index": 637,
+                "tileID": 1508325904
+            },
+            "143": {
+                "index": 638,
+                "tileID": 597920051
+            },
+            "144": {
+                "index": 639,
+                "tileID": 646099831
+            },
+            "145": {
+                "index": 640,
+                "tileID": 646099831
+            },
+            "146": {
+                "index": 641,
+                "tileID": 646099831
+            },
+            "147": {
+                "index": 642,
+                "tileID": 646099831
+            },
+            "148": {
+                "index": 643,
+                "tileID": 646099831
+            },
+            "149": {
+                "index": 644,
+                "tileID": 646099831
+            },
+            "15": {
+                "index": 15,
+                "tileID": 646099831
+            },
+            "150": {
+                "index": 645,
+                "tileID": 646099831
+            },
+            "151": {
+                "index": 646,
+                "tileID": 646099831
+            },
+            "152": {
+                "index": 647,
+                "tileID": 646099831
+            },
+            "153": {
+                "index": 648,
+                "tileID": 646099831
+            },
+            "154": {
+                "index": 649,
+                "tileID": 646099831
+            },
+            "16": {
+                "index": 16,
+                "tileID": 646099831
+            },
+            "17": {
+                "index": 17,
+                "tileID": 646099831
+            },
+            "18": {
+                "index": 18,
+                "tileID": 646099831
+            },
+            "19": {
+                "index": 19,
+                "tileID": 646099831
+            },
+            "2": {
+                "index": 2,
+                "tileID": 646099831
+            },
+            "20": {
+                "index": 20,
+                "tileID": 646099831
+            },
+            "21": {
+                "index": 21,
+                "tileID": 646099831
+            },
+            "22": {
+                "index": 22,
+                "tileID": 646099831
+            },
+            "23": {
+                "index": 23,
+                "tileID": 646099831
+            },
+            "24": {
+                "index": 24,
+                "tileID": 646099831
+            },
+            "25": {
+                "index": 25,
+                "tileID": 646099831
+            },
+            "26": {
+                "index": 31,
+                "tileID": 646099831
+            },
+            "27": {
+                "index": 43,
+                "tileID": 646099831
+            },
+            "28": {
+                "index": 49,
+                "tileID": 646099831
+            },
+            "29": {
+                "index": 50,
+                "tileID": 646099831
+            },
+            "3": {
+                "index": 3,
+                "tileID": 646099831
+            },
+            "30": {
+                "index": 74,
+                "tileID": 646099831
+            },
+            "31": {
+                "index": 75,
+                "tileID": 646099831
+            },
+            "32": {
+                "index": 99,
+                "tileID": 646099831
+            },
+            "33": {
+                "index": 100,
+                "tileID": 646099831
+            },
+            "34": {
+                "index": 124,
+                "tileID": 646099831
+            },
+            "35": {
+                "index": 125,
+                "tileID": 646099831
+            },
+            "36": {
+                "index": 149,
+                "tileID": 646099831
+            },
+            "37": {
+                "index": 150,
+                "tileID": 646099831
+            },
+            "38": {
+                "index": 151,
+                "tileID": 646099831
+            },
+            "39": {
+                "index": 173,
+                "tileID": 646099831
+            },
+            "4": {
+                "index": 4,
+                "tileID": 646099831
+            },
+            "40": {
+                "index": 174,
+                "tileID": 646099831
+            },
+            "41": {
+                "index": 175,
+                "tileID": 646099831
+            },
+            "42": {
+                "index": 199,
+                "tileID": 646099831
+            },
+            "43": {
+                "index": 200,
+                "tileID": 646099831
+            },
+            "44": {
+                "index": 224,
+                "tileID": 646099831
+            },
+            "45": {
+                "index": 225,
+                "tileID": 646099831
+            },
+            "46": {
+                "index": 249,
+                "tileID": 646099831
+            },
+            "47": {
+                "index": 250,
+                "tileID": 646099831
+            },
+            "48": {
+                "index": 260,
+                "tileID": 1508325904
+            },
+            "49": {
+                "index": 261,
+                "tileID": 1508325904
+            },
+            "5": {
+                "index": 5,
+                "tileID": 646099831
+            },
+            "50": {
+                "index": 262,
+                "tileID": 1508325904
+            },
+            "51": {
+                "index": 263,
+                "tileID": 1508325904
+            },
+            "52": {
+                "index": 264,
+                "tileID": 1508325904
+            },
+            "53": {
+                "index": 274,
+                "tileID": 646099831
+            },
+            "54": {
+                "index": 275,
+                "tileID": 646099831
+            },
+            "55": {
+                "index": 285,
+                "tileID": 1508325904
+            },
+            "56": {
+                "index": 286,
+                "tileID": 985429580
+            },
+            "57": {
+                "index": 287,
+                "tileID": 726759693
+            },
+            "58": {
+                "index": 288,
+                "tileID": 1917520185
+            },
+            "59": {
+                "index": 289,
+                "tileID": 1508325904
+            },
+            "6": {
+                "index": 6,
+                "tileID": 646099831
+            },
+            "60": {
+                "index": 299,
+                "tileID": 646099831
+            },
+            "61": {
+                "index": 300,
+                "tileID": 646099831
+            },
+            "62": {
+                "index": 310,
+                "tileID": 1508325904
+            },
+            "63": {
+                "index": 311,
+                "tileID": 965511914
+            },
+            "64": {
+                "index": 312,
+                "tileID": -697375563
+            },
+            "65": {
+                "index": 313,
+                "tileID": 965511914
+            },
+            "66": {
+                "index": 314,
+                "tileID": 1508325904
+            },
+            "67": {
+                "index": 324,
+                "tileID": 646099831
+            },
+            "68": {
+                "index": 325,
+                "tileID": 646099831
+            },
+            "69": {
+                "index": 335,
+                "tileID": 1508325904
+            },
+            "7": {
+                "index": 7,
+                "tileID": 646099831
+            },
+            "70": {
+                "index": 336,
+                "tileID": 1171433962
+            },
+            "71": {
+                "index": 337,
+                "tileID": 1537893433
+            },
+            "72": {
+                "index": 338,
+                "tileID": 1445690126
+            },
+            "73": {
+                "index": 339,
+                "tileID": 1508325904
+            },
+            "74": {
+                "index": 349,
+                "tileID": 646099831
+            },
+            "75": {
+                "index": 350,
+                "tileID": 646099831
+            },
+            "76": {
+                "index": 360,
+                "tileID": 1508325904
+            },
+            "77": {
+                "index": 361,
+                "tileID": 1508325904
+            },
+            "78": {
+                "index": 362,
+                "tileID": 1508325904
+            },
+            "79": {
+                "index": 363,
+                "tileID": 1508325904
+            },
+            "8": {
+                "index": 8,
+                "tileID": 646099831
+            },
+            "80": {
+                "index": 364,
+                "tileID": 1508325904
+            },
+            "81": {
+                "index": 374,
+                "tileID": 646099831
+            },
+            "82": {
+                "index": 375,
+                "tileID": 646099831
+            },
+            "83": {
+                "index": 399,
+                "tileID": 646099831
+            },
+            "84": {
+                "index": 400,
+                "tileID": 646099831
+            },
+            "85": {
+                "index": 424,
+                "tileID": 646099831
+            },
+            "86": {
+                "index": 425,
+                "tileID": 646099831
+            },
+            "87": {
+                "index": 449,
+                "tileID": 646099831
+            },
+            "88": {
+                "index": 450,
+                "tileID": 646099831
+            },
+            "89": {
+                "index": 451,
+                "tileID": 646099831
+            },
+            "9": {
+                "index": 9,
+                "tileID": 646099831
+            },
+            "90": {
+                "index": 473,
+                "tileID": 646099831
+            },
+            "91": {
+                "index": 474,
+                "tileID": 646099831
+            },
+            "92": {
+                "index": 475,
+                "tileID": 646099831
+            },
+            "93": {
+                "index": 499,
+                "tileID": 646099831
+            },
+            "94": {
+                "index": 500,
+                "tileID": 646099831
+            },
+            "95": {
+                "index": 524,
+                "tileID": 646099831
+            },
+            "96": {
+                "index": 525,
+                "tileID": 646099831
+            },
+            "97": {
+                "index": 549,
+                "tileID": 646099831
+            },
+            "98": {
+                "index": 550,
+                "tileID": 646099831
+            },
+            "99": {
+                "index": 574,
+                "tileID": 646099831
+            }
+        },
+        "data": {
+            "cellSize": 24,
+            "height": 26,
+            "width": 25
+        },
+        "numPreset": 155
+    },
+    "tileset": {
+        "0": {
+            "ID": 1508325904,
+            "cost": 1,
+            "isWalkable": true,
+            "mask_bottom": "1000110011100111000000000000000000001000100001100000000",
+            "mask_left": "1001010101011011000000000000000000010001010010000000000",
+            "mask_right": "1010101010011101000000000000000010100010000100000000000",
+            "mask_top": "1011001100101110000000000000000101000100001000000000000",
+            "name": "0_floor",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/0_floor.png"
+        },
+        "1": {
+            "ID": 646099831,
+            "cost": 20,
+            "isWalkable": false,
+            "mask_bottom": "0100000000000000001000000001100100000000000000000000000",
+            "mask_left": "0100000000000000000100000001010010000000000000000000000",
+            "mask_right": "0100000000000000000010000000101000000000010000000000000",
+            "mask_top": "0100000000000000000001000000011000000000000000100000000",
+            "name": "1_block",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/1_block.png"
+        },
+        "10": {
+            "ID": -40941328,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000001010100100000010010110000000001110101000000000000",
+            "mask_right": "0000000101100010000100101010000001000101100001000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "corridor_h",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/corridor_h.png"
+        },
+        "11": {
+            "ID": 19306387,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000001100011000000001001110000000100111000010000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000011010001001000110010000000010011100100000000000",
+            "name": "corridor_v",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/corridor_v.png"
+        },
+        "12": {
+            "ID": -1117991091,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000011010001001000110010000000010011100100000000000",
+            "name": "deadEnd_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/deadEnd_bottom.png"
+        },
+        "13": {
+            "ID": 309165543,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000101100010000100101010000001000101100001000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "deadEnd_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/deadEnd_left.png"
+        },
+        "14": {
+            "ID": 1471259248,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000001010100100000010010110000000001110101000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "deadEnd_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/deadEnd_right.png"
+        },
+        "15": {
+            "ID": -1202953818,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000001100011000000001001110000000100111000010000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "deadEnd_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/deadEnd_top.png"
+        },
+        "16": {
+            "ID": -717362333,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000000000000000000000010000010000000000000",
+            "mask_left": "0000100000000000000000000000000000000000000001100000000",
+            "mask_right": "0001000000000000000000000000000100000000001000000000000",
+            "mask_top": "0000100000000000000000000000000010100000000000000000000",
+            "name": "pillar_2_alt_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_2_alt_left.png"
+        },
+        "17": {
+            "ID": 1020798093,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000000000000000000010000000000100000000000",
+            "mask_left": "0010000000000000000000000000000101000000000000000000000",
+            "mask_right": "0000010000000000000000000000000000001000000000100000000",
+            "mask_top": "0000010000000000000000000000000000000000010010000000000",
+            "name": "pillar_2_alt_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_2_alt_right.png"
+        },
+        "18": {
+            "ID": -1112856447,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000000011000000000000000000000000000000000000000000",
+            "mask_left": "0010000000000000000000000000000101000000000000000000000",
+            "mask_right": "0001000000000000000000000000000100000000001000000000000",
+            "mask_top": "0100000000000000000001000000011000000000000000100000000",
+            "name": "pillar_2_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_2_bottom.png"
+        },
+        "19": {
+            "ID": -1032813063,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000000000000000000010000000000100000000000",
+            "mask_left": "0000000000100100000000000000000000000000000000000000000",
+            "mask_right": "0100000000000000000010000000101000000000010000000000000",
+            "mask_top": "0000100000000000000000000000000010100000000000000000000",
+            "name": "pillar_2_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_2_left.png"
+        },
+        "2": {
+            "ID": 418927539,
+            "cost": 20,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0001000000000000011000010001000100010000001000000000000",
+            "mask_top": "0000100000000000010100001001000010100000000001000000000",
+            "name": "corner_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/corner_BL.png"
+        },
+        "20": {
+            "ID": -1762387127,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000000000000000000000010000010000000000000",
+            "mask_left": "0100000000000000000100000001010010000000000000000000000",
+            "mask_right": "0000000000100010000000000000000000000000000000000000000",
+            "mask_top": "0000010000000000000000000000000000000000010010000000000",
+            "name": "pillar_2_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_2_right.png"
+        },
+        "21": {
+            "ID": -1235548626,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0100000000000000001000000001100100000000000000000000000",
+            "mask_left": "0000100000000000000000000000000000000000000001100000000",
+            "mask_right": "0000010000000000000000000000000000001000000000100000000",
+            "mask_top": "0000000000010001000000000000000000000000000000000000000",
+            "name": "pillar_2_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_2_top.png"
+        },
+        "22": {
+            "ID": 544060983,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000000011000000000000000000000000000000000000000000",
+            "mask_left": "0000000000100100000000000000000000000000000000000000000",
+            "mask_right": "0001000000000000000000000000000100000000001000000000000",
+            "mask_top": "0000100000000000000000000000000010100000000000000000000",
+            "name": "pillar_3_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_3_BL.png"
+        },
+        "23": {
+            "ID": -1643158323,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000000011000000000000000000000000000000000000000000",
+            "mask_left": "0010000000000000000000000000000101000000000000000000000",
+            "mask_right": "0000000000100010000000000000000000000000000000000000000",
+            "mask_top": "0000010000000000000000000000000000000000010010000000000",
+            "name": "pillar_3_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_3_BR.png"
+        },
+        "24": {
+            "ID": 907657304,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000000000000000000010000000000100000000000",
+            "mask_left": "0000000000100100000000000000000000000000000000000000000",
+            "mask_right": "0000010000000000000000000000000000001000000000100000000",
+            "mask_top": "0000000000010001000000000000000000000000000000000000000",
+            "name": "pillar_3_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_3_TL.png"
+        },
+        "25": {
+            "ID": 1606169308,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000000000000000000000010000010000000000000",
+            "mask_left": "0000100000000000000000000000000000000000000001100000000",
+            "mask_right": "0000000000100010000000000000000000000000000000000000000",
+            "mask_top": "0000000000010001000000000000000000000000000000000000000",
+            "name": "pillar_3_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_3_TR.png"
+        },
+        "26": {
+            "ID": 48129101,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000000011000000000000000000000000000000000000000000",
+            "mask_left": "0000000000100100000000000000000000000000000000000000000",
+            "mask_right": "0000000000100010000000000000000000000000000000000000000",
+            "mask_top": "0000000000010001000000000000000000000000000000000000000",
+            "name": "pillar_4",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_4.png"
+        },
+        "27": {
+            "ID": -311559434,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000000000000000000010000000000100000000000",
+            "mask_left": "0010000000000000000000000000000101000000000000000000000",
+            "mask_right": "0100000000000000000010000000101000000000010000000000000",
+            "mask_top": "0100000000000000000001000000011000000000000000100000000",
+            "name": "pillar_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_BL.png"
+        },
+        "28": {
+            "ID": -104317216,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000000000000000000000010000010000000000000",
+            "mask_left": "0100000000000000000100000001010010000000000000000000000",
+            "mask_right": "0001000000000000000000000000000100000000001000000000000",
+            "mask_top": "0100000000000000000001000000011000000000000000100000000",
+            "name": "pillar_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_BR.png"
+        },
+        "29": {
+            "ID": 740910595,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0100000000000000001000000001100100000000000000000000000",
+            "mask_left": "0000100000000000000000000000000000000000000001100000000",
+            "mask_right": "0100000000000000000010000000101000000000010000000000000",
+            "mask_top": "0000100000000000000000000000000010100000000000000000000",
+            "name": "pillar_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_TL.png"
+        },
+        "3": {
+            "ID": -1675708061,
+            "cost": 20,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0010000000000000101000100000100101000000000100000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000010000000000100010000100100000001000010010000000000",
+            "name": "corner_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/corner_BR.png"
+        },
+        "30": {
+            "ID": 859522622,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0100000000000000001000000001100100000000000000000000000",
+            "mask_left": "0100000000000000000100000001010010000000000000000000000",
+            "mask_right": "0000010000000000000000000000000000001000000000100000000",
+            "mask_top": "0000010000000000000000000000000000000000010010000000000",
+            "name": "pillar_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/pillar_TR.png"
+        },
+        "31": {
+            "ID": -548944349,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0010000000000000101000100000100101000000000100000000000",
+            "mask_right": "0001000000000000011000010001000100010000001000000000000",
+            "mask_top": "0100000000000000000001000000011000000000000000100000000",
+            "name": "wall_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_bottom.png"
+        },
+        "32": {
+            "ID": 597920051,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000100100100000010011000000000100000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0100000000000000000010000000101000000000010000000000000",
+            "mask_top": "0000100000000000010100001001000010100000000001000000000",
+            "name": "wall_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_left.png"
+        },
+        "33": {
+            "ID": -257267302,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000010100100000000000000000000001000000000000000000",
+            "mask_right": "0001000000000000011000010001000100010000001000000000000",
+            "mask_top": "0000100000000000000000000000000010100000000000000000000",
+            "name": "wall_leftPillar_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_leftPillar_bottom.png"
+        },
+        "34": {
+            "ID": -2077009962,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000100100100000010011000000000100000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000010000000000000000000000000000001000000000100000000",
+            "mask_top": "0000000001010001000000000000000000000001000000000000000",
+            "name": "wall_leftPillar_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_leftPillar_left.png"
+        },
+        "35": {
+            "ID": -2013038972,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000001000011000000000000000000000000010000000000000000",
+            "mask_left": "0010000000000000000000000000000101000000000000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000010000000000100010000100100000001000010010000000000",
+            "name": "wall_leftPillar_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_leftPillar_right.png"
+        },
+        "36": {
+            "ID": -850664463,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000000000000000000000010000010000000000000",
+            "mask_left": "0000100000000000010001001000001000100000000001100000000",
+            "mask_right": "0000000100100010000000000000000001000000000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "wall_leftPillar_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_leftPillar_top.png"
+        },
+        "37": {
+            "ID": -813643456,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000010100100000000000000000000000000000000000000000",
+            "mask_right": "0000000001100010000000000000000000000000000001000000000",
+            "mask_top": "0000000000010001000000000000000000000000000000000000000",
+            "name": "wall_pillars2_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_pillars2_bottom.png"
+        },
+        "38": {
+            "ID": 1230626122,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000100011000000000000000000000000000000000000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000100010000000000000000000000000000000000000000",
+            "mask_top": "0000000001010001000000000000000000010000000000000000000",
+            "name": "wall_pillars2_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_pillars2_left.png"
+        },
+        "39": {
+            "ID": -913908721,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000001000011000000000000000000000100000000000000000000",
+            "mask_left": "0000000000100100000000000000000000000000000000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000010010001000000000000000000000000000000000000000",
+            "name": "wall_pillars2_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_pillars2_right.png"
+        },
+        "4": {
+            "ID": 132999926,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000100100100000010011000000000100000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000010000000000100001000100010000001000000010100000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "corner_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/corner_TL.png"
+        },
+        "40": {
+            "ID": -291101834,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000000011000000000000000000000000000000000000000000",
+            "mask_left": "0000001000100100000000000000000000000000001000000000000",
+            "mask_right": "0000000100100010000000000000000000000000000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "wall_pillars2_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_pillars2_top.png"
+        },
+        "41": {
+            "ID": 916309007,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000010010010000001000010000011000000000000",
+            "mask_left": "0100000000000000000100000001010010000000000000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000010000000000100010000100100000001000010010000000000",
+            "name": "wall_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_right.png"
+        },
+        "42": {
+            "ID": -1855202345,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0010000000000000101000100000100101000000000100000000000",
+            "mask_right": "0000000001100010000000000000000000000000100000000000000",
+            "mask_top": "0000010000000000000000000000000000000000010010000000000",
+            "name": "wall_rightPillar_bottom",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_rightPillar_bottom.png"
+        },
+        "43": {
+            "ID": -987660418,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000100011000000000000000000000000000000010000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0001000000000000000000000000000100000000001000000000000",
+            "mask_top": "0000100000000000010100001001000010100000000001000000000",
+            "name": "wall_rightPillar_left",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_rightPillar_left.png"
+        },
+        "44": {
+            "ID": 142969094,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000010010010000001000010000011000000000000",
+            "mask_left": "0000100000000000000000000000000000000000000001100000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000010010001000000000000000000000000000100000000000",
+            "name": "wall_rightPillar_right",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_rightPillar_right.png"
+        },
+        "45": {
+            "ID": 1323377460,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0010000000000000000000000000000010000000000100000000000",
+            "mask_left": "0000001000100100000000000000000000000100000000000000000",
+            "mask_right": "0000010000000000100001000100010000001000000010100000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "wall_rightPillar_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_rightPillar_top.png"
+        },
+        "46": {
+            "ID": 712408619,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0100000000000000001000000001100100000000000000000000000",
+            "mask_left": "0000100000000000010001001000001000100000000001100000000",
+            "mask_right": "0000010000000000100001000100010000001000000010100000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "wall_top",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/wall_top.png"
+        },
+        "47": {
+            "ID": 1171433962,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_BL.png"
+        },
+        "48": {
+            "ID": 1445690126,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_BR.png"
+        },
+        "49": {
+            "ID": -697375563,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_center",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_center.png"
+        },
+        "5": {
+            "ID": 792668167,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0001000000000000010010010000001000010000011000000000000",
+            "mask_left": "0000100000000000010001001000001000100000000001100000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "corner_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/corner_TR.png"
+        },
+        "50": {
+            "ID": 1537893433,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_door",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_door.png"
+        },
+        "51": {
+            "ID": 965511914,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_H",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_H.png"
+        },
+        "52": {
+            "ID": 985429580,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_TL.png"
+        },
+        "53": {
+            "ID": 1917520185,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_TR.png"
+        },
+        "54": {
+            "ID": 726759693,
+            "cost": 100,
+            "isWalkable": false,
+            "mask_bottom": "0000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000000000000000000000000000000000000000000000000000",
+            "name": "temple_V",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/temple_V.png"
+        },
+        "6": {
+            "ID": -130368729,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000001100010000000000000000000000000100001000000000",
+            "mask_top": "0000000001010001000000000000000000010001000000000000000",
+            "name": "cornerPillar_BL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/cornerPillar_BL.png"
+        },
+        "7": {
+            "ID": 1643714115,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "1000000000000000000000000000000000000000000000000000000",
+            "mask_left": "0000000010100100000000000000000000001000100000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "0000000010010001000000000000000000000010000100000000000",
+            "name": "cornerPillar_BR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/cornerPillar_BR.png"
+        },
+        "8": {
+            "ID": -933084139,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000000100011000000000000000000000000001000010000000000",
+            "mask_left": "1000000000000000000000000000000000000000000000000000000",
+            "mask_right": "0000000100100010000000000000000001000100000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "cornerPillar_TL",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/cornerPillar_TL.png"
+        },
+        "9": {
+            "ID": -1087364616,
+            "cost": 1,
+            "isWalkable": false,
+            "mask_bottom": "0000001000011000000000000000000000100010000000000000000",
+            "mask_left": "0000001000100100000000000000000000000100001000000000000",
+            "mask_right": "1000000000000000000000000000000000000000000000000000000",
+            "mask_top": "1000000000000000000000000000000000000000000000000000000",
+            "name": "cornerPillar_TR",
+            "texturePath": "D:/Github/WaveFunctionCollapse/Game/Assets/Tilesets/Tileset_Blocked/cornerPillar_TR.png"
+        },
+        "numTiles": 55
+    }
+}

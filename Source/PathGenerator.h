@@ -24,8 +24,10 @@ public:
 	const std::map<int, DynArray<int>> GetAreas() const { return areas; }
 	const std::map<int, int>& GetBreadcrumbs() const { return breadCrumbs; }
 	const DynArray<DynArray<int>>& GetPaths() const { return paths; }
+	const DynArray<bool>& GetWalkabilityMap() const { return walkabilityMap; }
 
 private:
+	void Init();
 	void FindAreas(); // Connected-Component-Labeling
 	void CreateAreas(); // Fill areas map
 	void RemoveAreas(int minSize); // Remove areas smaller than minSize
@@ -34,13 +36,13 @@ private:
 	void CalcPaths(); // Pathfinding to connect areas
 	void CarvePaths(); // Remove walls in paths and its neighbours
 	void LastChecks(); // Remove disconnected areas
+	void ResetNeighbours(); // Reset all neighbours of walkable cells
 	void FinishGeneration(); // Final map tiles (WFC of reset cells)
 
 	// --- Utils
-	void CreateWalkableMask();
-	void ResetNeighbours(int index);
 	void ChangeTileset(bool expanded);
-	int CheckNeighbour(int index, int direction);
+	int CheckNeighbour(int index, int direction) const;
+	int FindRoot(const int label, std::map<int, int>& equivalencies) const;
 
 private:
 	MapGenerator* map = nullptr; // reference to MapGenerator (shared_ptr)
@@ -56,7 +58,7 @@ private:
 
 	DynArray<DynArray<int>> paths;
 
-	BitArray walkableMask;
+	BitArray nonWalkableMask;
 
 	// ---
 	int step = 0;

@@ -29,8 +29,9 @@ DynArray<int> PathGenerator::GeneratePaths()
     DynArray<int> final_map;
 
     int numCells = map->width * map->height;
-    // --- Create WalkableMask
-    CreateWalkableMask();
+
+    // --- Create Non-WalkableMask
+    Init();
 
     // --- Connected Component Labeling
     labelingMap = DynArray<int>(numCells);
@@ -48,8 +49,12 @@ DynArray<int> PathGenerator::GeneratePaths()
     SetBreadCrumbs();
     CalcPaths();
 
-    // --- Final WFC
+    // --- Last Checks
     CarvePaths();
+    LastChecks();
+
+    // --- Final WFC
+    ResetNeighbours();
     FinishGeneration();
 
     return final_map;
@@ -61,12 +66,10 @@ void PathGenerator::Step()
     {
         int numCells = map->width * map->height;
 
-        // --- Create WalkableMask
-        CreateWalkableMask();
+        // --- Create Non-WalkableMask
+        Init();
 
         // --- Connected Component Labeling
-        labelingMap = DynArray<int>(numCells);
-        labelingMap.fill(0);
         FindAreas();
         CreateAreas();
     }
@@ -86,14 +89,15 @@ void PathGenerator::Step()
     else if (step == 4)
     {
         CarvePaths();
+        LastChecks();
     }
     else if (step == 5)
     {
-        FinishGeneration();
+        ResetNeighbours();
     }
     else if (step == 6)
     {
-        LastChecks();
+        FinishGeneration();
     }
     
     step++;
@@ -137,27 +141,47 @@ void PathGenerator::SetTileset(const DynArray<Tile*>& tileset)
     }
 }
 
-void PathGenerator::FindAreas()
+void PathGenerator::Init()
 {
-    int numAreas = 1;
-    std::map<int, int> equivalencies;
+    int numCells = map->width * map->height;
+    labelingMap = DynArray<int>(numCells);
+    labelingMap.fill(0);
 
-    for (int i = 0; i < labelingMap.size(); ++i)
+    // Init mask of only non-walkable tiles (for FinishGeneration method)
+    nonWalkableMask = BitArray(tiles_expanded.size());
+    nonWalkableMask.setAll();
+    for (int i = 0; i < tiles_expanded.size(); ++i)
+    {
+        if (tiles_expanded[i]->IsWalkable() == true)
+            nonWalkableMask.clearBit(i);
+    }
+
+    // Init costMap and walkabilityMap
+    for (int i = 0; i < numCells; ++i)
     {
         Tile* tile = map->GetTileByID(map->cells[i]->tileID);
-        
+
         // --- Get Cost Map
         int cost = tile->GetCost();
-        if (map->cells[i]->isPreset && tile->IsWalkable() == false)
-            cost *= 100;
-        costMap.push_back(cost);
+        costMap.push_back(tile->GetCost());
 
         // --- Get Walkable Cells
         walkabilityMap.push_back(tile->IsWalkable());
 
         if (!tile->IsWalkable())
             continue;
+    }
+}
 
+void PathGenerator::FindAreas()
+{
+    int numAreas = 1;
+    std::map<int, int> equivalencies;
+
+    for (int i = 0; i < walkabilityMap.size(); ++i)
+    {        
+        if (!walkabilityMap[i])
+            continue;
 
         // --- Connected Component Labeling (First Pass)
 
@@ -203,12 +227,14 @@ void PathGenerator::FindAreas()
 
             if (equivalencies.find(min) != equivalencies.end()) // min label exists in dictionary
             {
-                min = equivalencies[min];
+                //min = equivalencies[min];
+                min = FindRoot(min, equivalencies);
             }
 
             if (equivalencies.find(max) != equivalencies.end()) // max label exists in dictionary
             {
-                max = equivalencies[max];
+                //max = equivalencies[max];
+                max = FindRoot(max, equivalencies);
 
                 if (min != max)
                 {
@@ -406,8 +432,8 @@ void PathGenerator::CalcPaths()
     }
 
     // Start to End is walkable
-    Point2D startPos = Point2D(12, 25);
-    Point2D endPos = Point2D(12, 14);
+    Point2D startPos = Point2D(13, 26);
+    Point2D endPos = Point2D(13, 15);
     int size = pathfinder.Propagate(startPos, endPos);
     if (size == 0)
         LOG("Error path not valid");
@@ -415,10 +441,9 @@ void PathGenerator::CalcPaths()
     paths.push_back(pathfinder.GetPath());
 }
 
-void PathGenerator::CarvePaths() //*** NEEDS OPTIMIZATION (when doing pathfinding save nonWalkable cells in array instead of traversing all paths)
+void PathGenerator::CarvePaths()
 {
-    // Reset Cells in path that are non-Walkable and its neighbours
-
+    // Set cells in path as walkable
     for (int i = 0; i < paths.size(); ++i)
     {
         DynArray<int> path = paths[i];
@@ -426,27 +451,7 @@ void PathGenerator::CarvePaths() //*** NEEDS OPTIMIZATION (when doing pathfindin
         for (int j = 0; j < path.size(); ++j)
         {
             int index = path[j];
-
-            Cell* cell = map->GetCell(index);
-            if (cell->isCollapsed == false)
-                continue;
-
-            const Tile* tile = map->GetTileByID(cell->tileID);
-
-            // Reset Cell if it is a wall
-            if (tile->IsWalkable())
-                continue;
-
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-            
-            map->numCollapsed--;
-
-
-            // Reset walkable neighbours (8 directions)
-            ResetNeighbours(index);
+            walkabilityMap[index] = true;
         }
     }
 }
@@ -455,236 +460,93 @@ void PathGenerator::LastChecks()
 {
     labelingMap.fill(0);
     areas.clear();
-    walkabilityMap.clear();
-    costMap.clear();
 
     FindAreas();
     CreateAreas();
 
-    if (areas.size() == 1)
-        return;
-
-    int biggestArea = 0;
-    int size = 0;
-    for (auto it = areas.begin(); it != areas.end(); it++)
+    if (areas.size() > 1)
     {
-        if (it->second.size() > size)
+        int biggestArea = 0;
+        int size = 0;
+        for (auto it = areas.begin(); it != areas.end(); it++)
         {
-            size = it->second.size();
-            biggestArea = it->first;
+            if (it->second.size() > size)
+            {
+                size = it->second.size();
+                biggestArea = it->first;
+            }
+        }
+
+        for (auto it = areas.begin(); it != areas.end(); it++)
+        {
+            if (it->first == biggestArea)
+                continue;
+
+            DynArray<int> area = it->second;
+
+            // Set Cells to non-walkable
+            for (int i = 0; i < area.size(); ++i)
+            {
+                int cellIndex = area[i];
+                walkabilityMap[cellIndex] = false;
+            }
         }
     }
 
-    for (auto it = areas.begin(); it != areas.end(); it++)
+    // Change Tileset
+    ChangeTileset(true);
+
+    // Set all walkable cells with WalkableTile and all non-walkable cells with EmptyTile
+    Tile* walkableTile = tiles_expanded.front();
+    Tile* emptyTile = tiles_expanded[1];
+    for (unsigned int i = 0; i < walkabilityMap.size(); ++i)
     {
-        if (it->first == biggestArea)
+        int id = (walkabilityMap[i] == true) ? walkableTile->GetID() : emptyTile->GetID();
+        map->cells[i]->SetCell(id);
+    }
+}
+
+void PathGenerator::ResetNeighbours()
+{
+    // Reset cells neighbouring walkable cells
+    for (int i = 0; i < walkabilityMap.size(); ++i)
+    {
+        // Only check non-walkable cells
+        if (walkabilityMap[i] == true)
             continue;
 
-        DynArray<int> area = it->second;
-
-        // Set Cells to Blocked Tile (non-walkable)
-        for (int i = 0; i < area.size(); ++i)
+        // Reset if any neighbour is walkable
+        for (int dir = 0; dir < 8; ++dir)
         {
-            int cellIndex = area[i];
-            const Tile* tile = map->GetAllTiles().front(); // blocked Tile
+            int neighbourIndex = CheckNeighbour(i, dir);
+            if (neighbourIndex == -1)
+                continue;
 
-            map->SetCell(cellIndex, tile->GetID());
-            walkabilityMap[cellIndex] = false;
+            if (walkabilityMap[neighbourIndex] == true)
+            {
+                Cell* cell = map->cells[i];
+
+                cell->tileID = -1;
+                cell->isCollapsed = false;
+                cell->isInvalid = false;
+                cell->mask = nonWalkableMask;
+
+                map->numCollapsed--;
+                break;
+            }
         }
     }
 }
 
 void PathGenerator::FinishGeneration()
 {
-    DynArray<int> resetNeighbours;
     int numCells = map->width * map->height;
 
     // Get all neighbours of reset cells
     for (int i = 0; i < numCells; ++i)
     {
-        Cell* cell = map->GetCell(i);
-
-        if (cell->isCollapsed == false)
-            continue;
-
-        // if cell is neighbour of a reset cell, propagate it
-        for (int dir = 0; dir < 4; ++dir)
-        {
-            int neighbourIndex = map->CheckNeighbour(i, dir);
-            if (neighbourIndex == -1)
-                continue;
-
-            Cell* neighbour = map->GetCell(neighbourIndex);
-
-            if (neighbour->isCollapsed == false)
-            {
-                resetNeighbours.push_back(i);
-                break;
-            }
-        }
-    }
-
-
-    // Redo WFC algorithm for reseted cells and neighbours
-    ChangeTileset(true);
-    for (unsigned int i = 0; i < resetNeighbours.size(); ++i)
-    {
-        int index = resetNeighbours[i];
-        map->PropagateCell(index);
-    }
-}
-
-void PathGenerator::CreateWalkableMask()
-{
-    // Init mask of only walkable tiles (for carvePaths method)
-    walkableMask = BitArray(tiles_expanded.size());
-    walkableMask.setAll();
-    for (int i = 0; i < tiles_expanded.size(); ++i)
-    {
-        if (tiles_expanded[i]->IsWalkable() == false)
-            walkableMask.clearBit(i);
-    }
-}
-
-void PathGenerator::ResetNeighbours(int index)
-{
-    if (index < 0 || index >= map->width * map->height)
-        return;
-
-    // Top
-    if (index >= map->width)
-    {
-        int top = index - map->width;
-        Cell* cell = map->GetCell(top);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // Left
-    if (index % map->width != 0)
-    {
-        int left = index - 1;
-        Cell* cell = map->GetCell(left);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // Right
-    if ((index + 1) % map->width != 0)
-    {
-        int right = index + 1;
-        Cell* cell = map->GetCell(right);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // Bottom
-    if (index < map->width * (map->height - 1))
-    {
-        int bottom = index + map->width;
-        Cell* cell = map->GetCell(bottom);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // TopLeft
-    if (index >= map->width && index % map->width != 0)
-    {
-        int topLeft = index - map->width - 1;
-        Cell* cell = map->GetCell(topLeft);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // TopRight
-    if (index >= map->width && (index + 1) % map->width != 0)
-    {
-        int topRight = index - map->width + 1;
-        Cell* cell = map->GetCell(topRight);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // BottomLeft
-    if (index < map->width * (map->height - 1) && index % map->width != 0)
-    {
-        int bottomLeft = index + map->width - 1;
-        Cell* cell = map->GetCell(bottomLeft);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
-    }
-
-    // BottomRight
-    if (index < map->width * (map->height - 1) && (index + 1) % map->width != 0)
-    {
-        int bottomRight = index + map->width + 1;
-        Cell* cell = map->GetCell(bottomRight);
-
-        if (cell->isCollapsed && map->GetTileByID(cell->tileID)->IsWalkable())
-        {
-            cell->tileID = -1;
-            cell->isCollapsed = false;
-            cell->isInvalid = false;
-            cell->mask = walkableMask;
-
-            map->numCollapsed--;
-        }
+        if (map->cells[i]->isCollapsed == true)
+            map->PropagateCell(i);
     }
 }
 
@@ -694,7 +556,7 @@ void PathGenerator::ChangeTileset(bool expanded)
     map->tiles = (expanded) ? tiles_expanded : tiles;
 }
 
-int PathGenerator::CheckNeighbour(int index, int direction)
+int PathGenerator::CheckNeighbour(int index, int direction) const
 {
     if (index < 0 || index >= (int)map->cells.size())
         return -1;
@@ -743,4 +605,14 @@ int PathGenerator::CheckNeighbour(int index, int direction)
     }
 
     return -1;
+}
+
+int PathGenerator::FindRoot(int label, std::map<int, int>& equivalencies) const
+{
+    if (equivalencies.find(label) != equivalencies.end()) // label exists in dictionary
+    {
+        return FindRoot(equivalencies[label], equivalencies);
+    }
+    
+    return label;
 }

@@ -4,6 +4,10 @@
 #include "Tile.h"
 #include "RandomNumber.h"
 
+#include "Globals.h"
+#include "Utils.h" //*** FOR TESTING
+#include "String.h"
+
 #include "mmgr/mmgr.h"
 
 MapGenerator::MapGenerator(const int width, const int height, const int cellSize)
@@ -150,7 +154,7 @@ void MapGenerator::ResetMap()
 	for (auto it = presetCells.begin(); it != presetCells.end(); it++)
 	{
 		int index = it->first;
-		cells[index]->SetCell(it->second, 0);
+		cells[index]->SetCell(it->second);
 		cells[index]->isPreset = true;
 	}
 }
@@ -184,11 +188,7 @@ void MapGenerator::ClearPresetCells()
 
 void MapGenerator::PresetCell(unsigned int index, int tileID)
 {
-	int bit = FindTile(tileID);
-	if (bit == -1)
-		return;
-
-	cells[index]->SetCell(tileID, bit);
+	cells[index]->SetCell(tileID);
 	cells[index]->isPreset = true;
 
 	presetCells[index] = tileID;
@@ -196,11 +196,7 @@ void MapGenerator::PresetCell(unsigned int index, int tileID)
 
 void MapGenerator::SetCell(unsigned int index, int tileID)
 {
-	int bit = FindTile(tileID);
-	if (bit == -1)
-		return;
-
-	cells[index]->SetCell(tileID, bit);
+	cells[index]->SetCell(tileID);
 	PropagateCell(index);
 }
 
@@ -307,6 +303,15 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 			BitArray tileMask = tile->GetMasks()[dir];
 
 			neighbour->mask &= tileMask; // Compare (bitwise And) both masks
+			//if (neighbour->mask.count() < 1)
+			{
+				LOG("----------------------------");
+				LOG("%s", Utils::MaskToString(prevMask).c_str());
+				LOG("%s", Utils::MaskToString(tileMask).c_str());
+				LOG("---");
+				LOG("%s", Utils::MaskToString(neighbour->mask).c_str());
+			}
+
 		}
 		else
 		{
@@ -324,6 +329,15 @@ List<int> MapGenerator::PropagateNeighbours(unsigned int index)
 			}
 
 			neighbour->mask &= accMask;
+			//if (neighbour->mask.count() < 1)
+			{
+				LOG("----------------------------");
+				LOG("%s", Utils::MaskToString(prevMask).c_str());
+				LOG("%s", Utils::MaskToString(accMask).c_str());
+				LOG("---");
+				LOG("%s", Utils::MaskToString(neighbour->mask).c_str());
+			}
+
 		}
 
 		if (neighbour->mask != prevMask)
@@ -355,11 +369,6 @@ void MapGenerator::FirstStep()
 	}
 
 	isFirstStep = false;
-}
-
-int MapGenerator::FindTile(int tileID) const
-{
-	return 0;
 }
 
 int MapGenerator::CheckNeighbour(int index, int direction)

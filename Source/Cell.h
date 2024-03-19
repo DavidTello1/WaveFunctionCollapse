@@ -46,12 +46,11 @@ public:
 		mask.setAll();
 	}
 	
-	void SetCell(int id, int bit) {
+	void SetCell(int id) {
 		tileID = id;
 		isCollapsed = true;
 		isInvalid = false;
 		mask.clearAll();
-		mask.setBit(bit);
 	}
 
 public:

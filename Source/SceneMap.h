@@ -62,6 +62,7 @@ private:
 	void UpdateButtonGrid();
 	void DrawMap(const MapGenerator& map);
 	void DrawAreas(const MapGenerator& map, const PathGenerator& paths);
+	void DrawWalkability(const MapGenerator& map, const PathGenerator& paths);
 
 	// --- Draw
 	void DrawPanel(const MapGenerator& map);
@@ -96,6 +97,7 @@ private:
 	int spacing = 0;
 	bool isDrawSpaced = true;
 	bool isDrawAreas = true;
+	bool isDrawWalkability = true;
 	bool isPathSteps = false;
 
 	// Panel Data
