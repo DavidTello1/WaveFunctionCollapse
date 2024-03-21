@@ -1,5 +1,6 @@
 #pragma once
 #include "DynArray.h"
+#include "StaticArray.h"
 #include "BitArray.h"
 #include <map>
 
@@ -25,6 +26,9 @@ public:
 	const std::map<int, int>& GetBreadcrumbs() const { return breadCrumbs; }
 	const DynArray<DynArray<int>>& GetPaths() const { return paths; }
 	const DynArray<bool>& GetWalkabilityMap() const { return walkabilityMap; }
+	const std::map<int, int>& GetPortals() const { return portals; }
+	const std::map<int, int>& GetTraps() const { return traps; }
+	const std::map<int, int>& GetItems() const { return items; }
 
 private:
 	void Init();
@@ -38,11 +42,17 @@ private:
 	void LastChecks(); // Remove disconnected areas
 	void ResetNeighbours(); // Reset all neighbours of walkable cells
 	void FinishGeneration(); // Final map tiles (WFC of reset cells)
+	void FillMap(); // Set portals, traps and items
 
 	// --- Utils
 	void ChangeTileset(bool expanded);
 	int CheckNeighbour(int index, int direction) const;
 	int FindRoot(const int label, std::map<int, int>& equivalencies) const;
+	DynArray<int> GetCellsInArea(int x, int y, int w, int h) const;
+
+	void PlaceItems();
+	void PlacePortals();
+	void PlaceTraps();
 
 private:
 	MapGenerator* map = nullptr; // reference to MapGenerator (shared_ptr)
@@ -59,6 +69,25 @@ private:
 	DynArray<DynArray<int>> paths;
 
 	BitArray nonWalkableMask;
+
+	// --- Fill Map
+	StaticArray<DynArray<int>, 4> quadrants;
+	DynArray<int> dijkstra;
+
+
+	// ---
+	int numPortals = 2; // max 6
+	std::map<int, int> portals; // cell index, portal id
+	DynArray<int> portals_exclusion;
+
+	int numTraps = 20;
+	std::map<int, int> traps; // cell index, trap id
+	DynArray<int> traps_exclusion;
+
+	int numItems = 2; // max 4 (3 if hidden room)
+	std::map<int, int> items; // cell index, item id
+
+	int hiddenRoom_prob = 10; // 10% of probability to have a hidden room
 
 	// ---
 	int step = 0;

@@ -57,6 +57,9 @@ DynArray<int> PathGenerator::GeneratePaths()
     ResetNeighbours();
     FinishGeneration();
 
+    // --- Fill Map with Objects, Portals & Traps
+    FillMap();
+
     return final_map;
 }
 
@@ -99,6 +102,10 @@ void PathGenerator::Step()
     {
         FinishGeneration();
     }
+    else if (step == 7)
+    {
+        FillMap();
+    }
     
     step++;
 }
@@ -117,6 +124,13 @@ void PathGenerator::Reset()
     breadCrumbs.clear();
 
     paths.clear();
+
+    portals.clear();
+    traps.clear();
+    items.clear();
+
+    portals_exclusion.clear();
+    traps_exclusion.clear();
 
     step = 0;
 }
@@ -171,6 +185,25 @@ void PathGenerator::Init()
         if (!tile->IsWalkable())
             continue;
     }
+
+    // Exclusion Areas for FillMap
+    portals_exclusion = DynArray<int>();
+    traps_exclusion = DynArray<int>();
+
+    DynArray<int> area = GetCellsInArea(7, 7, 13, 13);
+    for (unsigned int i = 0; i < area.size(); ++i)
+        portals_exclusion.push_back(area[i]);
+
+    area = GetCellsInArea(10, 20, 7, 7);
+    for (unsigned int i = 0; i < area.size(); ++i)
+    {
+        portals_exclusion.push_back(area[i]);
+        traps_exclusion.push_back(area[i]);
+    }
+
+    area = GetCellsInArea(10, 10, 7, 7);
+    for (unsigned int i = 0; i < area.size(); ++i)
+        traps_exclusion.push_back(area[i]);
 }
 
 void PathGenerator::FindAreas()
@@ -550,6 +583,14 @@ void PathGenerator::FinishGeneration()
     }
 }
 
+void PathGenerator::FillMap()
+{
+    PlaceItems();
+    PlacePortals();
+    PlaceTraps();
+}
+
+// -------------------------------------------------------
 void PathGenerator::ChangeTileset(bool expanded)
 {
     // Change Tileset
@@ -615,4 +656,251 @@ int PathGenerator::FindRoot(int label, std::map<int, int>& equivalencies) const
     }
     
     return label;
+}
+
+DynArray<int> PathGenerator::GetCellsInArea(int x, int y, int w, int h) const
+{
+    DynArray<int> area;
+
+    for (int i = 0; i < w; ++i)
+    {
+        for (int j = 0; j < h; ++j)
+        {
+            int index = (x + i) + (y + j) * map->width;
+            if (index < 0 || index > map->width * map->height)
+                continue;
+
+            area.push_back(index);
+        }
+    }
+
+    return area;
+}
+
+// ---------------------------------
+void PathGenerator::PlaceItems()
+{
+    // Dijkstra - Get highest-cost cell in each quadrant
+    DynArray<int> candidates;
+    
+    // Sort quadrants in order (highest to lowest cost)
+    
+
+    // Choose if hidden room exists
+    int itemCount = numItems;
+    if (hiddenRoom_prob > map->RNG->GenerateBoundedInt(100))
+    {
+        if (candidates.empty())
+            return;
+
+        int index = candidates[0];
+
+        int object_id = 0;
+        items[index] = object_id;
+
+        candidates.erase(0);
+        itemCount--;
+    }
+        
+    // Place Items (max 4, 3 if hidden room)
+    for (unsigned int i = 0; i < itemCount; ++i)
+    {
+        if (candidates.empty())
+            return;
+
+        int result = map->RNG->GenerateBoundedInt(candidates.size());
+        int index = candidates[result];
+
+        //choice = map->RNG->GenerateBoundedInt(items_list.size()); //*** LIST OF ITEMS
+        int object_id = 0; // items_list[choice];
+
+        items[index] = object_id;
+        candidates.erase(result);
+    }
+}
+
+void PathGenerator::PlacePortals()
+{
+    // --- Get Candidates
+    StaticArray<DynArray<int>, 4> quadrants; // 4 quadrants
+    DynArray<DynArray<int>> candidates; // candidates by quadrants
+
+    // TopLeft
+    quadrants[0] = GetCellsInArea(
+        0, 0, 
+        ceil(map->width / 2.0f), floor(map->height / 2.0f)
+    );
+
+    // TopRight
+    quadrants[1] = GetCellsInArea(
+        ceil(map->width / 2.0f), 0,
+        floor(map->width / 2.0f), ceil(map->height / 2.0f)
+    );
+
+    // BottomLeft
+    quadrants[2] = GetCellsInArea(
+        0, floor(map->height / 2.0f),
+        floor(map->width / 2.0f), ceil(map->height / 2.0f)
+    );
+
+    // BottomRight
+    quadrants[3] = GetCellsInArea(
+        floor(map->width / 2.0f), ceil(map->height / 2.0f),
+        ceil(map->width / 2.0f), floor(map->height / 2.0f)
+    );
+
+
+    for (int quadrant = 0; quadrant < 4; ++quadrant)
+    {
+        candidates.push_back(DynArray<int>()); // init candidates
+
+        for (unsigned int i = 0; i < quadrants[quadrant].size(); ++i)
+        {
+            int index = quadrants[quadrant][i];
+
+            if (walkabilityMap[index] == false)
+                continue;
+
+            int count = 0; // count of non-walkable neighbours
+            for (unsigned int dir = 0; dir < NUM_NEIGHBOURS; dir++)
+            {
+                int neighbourIndex = map->CheckNeighbour(index, dir);
+                if (neighbourIndex == -1)
+                    continue;
+
+                if (walkabilityMap[neighbourIndex] == true)
+                    count++;
+            }
+
+            // Condition (cell is DeadEnd)
+            if (count == 1)
+            {
+                // Check for excluded cells
+                bool found = false;
+                for (unsigned int j = 0; j < portals_exclusion.size(); ++j)
+                {
+                    if (portals_exclusion[j] == index)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found == false)
+                    candidates[quadrant].push_back(index);
+            }
+        }
+    }
+
+    for (int i = 3; i >= 0; --i)
+    {
+        if (candidates[i].empty())
+            candidates.erase(i);
+    }
+    
+    // --- Select Cells to place Portals
+    // 
+    // 6 possible connections (TL-TR, TL-BL, TL-BR, TR-BL, TR-BR, BL-BR)
+    DynArray<std::pair<int, int>> availConnections = DynArray<std::pair<int, int>>(6);
+    for (int i = 0; i < 4; ++i)
+    {
+        if (candidates[i].empty())
+            continue;
+
+        for (int j = i + 1; j < 4; ++j)
+        {
+            if (candidates[j].empty())
+                continue;
+
+            availConnections.push_back({ i, j });
+        }
+    }
+
+
+    // for each pair of portals
+    for (unsigned int i = 0; i < numPortals; ++i)
+    {
+        if (availConnections.empty())
+            return;
+
+        // select combination randomly
+        int result = map->RNG->GenerateBoundedInt(availConnections.size());
+
+        int first_quadrant = availConnections[result].first;
+        int second_quadrant = availConnections[result].second;
+
+        // Select random cell from candidates in each of the two quadrants of the combination
+        int res_1 = map->RNG->GenerateBoundedInt(candidates[first_quadrant].size());
+        int res_2 = map->RNG->GenerateBoundedInt(candidates[second_quadrant].size());
+
+        int first = candidates[first_quadrant][res_1];
+        int second = candidates[second_quadrant][res_2];
+
+        // Place Portal
+        portals[first] = i;
+        portals[second] = i;
+
+        // Remove the combination from list of available connections
+        availConnections.erase(result);
+
+        // Remove from candidates
+        candidates[first_quadrant].erase(res_1);
+        candidates[second_quadrant].erase(res_2);
+    }
+}
+
+void PathGenerator::PlaceTraps()
+{
+    // --- Get Candidates
+    DynArray<int> candidates;
+    for (unsigned int i = 0; i < walkabilityMap.size(); ++i)
+    {
+        if (walkabilityMap[i] == false)
+            continue;
+
+        int count = 0; // count of non-walkable neighbours
+        for (unsigned int dir = 0; dir < NUM_NEIGHBOURS; dir++)
+        {
+            int neighbourIndex = map->CheckNeighbour(i, dir);
+            if (neighbourIndex == -1)
+                continue;
+
+            if (walkabilityMap[neighbourIndex] == true)
+                count++;
+        }
+
+        // Condition (cell is Corridor or Corner)
+        if (count == 2)
+        {
+            // Check for excluded cells
+            bool found = false;
+            for (unsigned int j = 0; j < traps_exclusion.size(); ++j)
+            {
+                if (traps_exclusion[j] == i)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found == false)
+                candidates.push_back(i);
+        }
+    }
+
+    if (candidates.empty())
+        return;
+
+    // --- Select Cells to place Traps
+    for (unsigned int i = 0; i < numTraps; ++i)
+    {
+        int result = map->RNG->GenerateBoundedInt(candidates.size());
+        int index = candidates[result];
+
+        //choice = map->RNG->GenerateBoundedInt(traps_list.size()); //*** LIST OF TRAPS (?)
+        int trap_id = 0; // traps_list[choice];
+
+        traps[index] = trap_id;
+        candidates.erase(result);
+    }
 }

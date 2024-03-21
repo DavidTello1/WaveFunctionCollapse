@@ -389,7 +389,7 @@ void SceneMap::DrawWalkability(const MapGenerator& map, const PathGenerator& pat
 	const DynArray<bool> walkabilityMap = paths.GetWalkabilityMap();
 	for (int i = 0; i < walkabilityMap.size(); ++i)
 	{
-		Color color = (walkabilityMap[i]) ? Color(1.0f, 0.0f, 0.0f, 0.5f) : Color(0.0f, 1.0f, 0.0f, 0.5f);
+		Color color = (walkabilityMap[i]) ? Color(0.0f, 1.0f, 0.0f, 0.5f) : Color(1.0f, 0.0f, 0.0f, 0.5f);
 
 		// Cell
 		int x = i % width;
@@ -401,6 +401,67 @@ void SceneMap::DrawWalkability(const MapGenerator& map, const PathGenerator& pat
 
 		// Draw Color
 		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+	}
+
+	// Portals
+	static Color colors[6] = {
+		Color(0.0f, 0.0f, 1.0f, 0.7f),
+		Color(0.0f, 1.0f, 0.0f, 0.7f),
+		Color(0.0f, 1.0f, 1.0f, 0.7f),
+		Color(1.0f, 0.0f, 1.0f, 0.7f),
+		Color(1.0f, 1.0f, 0.0f, 0.7f),
+		Color(1.0f, 1.0f, 1.0f, 0.7f)
+	};
+
+	const std::map<int, int> portals = paths.GetPortals();
+	for (auto it = portals.begin(); it != portals.end(); it++)
+	{
+		// Cell
+		int x = it->first % width;
+		int y = it->first / width;
+
+		// Position & Size
+		glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
+		glm::vec2 size = { cellSize, cellSize };
+
+		// Draw Color
+		Color color = colors[it->second];
+		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+	}
+
+	// Traps
+	const std::map<int, int> traps = paths.GetTraps();
+	for (auto it = traps.begin(); it != traps.end(); it++)
+	{
+		// Cell
+		int x = it->first % width;
+		int y = it->first / width;
+
+		// Position & Size
+		glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
+		glm::vec2 size = { cellSize, cellSize };
+
+		// Draw Color
+		Color color = Color(0.5f, 0.5f, 0.5f, 1.0f);
+		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+	}
+
+	// Objects
+	const std::map<int, int> objects = paths.GetItems();
+	for (auto it = objects.begin(); it != objects.end(); it++)
+	{
+		// Cell
+		int x = it->first % width;
+		int y = it->first / width;
+
+		// Position & Size
+		glm::vec2 position = { offsetX + x * (cellSize + spacing), offsetY + y * (cellSize + spacing) };
+		glm::vec2 size = { cellSize, cellSize };
+
+		// Draw Color
+		Color color = Color(1.0f, 0.0f, 1.0f, 1.0f);
+		App->renderer->DrawQuad(position, size, glm::vec4(color.r, color.g, color.b, color.a));
+
 	}
 }
 
